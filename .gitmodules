@@ -7,6 +7,9 @@
 [submodule "technology/ignatius"]
 	path = technology/ignatius
 	url = git@github.com:greenways-ai/ignatius.git
+[submodule "technology/historia"]
+	path = technology/historia
+	url = git@github.com:greenways-ai/historia.git
 [submodule "application/greenways-os"]
 	path = application/greenways-os
 	url = git@github.com:greenways-ai/greenways-os.git
