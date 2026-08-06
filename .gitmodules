@@ -4,6 +4,9 @@
 [submodule "website/hara-code"]
 	path = website/hara-code
 	url = git@github.com:hara-lang/hara-docs.git
+[submodule "technology/ignatius"]
+	path = technology/ignatius
+	url = git@github.com:greenways-ai/ignatius.git
 [submodule "application/greenways-os"]
 	path = application/greenways-os
 	url = git@github.com:greenways-ai/greenways-os.git
