@@ -1,3 +1,12 @@
+[submodule "technology/hara"]
+	path = technology/hara
+	url = git@github.com:hara-lang/hara.git
+[submodule "technology/hara-archive"]
+	path = technology/hara-archive
+	url = git@github.com:hara-lang/hara-archive.git
+[submodule "extensions"]
+	path = extensions
+	url = git@github.com:hara-lang/hara-extensions.git
 [submodule "technology/hara-specs"]
 	path = technology/hara-specs
 	url = git@github.com:hara-lang/hara-specs.git
