@@ -7,7 +7,7 @@ push_repo() {
     echo "  skipped: no origin remote"
     return 2
   fi
-  if ! upstream_ref >/dev/null; then
+  if ! upstream_ref . >/dev/null; then
     echo "  skipped: no upstream tracking branch"
     return 2
   fi
