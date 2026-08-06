@@ -1,0 +1,22 @@
+name: Greenways release train
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  matrix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Verify pinned revisions and architecture documents
+        run: make release-check
+      - name: Check matrix script syntax
+        run: python3 -m py_compile scripts/03-release-train/matrix.py
