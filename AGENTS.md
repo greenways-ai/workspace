@@ -9,13 +9,13 @@ worked in as ordinary clones on the `main` branch, tracking `origin/main`.
 - `application/` — deployable products (greenways-os)
 - `infra/` — packaging and registries (`greenways-homebrew` for Greenways product
   formulas, `greenways-homebrew-tap` for Hara formulas, hara-id, hara-packages)
-- `technology/` — core tech (hara, hara-archive, hara-specs, hestia, historia,
-  hodos, hoplite, ignatius). `hara` itself is organised into `core/` (language
-  runtime and libraries), `packaging/` (release and distribution scripts), and
-  remaining support directories; its former `archive`, `extensions`, `specs` and
-  `website` submodules are now external siblings.
+- `technology/` — core tech (hara, hara-archive, hara-specs-registry, hestia,
+  historia, hodos, hoplite, ignatius). `hara` itself is organised into `core/`
+  (language runtime and libraries), `packaging/` (release and distribution
+  scripts), and remaining support directories; its former `archive`,
+  `extensions`, `specs` and `website` submodules are now external siblings.
 - `website/` — public sites (greenways-oss, greenways-www, hara-www, hara-code,
-  hara-benchmarks, hara-visual-language, hara-world)
+  hara-specs, hara-benchmarks, hara-visual-language, hara-world)
 - `extensions/` — editor and browser apps for hara (hara-emacs, hara-lsp,
   hara-vscode). `hara-chrome` has been folded into
   `application/greenways-os/extension/hara-chrome`.
@@ -26,6 +26,13 @@ remote; skip them in network operations rather than failing.
 
 `website/hara-code/vendor/hara-ui` is a nested submodule registered inside
 `hara-code`, not the super-repo — initialize it from within `hara-code`.
+
+The following local integration symlinks are gitignored convenience links:
+
+- `technology/hara/hara-specs-registry` → `technology/hara-specs-registry`
+  (expected by `technology/hara` source paths and tests).
+- `website/docs` → `website/hara-code` (expected by
+  `website/hara-www/scripts/prepare-docs.mjs`).
 
 ## Repo management tooling
 

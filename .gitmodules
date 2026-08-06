@@ -7,9 +7,6 @@
 [submodule "extensions"]
 	path = extensions
 	url = git@github.com:hara-lang/hara-extensions.git
-[submodule "technology/hara-specs"]
-	path = technology/hara-specs
-	url = git@github.com:hara-lang/hara-specs.git
 [submodule "website/hara-code"]
 	path = website/hara-code
 	url = git@github.com:hara-lang/hara-docs.git
@@ -58,3 +55,9 @@
 [submodule "website/hara-www"]
 	path = website/hara-www
 	url = git@github.com:hara-lang/hara-www.git
+[submodule "technology/hara-specs-registry"]
+	path = technology/hara-specs-registry
+	url = git@github.com:hara-lang/hara-specs-registry.git
+[submodule "website/hara-specs"]
+	path = website/hara-specs
+	url = git@github.com:hara-lang/hara-specs.git
