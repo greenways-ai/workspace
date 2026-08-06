@@ -28,3 +28,15 @@
 [submodule "website/hara-benchmarks"]
 	path = website/hara-benchmarks
 	url = git@github.com:hara-lang/hara-benchmarks.git
+[submodule "website/hara-visual-language"]
+	path = website/hara-visual-language
+	url = git@github.com:hara-lang/visual-language.git
+[submodule "infra/hara-id-registry"]
+	path = infra/hara-id-registry
+	url = git@github.com:hara-lang/hara-identity.git
+[submodule "infra/hara-packages-registry"]
+	path = infra/hara-packages-registry
+	url = git@github.com:hara-lang/hara-packages.git
+[submodule "website/hara-www"]
+	path = website/hara-www
+	url = git@github.com:hara-lang/hara-www.git
