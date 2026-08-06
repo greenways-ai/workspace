@@ -7,7 +7,8 @@ worked in as ordinary clones on the `main` branch, tracking `origin/main`.
 ## Layout
 
 - `application/` — deployable products (greenways-os)
-- `infra/` — packaging and registries (homebrew tap, hara-id, hara-packages)
+- `infra/` — packaging and registries (`greenways-homebrew` for Greenways product
+  formulas, `greenways-homebrew-tap` for Hara formulas, hara-id, hara-packages)
 - `technology/` — core tech (hara, hara-archive, hara-specs, hestia, historia,
   hodos, hoplite, ignatius). `hara` itself is organised into `core/` (language
   runtime and libraries), `packaging/` (release and distribution scripts), and
@@ -15,8 +16,9 @@ worked in as ordinary clones on the `main` branch, tracking `origin/main`.
   `website` submodules are now external siblings.
 - `website/` — public sites (greenways-oss, greenways-www, hara-www, hara-code,
   hara-benchmarks, hara-visual-language, hara-world)
-- `extensions/` — editor and browser apps for hara (greenways-os, hara-emacs,
-  hara-lsp, hara-vscode). `hara-chrome` has been folded into `greenways-os`.
+- `extensions/` — editor and browser apps for hara (hara-emacs, hara-lsp,
+  hara-vscode). `hara-chrome` has been folded into
+  `application/greenways-os/extension/hara-chrome`.
 
 A group subdir with no `.git` is a placeholder for a project not yet cloned —
 report it, never treat it as an error. Some children may lack an `origin`
