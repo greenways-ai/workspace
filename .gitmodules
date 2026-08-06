@@ -16,6 +16,9 @@
 [submodule "infra/greenways-homebrew-tap"]
 	path = infra/greenways-homebrew-tap
 	url = https://github.com/hara-lang/homebrew-tap.git
+[submodule "infra/greenways-homebrew"]
+	path = infra/greenways-homebrew
+	url = git@github.com:greenways-ai/homebrew-tap.git
 [submodule "technology/hestia"]
 	path = technology/hestia
 	url = https://github.com/greenways-ai/hestia.git
