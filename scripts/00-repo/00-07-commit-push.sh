@@ -13,19 +13,21 @@ fi
 message="$1"
 
 commit_push_repo() {
-  local dirty=0 ahead=0
+  local committed=0 ahead=0
   if [ -n "$(git status --porcelain)" ]; then
-    dirty=1
     git add -A
-    git diff --cached --quiet || git commit -m "$message"
+    if ! git diff --cached --quiet; then
+      git commit -m "$message"
+      committed=1
+    fi
   fi
   if has_origin . && upstream_ref . >/dev/null; then
     ahead="$(git rev-list --count '@{u}..HEAD' 2>/dev/null || echo 0)"
     [ "$ahead" -eq 0 ] || git push
-  elif [ "$dirty" -eq 1 ]; then
+  elif [ "$committed" -eq 1 ]; then
     echo "  note: committed locally only (no origin/upstream)"
   fi
-  if [ "$dirty" -eq 0 ] && [ "$ahead" -eq 0 ]; then
+  if [ "$committed" -eq 0 ] && [ "$ahead" -eq 0 ]; then
     echo "  skipped: nothing to commit or push"
     return 2
   fi
