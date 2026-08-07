@@ -1,7 +1,7 @@
 {
   "protocol": "greenways.release-train/1",
   "release": "hodos-workspace-0.1",
-  "status": "foundation-in-progress",
+  "status": "foundation-passed-next-batch-in-progress",
   "architecture": "docs/adr/0002-hara-workspace-hodos-projection-greenways-studio.md",
   "pins": [
     {
@@ -15,8 +15,8 @@
       "id": "hara",
       "repository": "hara-lang/hara",
       "path": "technology/hara",
-      "sha": "568ef7d096be7e780874db7a9745d48e06e3d4e9",
-      "role": "language-runtime-and-workspace-semantics-baseline"
+      "sha": "60b59ccaa4af5c6cb77d5db6ed83ab5dfa57ded9",
+      "role": "language-runtime-and-headless-workspace-semantics"
     },
     {
       "id": "hara-ui",
@@ -29,23 +29,23 @@
       "id": "hara-playground",
       "repository": "hara-lang/hara-playground",
       "path": "application/hara-playground",
-      "sha": "61ea87cad442e0910ac79ae022c4db4cca7ad5af",
-      "role": "reference-dev-workspace-consumer-baseline"
+      "sha": "e4263dd42dd4816c3512e69c27128df0e2b4a619",
+      "role": "reference-hodos-dev-workspace-consumer"
     },
     {
       "id": "hodos",
       "repository": "greenways-ai/hodos",
       "path": "technology/hodos",
-      "sha": "241f10521341ca75640fcae93eacbdccf442231a",
-      "role": "workspace-projection-and-world-abi-foundation"
+      "sha": "4bf67b097da71947d12b902720296bf2a60be8bb",
+      "role": "workspace-projection-dev-editor-and-world-abi"
     }
   ],
   "gates": [
     {
       "id": "HW1",
       "description": "Hara owns a headless workspace.* state, event, view and effect contract.",
-      "status": "in-progress",
-      "evidence": "hara-lang/hara#383 and #384 merged the initial contract and mirrors; hara-lang/hara#385 repairs the remaining release-archive checker before an updated Hara revision is pinned."
+      "status": "passed",
+      "evidence": "hara-lang/hara#383 introduced workspace.*, #384 synchronized runtime mirrors and conformance paths, and #385 restored the complete release/archive validation. The merged revision is pinned."
     },
     {
       "id": "HW2",
@@ -57,19 +57,19 @@
       "id": "HW3",
       "description": "Hodos Web connects HAL-shaped Workspace component models to trusted packaged UI factories.",
       "status": "passed",
-      "evidence": "greenways-ai/hodos#24 merged at 241f10521341ca75640fcae93eacbdccf442231a after package, test, demo and documentation checks and is pinned."
+      "evidence": "greenways-ai/hodos#24 established the trusted component and area hosts, #25 added prepared Preview documents, and #26 began the Editor component boundary. The latest merged revision is pinned."
     },
     {
       "id": "HW4",
       "description": "Playground mounts its Preview through Hodos Dev while retaining Hara preview isolation.",
-      "status": "in-progress",
-      "evidence": "hara-lang/hara-playground#29 merged the first consumer slice. A follow-up will pin the merged prepared-document adapter from greenways-ai/hodos#25 and run the browser smoke gate before the Playground revision is pinned."
+      "status": "passed",
+      "evidence": "hara-lang/hara-playground#29 mounted Preview through Hodos Dev. #30 pinned the merged Hodos adapter, scoped audio observation away from component-internal DOM writes, and passed both Node CI and the Chromium/Supersonic smoke."
     },
     {
       "id": "HW5",
       "description": "Existing Hodos Worlds source, renderer and viewer contracts remain compatible during the broader reorganisation.",
       "status": "passed",
-      "evidence": "The pinned Hodos revision keeps Core independent and retains replaceable source, renderer and viewer packages."
+      "evidence": "The pinned Hodos revision keeps Core independent and retains replaceable source, renderer and viewer packages while adding Dev components above them."
     },
     {
       "id": "HW6",
@@ -90,18 +90,5 @@
       "evidence": "Tracked by greenways-ai/hodos#22 and the later Hara runtime profile split."
     }
   ],
-  "candidates": [
-    {
-      "id": "HARA-RELEASE-CHECK-1",
-      "repository": "hara-lang/hara",
-      "pullRequest": 385,
-      "status": "draft-not-pinned"
-    },
-    {
-      "id": "HODOS-PREVIEW-DOCUMENT-1",
-      "repository": "greenways-ai/hodos",
-      "pullRequest": 25,
-      "status": "draft-not-pinned"
-    }
-  ]
+  "candidates": []
 }
