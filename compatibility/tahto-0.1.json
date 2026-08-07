@@ -90,7 +90,7 @@
       "id": "B1",
       "description": "Two devices exchange only missing objects, preserve signed divergent heads, create and restore a complete backup, and reject tampering, stale sequences and replayed nonces.",
       "status": "blocked",
-      "evidence": "HOPLITE-1 data-plane contracts and TAHTO-3 are merged. TAHTO-4 is draft PR greenways-ai/tahto#6; the native callback bridge is draft PR greenways-ai/hoplite#30 and its worker-local resource registry is stacked draft PR #31. Runtime/Nginx registration, durable metadata, signature-provider nonce enforcement and two-device conformance remain outstanding."
+      "evidence": "HOPLITE-1 data-plane contracts and TAHTO-3 are merged. TAHTO-4 is draft PR greenways-ai/tahto#6. Hoplite's native callback bridge is draft #30, its worker-local registry is stacked draft #31, and the V3 request ABI is stacked draft #33. Nginx body registration, durable metadata, signature-provider nonce enforcement and two-device conformance remain outstanding."
     }
   ],
   "candidates": [
@@ -110,6 +110,12 @@
       "id": "HOPLITE-3",
       "repository": "greenways-ai/hoplite",
       "pullRequest": 31,
+      "status": "stacked-draft-not-pinned"
+    },
+    {
+      "id": "HOPLITE-4",
+      "repository": "greenways-ai/hoplite",
+      "pullRequest": 33,
       "status": "stacked-draft-not-pinned"
     }
   ]
