@@ -1,7 +1,7 @@
 {
   "protocol": "greenways.release-train/1",
   "release": "hodos-workspace-0.1",
-  "status": "dev-catalog-passed-next-slice-in-progress",
+  "status": "workspace-edn-shell-passed-next-slice-in-progress",
   "architecture": "docs/adr/0002-hara-workspace-hodos-projection-greenways-studio.md",
   "pins": [
     {
@@ -29,15 +29,15 @@
       "id": "hara-playground",
       "repository": "hara-lang/hara-playground",
       "path": "application/hara-playground",
-      "sha": "3eac2dabe1d2b99ede1f7b5560e0346f467b5a4f",
-      "role": "reference-hodos-dev-catalog-explorer-preview-editor-repl-value-inspector-and-problems-consumer"
+      "sha": "8e5d8151c81d518e8465eb1b8da44b8c47204a86",
+      "role": "reference-workspace-edn-driven-hodos-shell-and-dev-component-consumer"
     },
     {
       "id": "hodos",
       "repository": "greenways-ai/hodos",
       "path": "technology/hodos",
-      "sha": "940289542afeb33cd2a2ce97ea6ba9c41258b426",
-      "role": "workspace-projection-dev-catalog-explorer-preview-editor-repl-problems-value-inspector-and-world-abi"
+      "sha": "3128fd9bf03c203c5a35f409b94e59553bf33aa3",
+      "role": "recursive-responsive-workspace-projection-dev-components-and-world-abi"
     }
   ],
   "gates": [
@@ -45,7 +45,7 @@
       "id": "HW1",
       "description": "Hara owns a headless workspace.* state, event, view and effect contract.",
       "status": "passed",
-      "evidence": "hara-lang/hara#383 introduced workspace.*, #384 synchronized runtime mirrors and conformance paths, and #385 restored the complete release/archive validation. The merged revision is pinned."
+      "evidence": "hara-lang/hara#383 introduced workspace.*, #384 synchronized runtime mirrors and conformance paths, and #385 restored the complete release/archive validation. The pinned Hara revision retains that boundary."
     },
     {
       "id": "HW2",
@@ -55,21 +55,21 @@
     },
     {
       "id": "HW3",
-      "description": "Hodos Web connects HAL-shaped Workspace component models to trusted packaged UI factories.",
+      "description": "Hodos Web connects HAL-shaped Workspace models to trusted packaged UI factories and responsive shell mechanics.",
       "status": "passed",
-      "evidence": "greenways-ai/hodos#24 established trusted component and area hosts, #25 added prepared Preview documents, #26 added the Editor boundary, #27 added the REPL boundary, #28 added retained-value inspection, #29 added the Problems boundary, #30 added the Explorer boundary, and #31 added the Catalog boundary for descriptive toolsets, tools, activities and run evidence. Catalog projection explicitly excludes executable snippets, starter source, check definitions and check expressions. The merged Hodos revision is pinned."
+      "evidence": "greenways-ai/hodos#24 established trusted component and area hosts, #25 added prepared Preview documents, #26 added Editor, #27 REPL, #28 Value Inspector, #29 Problems, #30 Explorer and #31 Catalog. #32 adds the recursive responsive Workspace shell for area, split and empty nodes, accessible splitter geometry, compact surfaces, trusted component mounting and adopted-root restoration. Hara remains the source of manifest and Workspace semantics. The merged Hodos revision is pinned."
     },
     {
       "id": "HW4",
-      "description": "Playground mounts reusable Dev components through Hodos while retaining Hara browser-service, storage, runtime and executable catalog authority.",
+      "description": "Playground is the reference workspace.edn-driven Hodos shell consumer while retaining Hara runtime and application policy authority.",
       "status": "passed",
-      "evidence": "hara-lang/hara-playground#29-#31 mounted Preview and Editor through Hodos. #32 made Editor source and selection events authoritative and repaired direct Preview updates. #33 made REPL input, submission, clear, history and cancel events authoritative. #35 projects retained values through Value Inspector. #36 projects runtime and source diagnostics through Problems. #37 replaces the fixed file-tree renderer and direct select/create/delete handlers with Explorer. #38 replaces fixed tool/activity renderers and direct listeners with two Hodos Catalog surfaces while keeping snippets, starter source, check expressions, runtime evaluation, progress and confirmation policy in Playground. The merged Playground revision passed ordinary CI and the complete Chromium/Supersonic workflow."
+      "evidence": "hara-lang/hara-playground#29-#38 progressively mounted Preview, Editor, REPL, Value Inspector, Problems, Explorer and Catalog through Hodos. #39 replaces the active fixed desktop/mobile layout controller with the recursive Hodos shell, evaluates the actual workspace.edn through Hara, projects retained manifest values into bounded serializable Workspace views, maps product roles onto the existing project/editor/output authorities, preserves distinct compact Files, Code, Canvas, Audio, REPL and Learn surfaces, and keeps output tabs, Audio, focus, browser storage and local presentation preferences in Playground. The exact merged revision passed ordinary CI and the complete Chromium/Supersonic workflow using the checksum-verified Hara Studio runtime v0.1.4 asset with SHA-256 dfa0db00ac455ad720cc50fc6a972e466e0c32a3b3fbe283197f084abf8945be."
     },
     {
       "id": "HW5",
       "description": "Existing Hodos Worlds source, renderer and viewer contracts remain compatible during the broader reorganisation.",
       "status": "passed",
-      "evidence": "The pinned Hodos revision keeps Core independent and retains replaceable source, renderer and viewer packages while adding Dev components above them."
+      "evidence": "The pinned Hodos revision keeps Core independent and retains replaceable source, renderer and viewer packages while adding Dev and Workspace shell components above them; the complete Hodos package, Worlds, demo and site gates passed."
     },
     {
       "id": "HW6",
@@ -87,7 +87,7 @@
       "id": "HW8",
       "description": "Supersonic is an optional Hodos Audio connector rather than an inseparable neutral Hara runtime feature.",
       "status": "blocked",
-      "evidence": "Tracked by greenways-ai/hodos#22 and the later Hara runtime profile split."
+      "evidence": "Tracked by greenways-ai/hodos#22 and the later Hara runtime profile split. The pinned Playground browser gate proves the current Supersonic project remains compatible while this ownership split is still pending."
     }
   ],
   "candidates": []
