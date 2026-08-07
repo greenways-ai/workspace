@@ -7,15 +7,34 @@ This registry prevents protocol names, record vocabularies, and executable bound
 | Namespace or vocabulary | Owner | Rule |
 |---|---|---|
 | `lang.*` and `:lang/*` | `hara-lang/hara` | Hara compiler/runtime namespaces and serialized language metadata |
+| `workspace.*`, `:workspace/*`, and `workspace.component/1` | `hara-lang/hara` | Portable Workspace state, events, projected component data, extension routing, views and effects |
+| `gw.hodos.*`, `hodos.*` component IDs, and Hodos world ABI contracts | `greenways-ai/hodos` | Concrete Dev, 2D, 3D, audio and Greenways UI projections; Tahto support remains a storage-neutral connector |
+| `gw.studio.*` and Greenways Studio product profiles | Greenways Studio distribution | Branded creative-product semantics assembled above Hodos; these names do not belong in Hara core |
 | `tahto.*` and `:tahto/*` | `greenways-ai/tahto` after Gate A | Fabric implementation namespaces and application-neutral wire/storage records |
 | Historia archive and retrieval schemas | `greenways-ai/historia` | Tahto stores and routes them but does not interpret or reconcile them |
 | Hestia room, mandate, approval, document, and receipt schemas | `greenways-ai/hestia` | Tahto preserves signed records; Hestia defines their meaning |
 | Ignatius transaction, cell, block/state-root, reducer, and snapshot schemas | `greenways-ai/ignatius` | Tahto may replicate closures; Ignatius validates and executes them |
-| Hodos world ABI contracts | `greenways-ai/hodos` | Tahto support is an adapter implementation of storage-neutral contracts |
 | Spaces membership, invitation, mount, and publication schemas | `greenways-ai/gw-spaces` | Tahto supplies namespaces and transfer; Spaces defines collaboration semantics |
-| OS capability and grant vocabulary | `greenways-ai/greenways-os` | Tahto validates presented grants but cannot mint OS authority |
+| OS capability and grant vocabulary | `greenways-ai/greenways-os` | Tahto and Hodos may present requests; only the OS authority grants installed applications privileged access |
 
 Hara's legacy `tahto.*` compiler/runtime namespaces must be hard-moved to `lang.*`. No forwarding namespace is permitted. Hara may read legacy serialized `:tahto/*` compiler metadata for one bounded compatibility release, but new records write only `:lang/*`.
+
+## Workspace component boundary
+
+A `workspace.component/1` descriptor is inert Hara data. It may contain:
+
+```text
+trusted component ID
+contract version
+serializable component model
+declared semantic event IDs
+```
+
+It cannot contain a factory, executable module, JavaScript URL, arbitrary HTML,
+private browser handle, credential, private key, or installation instruction.
+Hodos resolves component IDs only against packaged factories registered by the
+host. Greenways OS separately decides whether the package is installed and what
+privileged capabilities it may receive.
 
 ## Tahto core records
 
@@ -52,7 +71,7 @@ timestamp
 signature
 ```
 
-It contains no Historia-, Hestia-, Worlds-, Spaces-, Hodos-, or Ignatius-specific field.
+It contains no Historia-, Hestia-, Worlds-, Spaces-, Hodos-, Workspace-, or Ignatius-specific field.
 
 The closed initial collection-mode vocabulary is:
 
@@ -108,7 +127,7 @@ It cannot introduce executable content into Greenways OS. Worker implementation 
 
 ## Remote-code prohibition
 
-Tahto descriptors and hosted catalogues must never cause Greenways OS to install or execute remote JavaScript, HTML, HAL, arbitrary Wasm, or native commands. Browser modules are reviewed Greenways OS code or verified HAL packages installed under OS authority.
+Tahto descriptors, Workspace descriptors and hosted catalogues must never cause Greenways OS to install or execute remote JavaScript, HTML, HAL, arbitrary Wasm, or native commands. Browser modules are reviewed Greenways OS code or verified HAL packages installed under OS authority.
 
 ## Device and grant boundary
 
@@ -120,4 +139,4 @@ A synchronized head and an immutable backup point are distinct records. A backup
 
 ## Compatibility aliases
 
-During one bounded migration release, Beacon discovery and health/status routes may return compatibility descriptors pointing to canonical Tahto endpoints. Aliases must not preserve Beacon's former role as a proxy that defines Space as the storage authority.
+During bounded migrations, compatibility names may route reviewed callers to a canonical namespace or package. Aliases must not preserve former ownership, install code, grant authority, or turn an application-specific implementation into a core protocol.

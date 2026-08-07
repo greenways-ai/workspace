@@ -15,6 +15,7 @@ DEFAULT_MATRIX = ROOT / "compatibility" / "tahto-0.1.json"
 REQUIRED_DOCUMENTS = (
     "ARCHITECTURE.md",
     "docs/adr/0001-greenways-os-over-tahto.md",
+    "docs/adr/0002-hara-workspace-hodos-projection-greenways-studio.md",
     "docs/architecture/repository-ownership.md",
     "docs/architecture/protocol-ownership.md",
 )
@@ -42,6 +43,9 @@ def load_matrix(path: Path) -> dict:
         raise ValueError("matrix has no release identifier")
     if not isinstance(matrix.get("pins"), list) or not matrix["pins"]:
         raise ValueError("matrix must contain at least one pin")
+    architecture = matrix.get("architecture")
+    if not isinstance(architecture, str) or not architecture:
+        raise ValueError("matrix has no architecture document")
     return matrix
 
 
@@ -111,16 +115,19 @@ def status(matrix: dict, *, check: bool, require_gates: bool) -> int:
     for pin in matrix["pins"]:
         ok, messages = inspect_pin(pin)
         marker = "OK" if ok else "DRIFT"
-        print(
-            f"  [{marker:5}] {pin['id']:<14} {pin['path']:<30} {pin['sha'][:12]}"
-        )
+        print(f"  [{marker:5}] {pin['id']:<18} {pin['path']:<30} {pin['sha'][:12]}")
         for message in messages:
             print(f"          {message}")
             errors.append(f"{pin.get('id', pin.get('path'))}: {message}")
 
+    documents = list(REQUIRED_DOCUMENTS)
+    architecture = matrix.get("architecture")
+    if architecture not in documents:
+        documents.append(architecture)
+
     print()
     print("Architecture documents:")
-    for relative in REQUIRED_DOCUMENTS:
+    for relative in documents:
         exists = (ROOT / relative).is_file()
         print(f"  [{'OK' if exists else 'MISS':5}] {relative}")
         if not exists:
@@ -132,10 +139,10 @@ def status(matrix: dict, *, check: bool, require_gates: bool) -> int:
     blocked: list[str] = []
     for gate in gates:
         gate_status = gate.get("status", "unknown")
-        print(f"  [{gate_status.upper():7}] {gate.get('id', '?')}: {gate.get('description', '')}")
+        print(f"  [{gate_status.upper():11}] {gate.get('id', '?')}: {gate.get('description', '')}")
         evidence = gate.get("evidence")
         if evidence:
-            print(f"            {evidence}")
+            print(f"                {evidence}")
         if gate_status != "passed":
             blocked.append(str(gate.get("id", "?")))
 
@@ -146,7 +153,7 @@ def status(matrix: dict, *, check: bool, require_gates: bool) -> int:
         for candidate in candidates:
             print(
                 "  "
-                f"{candidate.get('id', '?'):<12} "
+                f"{candidate.get('id', '?'):<20} "
                 f"{candidate.get('repository', '?')}#"
                 f"{candidate.get('pullRequest', '?')} "
                 f"({candidate.get('status', 'unknown')})"
