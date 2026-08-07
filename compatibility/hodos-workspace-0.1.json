@@ -22,8 +22,8 @@
       "id": "hara-ui",
       "repository": "hara-lang/hara-ui",
       "path": "technology/hara-ui",
-      "sha": "52789cac8c1cba24d641fc2f594d1457b88d8533",
-      "role": "product-neutral-browser-services-baseline"
+      "sha": "dd871a20e110f1775d3b6584d037fb48862ca7fc",
+      "role": "product-neutral-browser-services-and-addons"
     },
     {
       "id": "hara-playground",
@@ -36,8 +36,8 @@
       "id": "hodos",
       "repository": "greenways-ai/hodos",
       "path": "technology/hodos",
-      "sha": "b75688a9fc531ee94a3648c17ff1d3268b385589",
-      "role": "world-abi-and-projection-baseline"
+      "sha": "241f10521341ca75640fcae93eacbdccf442231a",
+      "role": "workspace-projection-and-world-abi-foundation"
     }
   ],
   "gates": [
@@ -45,31 +45,31 @@
       "id": "HW1",
       "description": "Hara owns a headless workspace.* state, event, view and effect contract.",
       "status": "in-progress",
-      "evidence": "Candidate hara-lang/hara#383 is not pinned until its HAL checks pass and it merges."
+      "evidence": "hara-lang/hara#383 merged the initial contract; hara-lang/hara#384 repairs required HAL mirrors and pre-existing conformance/release path regressions before the revision can be pinned."
     },
     {
       "id": "HW2",
       "description": "Hara web-* packages remain product-neutral and include a neutral add-on lifecycle.",
-      "status": "in-progress",
-      "evidence": "Candidate hara-lang/hara-ui#9 is not pinned until its package tests pass and it merges."
+      "status": "passed",
+      "evidence": "hara-lang/hara-ui#9 merged at dd871a20e110f1775d3b6584d037fb48862ca7fc with green package tests and is pinned."
     },
     {
       "id": "HW3",
       "description": "Hodos Web connects HAL-shaped Workspace component models to trusted packaged UI factories.",
-      "status": "in-progress",
-      "evidence": "Candidate greenways-ai/hodos#24 is not pinned until its full package, test and demo checks pass and it merges."
+      "status": "passed",
+      "evidence": "greenways-ai/hodos#24 merged at 241f10521341ca75640fcae93eacbdccf442231a after package, test, demo and documentation checks and is pinned."
     },
     {
       "id": "HW4",
       "description": "Playground mounts its Preview through Hodos Dev while retaining Hara preview isolation.",
-      "status": "blocked",
-      "evidence": "Tracked by hara-lang/hara-playground#28; no compatible implementation is pinned yet."
+      "status": "in-progress",
+      "evidence": "hara-lang/hara-playground#29 pins the merged Hodos foundation and has a green unit/build CI run; browser compatibility remains an unpinned candidate gate."
     },
     {
       "id": "HW5",
       "description": "Existing Hodos Worlds source, renderer and viewer contracts remain compatible during the broader reorganisation.",
       "status": "passed",
-      "evidence": "The pinned Hodos baseline keeps Core independent and retains replaceable source, renderer and viewer packages."
+      "evidence": "The pinned Hodos revision keeps Core independent and retains replaceable source, renderer and viewer packages."
     },
     {
       "id": "HW6",
@@ -92,21 +92,15 @@
   ],
   "candidates": [
     {
-      "id": "HARA-WORKSPACE-1",
+      "id": "HARA-WORKSPACE-REPAIR-1",
       "repository": "hara-lang/hara",
-      "pullRequest": 383,
+      "pullRequest": 384,
       "status": "draft-not-pinned"
     },
     {
-      "id": "HARA-UI-ADDONS-1",
-      "repository": "hara-lang/hara-ui",
-      "pullRequest": 9,
-      "status": "draft-not-pinned"
-    },
-    {
-      "id": "HODOS-WORKSPACE-1",
-      "repository": "greenways-ai/hodos",
-      "pullRequest": 24,
+      "id": "HARA-PLAYGROUND-HODOS-PREVIEW-1",
+      "repository": "hara-lang/hara-playground",
+      "pullRequest": 29,
       "status": "draft-not-pinned"
     }
   ]
