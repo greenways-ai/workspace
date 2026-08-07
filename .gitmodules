@@ -1,6 +1,9 @@
 [submodule "technology/hara"]
 	path = technology/hara
 	url = git@github.com:hara-lang/hara.git
+[submodule "technology/hara-ui"]
+	path = technology/hara-ui
+	url = git@github.com:hara-lang/hara-ui.git
 [submodule "technology/hara-archive"]
 	path = technology/hara-archive
 	url = git@github.com:hara-lang/hara-archive.git
@@ -19,6 +22,9 @@
 [submodule "application/greenways-os"]
 	path = application/greenways-os
 	url = git@github.com:greenways-ai/greenways-os.git
+[submodule "application/hara-playground"]
+	path = application/hara-playground
+	url = git@github.com:hara-lang/hara-playground.git
 [submodule "infra/greenways-homebrew-tap"]
 	path = infra/greenways-homebrew-tap
 	url = https://github.com/hara-lang/homebrew-tap.git

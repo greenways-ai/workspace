@@ -1,0 +1,113 @@
+{
+  "protocol": "greenways.release-train/1",
+  "release": "hodos-workspace-0.1",
+  "status": "foundation-in-progress",
+  "architecture": "docs/adr/0002-hara-workspace-hodos-projection-greenways-studio.md",
+  "pins": [
+    {
+      "id": "greenways-os",
+      "repository": "greenways-ai/greenways-os",
+      "path": "application/greenways-os",
+      "sha": "3fe79844add2cd2131c4c5ee808b847b3fd694a9",
+      "role": "installation-consent-keyring-and-capability-authority"
+    },
+    {
+      "id": "hara",
+      "repository": "hara-lang/hara",
+      "path": "technology/hara",
+      "sha": "568ef7d096be7e780874db7a9745d48e06e3d4e9",
+      "role": "language-runtime-and-workspace-semantics-baseline"
+    },
+    {
+      "id": "hara-ui",
+      "repository": "hara-lang/hara-ui",
+      "path": "technology/hara-ui",
+      "sha": "52789cac8c1cba24d641fc2f594d1457b88d8533",
+      "role": "product-neutral-browser-services-baseline"
+    },
+    {
+      "id": "hara-playground",
+      "repository": "hara-lang/hara-playground",
+      "path": "application/hara-playground",
+      "sha": "61ea87cad442e0910ac79ae022c4db4cca7ad5af",
+      "role": "reference-dev-workspace-consumer-baseline"
+    },
+    {
+      "id": "hodos",
+      "repository": "greenways-ai/hodos",
+      "path": "technology/hodos",
+      "sha": "b75688a9fc531ee94a3648c17ff1d3268b385589",
+      "role": "world-abi-and-projection-baseline"
+    }
+  ],
+  "gates": [
+    {
+      "id": "HW1",
+      "description": "Hara owns a headless workspace.* state, event, view and effect contract.",
+      "status": "in-progress",
+      "evidence": "Candidate hara-lang/hara#383 is not pinned until its HAL checks pass and it merges."
+    },
+    {
+      "id": "HW2",
+      "description": "Hara web-* packages remain product-neutral and include a neutral add-on lifecycle.",
+      "status": "in-progress",
+      "evidence": "Candidate hara-lang/hara-ui#9 is not pinned until its package tests pass and it merges."
+    },
+    {
+      "id": "HW3",
+      "description": "Hodos Web connects HAL-shaped Workspace component models to trusted packaged UI factories.",
+      "status": "in-progress",
+      "evidence": "Candidate greenways-ai/hodos#24 is not pinned until its full package, test and demo checks pass and it merges."
+    },
+    {
+      "id": "HW4",
+      "description": "Playground mounts its Preview through Hodos Dev while retaining Hara preview isolation.",
+      "status": "blocked",
+      "evidence": "Tracked by hara-lang/hara-playground#28; no compatible implementation is pinned yet."
+    },
+    {
+      "id": "HW5",
+      "description": "Existing Hodos Worlds source, renderer and viewer contracts remain compatible during the broader reorganisation.",
+      "status": "passed",
+      "evidence": "The pinned Hodos baseline keeps Core independent and retains replaceable source, renderer and viewer packages."
+    },
+    {
+      "id": "HW6",
+      "description": "Greenways OS retains installation, keyring, consent and privileged capability authority outside Hodos.",
+      "status": "passed",
+      "evidence": "The pinned Greenways OS baseline verifies installed app identity and keeps raw key material out of application surfaces."
+    },
+    {
+      "id": "HW7",
+      "description": "A Hodos keyring connector requests typed operations without receiving credentials or private keys.",
+      "status": "blocked",
+      "evidence": "Tracked by greenways-ai/hodos#23 and greenways-ai/greenways-os#24."
+    },
+    {
+      "id": "HW8",
+      "description": "Supersonic is an optional Hodos Audio connector rather than an inseparable neutral Hara runtime feature.",
+      "status": "blocked",
+      "evidence": "Tracked by greenways-ai/hodos#22 and the later Hara runtime profile split."
+    }
+  ],
+  "candidates": [
+    {
+      "id": "HARA-WORKSPACE-1",
+      "repository": "hara-lang/hara",
+      "pullRequest": 383,
+      "status": "draft-not-pinned"
+    },
+    {
+      "id": "HARA-UI-ADDONS-1",
+      "repository": "hara-lang/hara-ui",
+      "pullRequest": 9,
+      "status": "draft-not-pinned"
+    },
+    {
+      "id": "HODOS-WORKSPACE-1",
+      "repository": "greenways-ai/hodos",
+      "pullRequest": 24,
+      "status": "draft-not-pinned"
+    }
+  ]
+}
