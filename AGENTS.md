@@ -14,7 +14,7 @@ worked in as ordinary clones on the `main` branch, tracking `origin/main`.
   (language runtime and libraries), `packaging/` (release and distribution
   scripts), and remaining support directories; its former `archive`,
   `extensions`, `specs` and `website` submodules are now external siblings.
-- `website/` — public sites (greenways-oss, greenways-www, hara-www, hara-code,
+- `website/` — public sites (greenways-oss, greenways-www, hara-www, hara-docs,
   hara-specs, hara-benchmarks, hara-visual-language, hara-world)
 - `extensions/` — editor and browser apps for hara (hara-emacs, hara-lsp,
   hara-vscode). `hara-chrome` has been folded into
@@ -24,14 +24,14 @@ A group subdir with no `.git` is a placeholder for a project not yet cloned —
 report it, never treat it as an error. Some children may lack an `origin`
 remote; skip them in network operations rather than failing.
 
-`website/hara-code/vendor/hara-ui` is a nested submodule registered inside
-`hara-code`, not the super-repo — initialize it from within `hara-code`.
+`website/hara-docs/vendor/hara-ui` is a nested submodule registered inside
+`hara-docs`, not the super-repo — initialize it from within `hara-docs`.
 
 The following local integration symlinks are gitignored convenience links:
 
 - `technology/hara/hara-specs-registry` → `technology/hara-specs-registry`
   (expected by `technology/hara` source paths and tests).
-- `website/docs` → `website/hara-code` (expected by
+- `website/docs` → `website/hara-docs` (expected by
   `website/hara-www/scripts/prepare-docs.mjs`).
 
 ## Repo management tooling

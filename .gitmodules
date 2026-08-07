@@ -7,8 +7,8 @@
 [submodule "extensions"]
 	path = extensions
 	url = git@github.com:hara-lang/hara-extensions.git
-[submodule "website/hara-code"]
-	path = website/hara-code
+[submodule "website/hara-docs"]
+	path = website/hara-docs
 	url = git@github.com:hara-lang/hara-docs.git
 [submodule "technology/ignatius"]
 	path = technology/ignatius
