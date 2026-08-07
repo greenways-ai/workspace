@@ -11,7 +11,7 @@ status:  Gate A passed; Gate B in progress
 
 The Hara naming collision is now fully cleared. PR #371 moved live compiler and runtime namespaces from `tahto.*` to `lang.*`; PR #372 moved serialized language metadata from `:tahto…/*` to `:lang…/*`; PR #373 repaired the post-migration runtime paths. Hara is pinned after all three changes.
 
-Hoplite's bounded-streaming and signed-device application contracts are also merged, and Tahto main now contains the Hara object-vault kernel. Gate B remains open for immutable signed history, native byte transport, nonce/replay enforcement and the two-device conformance scenario.
+Hoplite's bounded-streaming and signed-device application contracts are merged, and Tahto main contains the Hara object-vault kernel. Gate B remains open for signed history, native runtime/Nginx transport, durable metadata, nonce/replay enforcement and the two-device conformance scenario.
 
 ## Pinned baseline
 
@@ -58,13 +58,16 @@ Merged foundations:
 | HOPLITE-1 | `greenways-ai/hoplite#24` | bounded request/response streaming, opaque native handles and signed-device application contracts |
 | TAHTO-3 | `greenways-ai/tahto#5` | Hara object lifecycle, quotas, manifests, closure, roots and dry-run garbage collection |
 
-The active unpinned candidate is:
+Active unpinned candidates:
 
 | ID | Pull request | State |
 |---|---|---|
 | TAHTO-4 | `greenways-ai/tahto#6` | draft immutable commits, signed CAS heads, backups, restore planning and receipt evidence |
+| HOPLITE-2 | `greenways-ai/hoplite#30` | draft C/Rust native request and response body callback bridge |
 
-Gate B still requires native Hoplite/Nginx object transport, durable metadata transactions, installed signature-provider verification with nonce/replay enforcement, device enrolment and a two-device end-to-end fixture. Those revisions will be pinned only after their repository-local PRs merge.
+HOPLITE-2 establishes callback ownership, bounded reads, seekable response sources, close semantics and a public C header. It does not yet register those descriptors in `HopliteRequestV2` or wire Nginx body backpressure.
+
+Gate B still requires runtime/Nginx descriptor registration, durable metadata transactions, installed signature-provider verification with nonce/replay enforcement, device enrolment and a two-device end-to-end fixture. Those revisions will be pinned only after their repository-local PRs merge.
 
 ## Workspace commands
 
