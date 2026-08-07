@@ -64,3 +64,6 @@
 [submodule "website/hara-specs"]
 	path = website/hara-specs
 	url = git@github.com:hara-lang/hara-specs.git
+[submodule "website/hara-world"]
+	path = website/hara-world
+	url = git@github.com:hara-lang/hara-world.git
