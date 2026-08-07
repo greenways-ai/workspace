@@ -34,6 +34,9 @@
 [submodule "technology/hoplite"]
 	path = technology/hoplite
 	url = https://github.com/greenways-ai/hoplite.git
+[submodule "technology/tahto"]
+	path = technology/tahto
+	url = https://github.com/greenways-ai/tahto.git
 [submodule "website/greenways-oss"]
 	path = website/greenways-oss
 	url = git@github.com:greenways-ai/greenways-ai.github.io.git
