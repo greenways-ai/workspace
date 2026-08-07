@@ -29,7 +29,7 @@
       "id": "tahto",
       "repository": "greenways-ai/tahto",
       "path": "technology/tahto",
-      "sha": "9536f6b7a74801477fa24aa9993ccc7f8cbfc3c1",
+      "sha": "42eaa6d91566a97f719f54d3300e22161b28d764",
       "role": "state-fabric"
     },
     {
@@ -84,13 +84,13 @@
       "id": "A4",
       "description": "greenways-ai/tahto exists with reviewable repository history.",
       "status": "passed",
-      "evidence": "Tahto is pinned at 9536f6b7a74801477fa24aa9993ccc7f8cbfc3c1, containing the object vault, immutable history, CAS heads, backup/restore plans, device identity, replay protection, incremental sync planning, inert service registrations and durable job transitions."
+      "evidence": "Tahto is pinned at 42eaa6d91566a97f719f54d3300e22161b28d764, containing object custody, immutable history, backup/restore plans, device identity, replay protection, incremental sync planning, inert service registrations, durable jobs and the TAHTO-7 atomic metadata transaction plan."
     },
     {
       "id": "B1",
       "description": "Two devices exchange only missing objects, preserve signed divergent heads, create and restore a complete backup, and reject tampering, stale sequences and replayed nonces.",
       "status": "blocked",
-      "evidence": "The pinned Hoplite revision includes bounded request ABI V3, ordinary-source Nginx request-body binding and corrected native response ownership through request cleanup. The pinned Tahto revision includes object closure, immutable history, backup/restore planning, device enrolment and revocation, durable nonce/idempotency evidence, bounded incremental-sync plans and the TAHTO-6 service/job kernel. Atomic durable metadata transactions, an installed signature/freshness provider, provider-backed replay retention, native object-transfer execution, native response-source streaming, OS pairing/revocation UX and the complete two-device fixture remain outstanding."
+      "evidence": "The pinned Hoplite revision includes bounded request ABI V3, ordinary-source Nginx request-body binding and corrected native response ownership through request cleanup. The pinned Tahto revision includes the TAHTO-3 through TAHTO-7 Hara state-kernel line and 97 passing conformance tests, including deterministic atomic composition of nonce, idempotency, domain mutation, result identity and metadata revision. A concrete compare-and-swap metadata provider, installed signature/freshness/result-verification providers, provider-backed replay retention, native object transfer and response-source streaming, OS pairing/revocation UX and the complete two-device fixture remain outstanding."
     }
   ],
   "candidates": []
