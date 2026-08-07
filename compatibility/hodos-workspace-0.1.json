@@ -1,7 +1,7 @@
 {
   "protocol": "greenways.release-train/1",
   "release": "hodos-workspace-0.1",
-  "status": "workspace-edn-shell-passed-next-slice-in-progress",
+  "status": "workspace-manifest-defaults-passed-next-slice-in-progress",
   "architecture": "docs/adr/0002-hara-workspace-hodos-projection-greenways-studio.md",
   "pins": [
     {
@@ -29,7 +29,7 @@
       "id": "hara-playground",
       "repository": "hara-lang/hara-playground",
       "path": "application/hara-playground",
-      "sha": "8e5d8151c81d518e8465eb1b8da44b8c47204a86",
+      "sha": "b75887a6f5192c9b104172ff107ddc9b54c1be0c",
       "role": "reference-workspace-edn-driven-hodos-shell-and-dev-component-consumer"
     },
     {
@@ -63,7 +63,7 @@
       "id": "HW4",
       "description": "Playground is the reference workspace.edn-driven Hodos shell consumer while retaining Hara runtime and application policy authority.",
       "status": "passed",
-      "evidence": "hara-lang/hara-playground#29-#38 progressively mounted Preview, Editor, REPL, Value Inspector, Problems, Explorer and Catalog through Hodos. #39 replaces the active fixed desktop/mobile layout controller with the recursive Hodos shell, evaluates the actual workspace.edn through Hara, projects retained manifest values into bounded serializable Workspace views, maps product roles onto the existing project/editor/output authorities, preserves distinct compact Files, Code, Canvas, Audio, REPL and Learn surfaces, and keeps output tabs, Audio, focus, browser storage and local presentation preferences in Playground. The exact merged revision passed ordinary CI and the complete Chromium/Supersonic workflow using the checksum-verified Hara Studio runtime v0.1.4 asset with SHA-256 dfa0db00ac455ad720cc50fc6a972e466e0c32a3b3fbe283197f084abf8945be."
+      "evidence": "hara-lang/hara-playground#29-#38 progressively mounted Preview, Editor, REPL, Value Inspector, Problems, Explorer and Catalog through Hodos. #39 replaced the active fixed desktop/mobile layout controller with the recursive Hodos shell, evaluated workspace.edn through Hara and preserved Playground product authority. #40 removed the inactive competing layout model/controller, made every featured sample a complete explicit workspace.edn project, and documented the delivered Hara → Playground → Hodos authority chain. The exact #40 revision passed all 203 Node tests, architecture/check scripts, production build, checksum-verified runtime installation, isolated Chromium Audio validation and the complete Supersonic manifest/browser workflow."
     },
     {
       "id": "HW5",
