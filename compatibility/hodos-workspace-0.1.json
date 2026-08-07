@@ -1,7 +1,7 @@
 {
   "protocol": "greenways.release-train/1",
   "release": "hodos-workspace-0.1",
-  "status": "workspace-manifest-defaults-passed-next-slice-in-progress",
+  "status": "hodos-2d-document-host-passed-consumer-in-progress",
   "architecture": "docs/adr/0002-hara-workspace-hodos-projection-greenways-studio.md",
   "pins": [
     {
@@ -22,8 +22,8 @@
       "id": "hara-ui",
       "repository": "hara-lang/hara-ui",
       "path": "technology/hara-ui",
-      "sha": "dd871a20e110f1775d3b6584d037fb48862ca7fc",
-      "role": "product-neutral-browser-services-and-addons"
+      "sha": "71dbf0c0a92d168b1f291fef5f38b71fe14338df",
+      "role": "product-neutral-browser-services-addons-and-document-compatibility"
     },
     {
       "id": "hara-playground",
@@ -36,8 +36,8 @@
       "id": "hodos",
       "repository": "greenways-ai/hodos",
       "path": "technology/hodos",
-      "sha": "3128fd9bf03c203c5a35f409b94e59553bf33aa3",
-      "role": "recursive-responsive-workspace-projection-dev-components-and-world-abi"
+      "sha": "b5e427061d92e015cd3882b03b1d6438630fa466",
+      "role": "recursive-responsive-workspace-dev-and-2d-document-projection-world-abi"
     }
   ],
   "gates": [
@@ -49,27 +49,27 @@
     },
     {
       "id": "HW2",
-      "description": "Hara web-* packages remain product-neutral and include a neutral add-on lifecycle.",
+      "description": "Hara web-* packages remain product-neutral, include a neutral add-on lifecycle and expose document migration compatibility without depending on Hodos.",
       "status": "passed",
-      "evidence": "hara-lang/hara-ui#9 merged at dd871a20e110f1775d3b6584d037fb48862ca7fc with green package tests and is pinned."
+      "evidence": "hara-lang/hara-ui#9 established the neutral web service and add-on packages. #10 preserves the existing greenways.rich-text/2, editor and Hestia entry points as compatibility exports, adds an inert hodos.2d/document migration descriptor, documents the consumer path and verifies that Hara UI has no static or dynamic Hodos import. The merged Hara UI revision is pinned."
     },
     {
       "id": "HW3",
-      "description": "Hodos Web connects HAL-shaped Workspace models to trusted packaged UI factories and responsive shell mechanics.",
+      "description": "Hodos connects HAL-shaped Workspace models to trusted packaged UI factories, responsive shell mechanics and reusable 2D document projection.",
       "status": "passed",
-      "evidence": "greenways-ai/hodos#24 established trusted component and area hosts, #25 added prepared Preview documents, #26 added Editor, #27 REPL, #28 Value Inspector, #29 Problems, #30 Explorer and #31 Catalog. #32 adds the recursive responsive Workspace shell for area, split and empty nodes, accessible splitter geometry, compact surfaces, trusted component mounting and adopted-root restoration. Hara remains the source of manifest and Workspace semantics. The merged Hodos revision is pinned."
+      "evidence": "greenways-ai/hodos#24-#31 established the trusted Dev component line and #32 added the recursive responsive Workspace shell. #33 added validated hodos.2d/document and hodos.2d/graph models. #34 adds the product-neutral safe Document DOM host, the explicit legacy Hara document projector and deterministic artefact-renderer/listener lifecycle. It also repairs the root test command so packages/2d and packages/2d-ui suites are always executed. The exact merged Hodos revision passed the complete package, test, demo and site gate and is pinned."
     },
     {
       "id": "HW4",
       "description": "Playground is the reference workspace.edn-driven Hodos shell consumer while retaining Hara runtime and application policy authority.",
       "status": "passed",
-      "evidence": "hara-lang/hara-playground#29-#38 progressively mounted Preview, Editor, REPL, Value Inspector, Problems, Explorer and Catalog through Hodos. #39 replaced the active fixed desktop/mobile layout controller with the recursive Hodos shell, evaluated workspace.edn through Hara and preserved Playground product authority. #40 removed the inactive competing layout model/controller, made every featured sample a complete explicit workspace.edn project, and documented the delivered Hara → Playground → Hodos authority chain. The exact #40 revision passed all 203 Node tests, architecture/check scripts, production build, checksum-verified runtime installation, isolated Chromium Audio validation and the complete Supersonic manifest/browser workflow."
+      "evidence": "hara-lang/hara-playground#29-#38 progressively mounted Preview, Editor, REPL, Value Inspector, Problems, Explorer and Catalog through Hodos. #39 replaced the active fixed desktop/mobile layout controller with the recursive Hodos shell, evaluated workspace.edn through Hara and preserved Playground product authority. #40 removed the inactive competing layout model/controller, made every featured sample a complete explicit workspace.edn project, and documented the delivered Hara → Playground → Hodos authority chain. The exact #40 revision passed all 203 Node tests, architecture/check scripts, production build, checksum-verified runtime installation, isolated Chromium Audio validation and the complete Supersonic manifest/browser workflow. A first hodos.2d/document consumer remains the next bounded slice."
     },
     {
       "id": "HW5",
       "description": "Existing Hodos Worlds source, renderer and viewer contracts remain compatible during the broader reorganisation.",
       "status": "passed",
-      "evidence": "The pinned Hodos revision keeps Core independent and retains replaceable source, renderer and viewer packages while adding Dev and Workspace shell components above them; the complete Hodos package, Worlds, demo and site gates passed."
+      "evidence": "The pinned Hodos revision keeps Core independent and retains replaceable source, renderer and viewer packages while adding Dev, Workspace shell and 2D components above them. The complete Hodos package, Worlds, demo and site gates passed after the Document DOM host and 2D test-gate repair."
     },
     {
       "id": "HW6",
