@@ -17,14 +17,16 @@ HARA-1 is complete: `hara-lang/hara#371` moved the live compiler/runtime namespa
 |---|---|---|---|---|
 | OS | `greenways-ai/greenways-os` | `application/greenways-os` | `3fe79844add2cd2131c4c5ee808b847b3fd694a9` | authority and suite host |
 | Language | `hara-lang/hara` | `technology/hara` | `568ef7d096be7e780874db7a9745d48e06e3d4e9` | language/runtime after HARA-1 |
-| Server | `greenways-ai/hoplite` | `technology/hoplite` | `404d1c96bb759b96b774f7e5583bdbedc97d3d9f` | application server |
+| Server | `greenways-ai/hoplite` | `technology/hoplite` | `5c06c0cac6f8f26f407d92fb60f4ea5427a8f360` | application server |
 | Fabric | `greenways-ai/tahto` | `technology/tahto` | `0f709f51db834736d1ae916ffdc899a20955254c` | state fabric protocols |
-| Golden vertical | `greenways-ai/historia` | `technology/historia` | `a1394eea653b6d0e1393647e0ec66a72e3ffdbc6` | memory application |
+| Golden vertical | `greenways-ai/historia` | `technology/historia` | `3b38cdc36789d3a1c6323ddb78b0b0b399b82cab` | memory application |
 | Canonical execution | `greenways-ai/ignatius` | `technology/ignatius` | `acef9d008e5d3e0d7303d797dbcd55946104f5d6` | canonical chain |
-| Authority application | `greenways-ai/hestia` | `technology/hestia` | `064b26de8ea7c3e93f1d9947618c8ee39eec1500` | rooms, mandates and receipts |
-| World ABI | `greenways-ai/hodos` | `technology/hodos` | `33d33f88c23d55dd7429242dec2110c5c333e5bb` | storage-neutral world contracts |
+| Authority application | `greenways-ai/hestia` | `technology/hestia` | `a9f3fd335fd9cc711b1ea3675d8282def50699fd` | rooms, mandates and receipts |
+| World ABI | `greenways-ai/hodos` | `technology/hodos` | `b75688a9fc531ee94a3648c17ff1d3268b385589` | storage-neutral world contracts |
 
 The pin records a reproducible pre-release baseline. It does not imply that every repository has implemented its future Tahto integration.
+
+On 7 August 2026, the delivery-hardening train advanced the Hestia, Hodos, Hoplite and Historia pins after their social-preview fixes merged and deployed. The workspace also advanced the `greenways-www` and `greenways-oss` website gitlinks. This was a presentation and deployment-contract update only; it did not change any Tahto protocol boundary or gate state.
 
 ## Gate A
 

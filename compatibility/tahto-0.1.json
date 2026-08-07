@@ -22,7 +22,7 @@
       "id": "hoplite",
       "repository": "greenways-ai/hoplite",
       "path": "technology/hoplite",
-      "sha": "404d1c96bb759b96b774f7e5583bdbedc97d3d9f",
+      "sha": "5c06c0cac6f8f26f407d92fb60f4ea5427a8f360",
       "role": "application-server"
     },
     {
@@ -36,7 +36,7 @@
       "id": "historia",
       "repository": "greenways-ai/historia",
       "path": "technology/historia",
-      "sha": "a1394eea653b6d0e1393647e0ec66a72e3ffdbc6",
+      "sha": "3b38cdc36789d3a1c6323ddb78b0b0b399b82cab",
       "role": "memory-application"
     },
     {
@@ -50,14 +50,14 @@
       "id": "hestia",
       "repository": "greenways-ai/hestia",
       "path": "technology/hestia",
-      "sha": "064b26de8ea7c3e93f1d9947618c8ee39eec1500",
+      "sha": "a9f3fd335fd9cc711b1ea3675d8282def50699fd",
       "role": "authority-application"
     },
     {
       "id": "hodos",
       "repository": "greenways-ai/hodos",
       "path": "technology/hodos",
-      "sha": "33d33f88c23d55dd7429242dec2110c5c333e5bb",
+      "sha": "b75688a9fc531ee94a3648c17ff1d3268b385589",
       "role": "world-abi"
     }
   ],
