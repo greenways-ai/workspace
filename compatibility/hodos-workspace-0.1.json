@@ -1,7 +1,7 @@
 {
   "protocol": "greenways.release-train/1",
   "release": "hodos-workspace-0.1",
-  "status": "foundation-passed-next-batch-in-progress",
+  "status": "dev-editor-compatibility-in-progress",
   "architecture": "docs/adr/0002-hara-workspace-hodos-projection-greenways-studio.md",
   "pins": [
     {
@@ -29,8 +29,8 @@
       "id": "hara-playground",
       "repository": "hara-lang/hara-playground",
       "path": "application/hara-playground",
-      "sha": "e4263dd42dd4816c3512e69c27128df0e2b4a619",
-      "role": "reference-hodos-dev-workspace-consumer"
+      "sha": "a897d89c60c50c3ab8d7effa691cfdff174fca78",
+      "role": "reference-hodos-dev-preview-and-editor-consumer"
     },
     {
       "id": "hodos",
@@ -57,13 +57,13 @@
       "id": "HW3",
       "description": "Hodos Web connects HAL-shaped Workspace component models to trusted packaged UI factories.",
       "status": "passed",
-      "evidence": "greenways-ai/hodos#24 established the trusted component and area hosts, #25 added prepared Preview documents, and #26 began the Editor component boundary. The latest merged revision is pinned."
+      "evidence": "greenways-ai/hodos#24 established the trusted component and area hosts, #25 added prepared Preview documents, and #26 added the Editor component boundary. The merged Hodos revision is pinned."
     },
     {
       "id": "HW4",
-      "description": "Playground mounts its Preview through Hodos Dev while retaining Hara preview isolation.",
+      "description": "Playground mounts reusable Dev components through Hodos while retaining Hara browser-service boundaries.",
       "status": "passed",
-      "evidence": "hara-lang/hara-playground#29 mounted Preview through Hodos Dev. #30 pinned the merged Hodos adapter, scoped audio observation away from component-internal DOM writes, and passed both Node CI and the Chromium/Supersonic smoke."
+      "evidence": "hara-lang/hara-playground#29 and #30 mounted and validated Preview. #31 mounted the existing editor as a Hodos Dev component, retained Paredit/completion/InstaREPL compatibility, and passed Node CI plus Chromium/Supersonic smoke."
     },
     {
       "id": "HW5",
