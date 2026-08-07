@@ -1,7 +1,7 @@
 {
   "protocol": "greenways.release-train/1",
   "release": "hodos-workspace-0.1",
-  "status": "dev-repl-authority-passed-next-slice-in-progress",
+  "status": "dev-value-inspector-passed-next-slice-in-progress",
   "architecture": "docs/adr/0002-hara-workspace-hodos-projection-greenways-studio.md",
   "pins": [
     {
@@ -29,15 +29,15 @@
       "id": "hara-playground",
       "repository": "hara-lang/hara-playground",
       "path": "application/hara-playground",
-      "sha": "74e172f4e878d7d4b1d42976bfe5780678bf1fbd",
-      "role": "reference-hodos-dev-preview-editor-and-repl-consumer"
+      "sha": "c03d2f7608fd127e2a7e6a378bd5540a921d0faa",
+      "role": "reference-hodos-dev-preview-editor-repl-and-value-inspector-consumer"
     },
     {
       "id": "hodos",
       "repository": "greenways-ai/hodos",
       "path": "technology/hodos",
-      "sha": "df1c76af82090558980dc24a4ca70f3f93918f7f",
-      "role": "workspace-projection-dev-preview-editor-repl-and-world-abi"
+      "sha": "e14b9acf1d7215d9ab963d10593e87dd8594e0e9",
+      "role": "workspace-projection-dev-preview-editor-repl-value-inspector-and-world-abi"
     }
   ],
   "gates": [
@@ -57,13 +57,13 @@
       "id": "HW3",
       "description": "Hodos Web connects HAL-shaped Workspace component models to trusted packaged UI factories.",
       "status": "passed",
-      "evidence": "greenways-ai/hodos#24 established trusted component and area hosts, #25 added prepared Preview documents, #26 added the Editor boundary, and #27 added the REPL boundary. The merged Hodos revision is pinned."
+      "evidence": "greenways-ai/hodos#24 established trusted component and area hosts, #25 added prepared Preview documents, #26 added the Editor boundary, #27 added the REPL boundary, and #28 added retained-value inspection. The merged Hodos revision is pinned."
     },
     {
       "id": "HW4",
       "description": "Playground mounts reusable Dev components through Hodos while retaining Hara browser-service and runtime authority.",
       "status": "passed",
-      "evidence": "hara-lang/hara-playground#29-#31 mounted Preview and Editor through Hodos. #32 made Editor source and selection events authoritative and removed the Preview compatibility update path. #33 made REPL input, submission, clear, history and cancel events authoritative. The merged Playground revision passed ordinary CI and the complete Chromium/Supersonic workflow."
+      "evidence": "hara-lang/hara-playground#29-#31 mounted Preview and Editor through Hodos. #32 made Editor source and selection events authoritative and repaired direct Preview updates. #33 made REPL input, submission, clear, history and cancel events authoritative. #35 projects retained runtime values through the Hodos Value Inspector while leaving evaluation, retention and inspection transport in Hara. The merged Playground revision passed ordinary CI and the complete Chromium/Supersonic workflow."
     },
     {
       "id": "HW5",
