@@ -1,7 +1,7 @@
 {
   "protocol": "greenways.release-train/1",
   "release": "hodos-workspace-0.1",
-  "status": "dev-editor-compatibility-in-progress",
+  "status": "dev-repl-authority-passed-next-slice-in-progress",
   "architecture": "docs/adr/0002-hara-workspace-hodos-projection-greenways-studio.md",
   "pins": [
     {
@@ -29,15 +29,15 @@
       "id": "hara-playground",
       "repository": "hara-lang/hara-playground",
       "path": "application/hara-playground",
-      "sha": "a897d89c60c50c3ab8d7effa691cfdff174fca78",
-      "role": "reference-hodos-dev-preview-and-editor-consumer"
+      "sha": "74e172f4e878d7d4b1d42976bfe5780678bf1fbd",
+      "role": "reference-hodos-dev-preview-editor-and-repl-consumer"
     },
     {
       "id": "hodos",
       "repository": "greenways-ai/hodos",
       "path": "technology/hodos",
-      "sha": "4bf67b097da71947d12b902720296bf2a60be8bb",
-      "role": "workspace-projection-dev-editor-and-world-abi"
+      "sha": "df1c76af82090558980dc24a4ca70f3f93918f7f",
+      "role": "workspace-projection-dev-preview-editor-repl-and-world-abi"
     }
   ],
   "gates": [
@@ -57,13 +57,13 @@
       "id": "HW3",
       "description": "Hodos Web connects HAL-shaped Workspace component models to trusted packaged UI factories.",
       "status": "passed",
-      "evidence": "greenways-ai/hodos#24 established the trusted component and area hosts, #25 added prepared Preview documents, and #26 added the Editor component boundary. The merged Hodos revision is pinned."
+      "evidence": "greenways-ai/hodos#24 established trusted component and area hosts, #25 added prepared Preview documents, #26 added the Editor boundary, and #27 added the REPL boundary. The merged Hodos revision is pinned."
     },
     {
       "id": "HW4",
-      "description": "Playground mounts reusable Dev components through Hodos while retaining Hara browser-service boundaries.",
+      "description": "Playground mounts reusable Dev components through Hodos while retaining Hara browser-service and runtime authority.",
       "status": "passed",
-      "evidence": "hara-lang/hara-playground#29 and #30 mounted and validated Preview. #31 mounted the existing editor as a Hodos Dev component, retained Paredit/completion/InstaREPL compatibility, and passed Node CI plus Chromium/Supersonic smoke."
+      "evidence": "hara-lang/hara-playground#29-#31 mounted Preview and Editor through Hodos. #32 made Editor source and selection events authoritative and removed the Preview compatibility update path. #33 made REPL input, submission, clear, history and cancel events authoritative. The merged Playground revision passed ordinary CI and the complete Chromium/Supersonic workflow."
     },
     {
       "id": "HW5",
