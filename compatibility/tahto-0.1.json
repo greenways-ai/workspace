@@ -22,14 +22,14 @@
       "id": "hoplite",
       "repository": "greenways-ai/hoplite",
       "path": "technology/hoplite",
-      "sha": "3dae9e4ad30a3e1fc73ce42bbeb99eccb7e96fba",
+      "sha": "bd882b7c3a40135a0a780026861ade2e8da43c9b",
       "role": "application-server"
     },
     {
       "id": "tahto",
       "repository": "greenways-ai/tahto",
       "path": "technology/tahto",
-      "sha": "f2ab5955b4645ebd170838578d5508bb1262ff8b",
+      "sha": "9536f6b7a74801477fa24aa9993ccc7f8cbfc3c1",
       "role": "state-fabric"
     },
     {
@@ -84,21 +84,14 @@
       "id": "A4",
       "description": "greenways-ai/tahto exists with reviewable repository history.",
       "status": "passed",
-      "evidence": "Tahto is pinned at f2ab5955b4645ebd170838578d5508bb1262ff8b, containing the object vault, immutable history, CAS heads, backup/restore plans, device identity, replay protection and incremental sync planning."
+      "evidence": "Tahto is pinned at 9536f6b7a74801477fa24aa9993ccc7f8cbfc3c1, containing the object vault, immutable history, CAS heads, backup/restore plans, device identity, replay protection, incremental sync planning, inert service registrations and durable job transitions."
     },
     {
       "id": "B1",
       "description": "Two devices exchange only missing objects, preserve signed divergent heads, create and restore a complete backup, and reject tampering, stale sequences and replayed nonces.",
       "status": "blocked",
-      "evidence": "The pinned Hoplite revision includes bounded request ABI V3 and Nginx request-body binding. The pinned Tahto revision includes object closure, immutable history, backup/restore planning, device enrolment and revocation, durable nonce/idempotency evidence and bounded incremental-sync plans. Atomic durable metadata transactions, an installed signature/freshness provider, object-transfer execution, replay retention compaction and the complete two-device fixture remain outstanding."
+      "evidence": "The pinned Hoplite revision includes bounded request ABI V3, ordinary-source Nginx request-body binding and corrected native response ownership through request cleanup. The pinned Tahto revision includes object closure, immutable history, backup/restore planning, device enrolment and revocation, durable nonce/idempotency evidence, bounded incremental-sync plans and the TAHTO-6 service/job kernel. Atomic durable metadata transactions, an installed signature/freshness provider, provider-backed replay retention, native object-transfer execution, native response-source streaming, OS pairing/revocation UX and the complete two-device fixture remain outstanding."
     }
   ],
-  "candidates": [
-    {
-      "id": "TAHTO-6",
-      "repository": "greenways-ai/tahto",
-      "pullRequest": 9,
-      "status": "draft-not-pinned"
-    }
-  ]
+  "candidates": []
 }
