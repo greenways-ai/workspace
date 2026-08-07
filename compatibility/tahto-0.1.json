@@ -1,7 +1,7 @@
 {
   "protocol": "greenways.release-train/1",
   "release": "tahto-0.1",
-  "status": "gate-a-blocked",
+  "status": "gate-b-in-progress",
   "architecture": "docs/adr/0001-greenways-os-over-tahto.md",
   "pins": [
     {
@@ -15,21 +15,21 @@
       "id": "hara",
       "repository": "hara-lang/hara",
       "path": "technology/hara",
-      "sha": "568ef7d096be7e780874db7a9745d48e06e3d4e9",
+      "sha": "5ef7762c8b97d77f9976f7037bafed81499b42c5",
       "role": "language-runtime"
     },
     {
       "id": "hoplite",
       "repository": "greenways-ai/hoplite",
       "path": "technology/hoplite",
-      "sha": "404d1c96bb759b96b774f7e5583bdbedc97d3d9f",
+      "sha": "febe8fabe50042e9617c2febc971a701bffcafb1",
       "role": "application-server"
     },
     {
       "id": "tahto",
       "repository": "greenways-ai/tahto",
       "path": "technology/tahto",
-      "sha": "0f709f51db834736d1ae916ffdc899a20955254c",
+      "sha": "3fb1c7e963145b82b6e85c3eea3fc9b259cd2f58",
       "role": "state-fabric"
     },
     {
@@ -71,8 +71,8 @@
     {
       "id": "A2",
       "description": "New Hara compiler records write :lang/* rather than :tahto/*.",
-      "status": "blocked",
-      "evidence": "hara-lang/hara#372 is the draft HARA-2 metadata migration and remains unpinned until merged."
+      "status": "passed",
+      "evidence": "hara-lang/hara#372 merged the serialized metadata cut; #373 stabilized the post-migration runtime paths. Hara is pinned at 5ef7762c8b97d77f9976f7037bafed81499b42c5."
     },
     {
       "id": "A3",
@@ -84,26 +84,20 @@
       "id": "A4",
       "description": "greenways-ai/tahto exists with reviewable repository history.",
       "status": "passed",
-      "evidence": "Tahto main is pinned at 0f709f51db834736d1ae916ffdc899a20955254c."
+      "evidence": "Tahto is pinned at 3fb1c7e963145b82b6e85c3eea3fc9b259cd2f58, containing TAHTO-1, TAHTO-2 and the Hara TAHTO-3 object kernel."
+    },
+    {
+      "id": "B1",
+      "description": "Two devices exchange only missing objects, preserve signed divergent heads, create and restore a complete backup, and reject tampering, stale sequences and replayed nonces.",
+      "status": "blocked",
+      "evidence": "HOPLITE-1 data-plane contracts and TAHTO-3 are merged. TAHTO-4 is draft PR greenways-ai/tahto#6; native transport, signature-provider nonce enforcement and two-device conformance remain outstanding."
     }
   ],
   "candidates": [
     {
-      "id": "HARA-2",
-      "repository": "hara-lang/hara",
-      "pullRequest": 372,
-      "status": "draft-not-pinned"
-    },
-    {
-      "id": "HOPLITE-1",
-      "repository": "greenways-ai/hoplite",
-      "pullRequest": 24,
-      "status": "draft-not-pinned"
-    },
-    {
-      "id": "TAHTO-3",
+      "id": "TAHTO-4",
       "repository": "greenways-ai/tahto",
-      "pullRequest": 4,
+      "pullRequest": 6,
       "status": "draft-not-pinned"
     }
   ]
