@@ -8,7 +8,7 @@
       "id": "greenways-os",
       "repository": "greenways-ai/greenways-os",
       "path": "application/greenways-os",
-      "sha": "3fe79844add2cd2131c4c5ee808b847b3fd694a9",
+      "sha": "9d39ecb037010b3ca6e4af6f7e7d38c8995fba92",
       "role": "authority-and-suite-host"
     },
     {
@@ -50,15 +50,15 @@
       "id": "hestia",
       "repository": "greenways-ai/hestia",
       "path": "technology/hestia",
-      "sha": "a9f3fd335fd9cc711b1ea3675d8282def50699fd",
+      "sha": "02613e0de93a7b51e5b9fbbcf719aa840b014515",
       "role": "authority-application"
     },
     {
       "id": "hodos",
       "repository": "greenways-ai/hodos",
       "path": "technology/hodos",
-      "sha": "b75688a9fc531ee94a3648c17ff1d3268b385589",
-      "role": "world-abi"
+      "sha": "241f10521341ca75640fcae93eacbdccf442231a",
+      "role": "world-abi-and-workspace-projection"
     }
   ],
   "gates": [
