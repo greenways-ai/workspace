@@ -1,7 +1,7 @@
 {
   "protocol": "greenways.release-train/1",
   "release": "tahto-0.1",
-  "status": "gate-a-blocked",
+  "status": "gate-b-in-progress",
   "architecture": "docs/adr/0001-greenways-os-over-tahto.md",
   "pins": [
     {
@@ -22,14 +22,14 @@
       "id": "hoplite",
       "repository": "greenways-ai/hoplite",
       "path": "technology/hoplite",
-      "sha": "5c06c0cac6f8f26f407d92fb60f4ea5427a8f360",
+      "sha": "3dae9e4ad30a3e1fc73ce42bbeb99eccb7e96fba",
       "role": "application-server"
     },
     {
       "id": "tahto",
       "repository": "greenways-ai/tahto",
       "path": "technology/tahto",
-      "sha": "0f709f51db834736d1ae916ffdc899a20955254c",
+      "sha": "e413c6bc6374cd546d29ac796a1989e554d5df68",
       "role": "state-fabric"
     },
     {
@@ -66,13 +66,13 @@
       "id": "A1",
       "description": "No live Hara compiler/runtime namespace begins with tahto.",
       "status": "passed",
-      "evidence": "hara-lang/hara#371 merged the hard tahto.* to lang.* cut without forwarding namespaces; the newer pinned Hara revision retains that boundary."
+      "evidence": "hara-lang/hara#371 hard-cut live compiler/runtime namespaces to lang.* without forwarding namespaces; the pinned Hara revision retains that boundary."
     },
     {
       "id": "A2",
       "description": "New Hara compiler records write :lang/* rather than :tahto/*.",
-      "status": "blocked",
-      "evidence": "hara-lang/hara#372 is the draft HARA-2 metadata migration and remains unpinned until merged."
+      "status": "passed",
+      "evidence": "hara-lang/hara#372 moved serialized Hara metadata to :lang.../* and #373 stabilized the post-migration paths; the pinned Hara revision includes those changes and the later Workspace/runtime repairs."
     },
     {
       "id": "A3",
@@ -84,27 +84,21 @@
       "id": "A4",
       "description": "greenways-ai/tahto exists with reviewable repository history.",
       "status": "passed",
-      "evidence": "Tahto main is pinned at 0f709f51db834736d1ae916ffdc899a20955254c."
+      "evidence": "Tahto is pinned at e413c6bc6374cd546d29ac796a1989e554d5df68, containing the object-vault kernel plus immutable commits, CAS heads and backup/restore plans."
+    },
+    {
+      "id": "B1",
+      "description": "Two devices exchange only missing objects, preserve signed divergent heads, create and restore a complete backup, and reject tampering, stale sequences and replayed nonces.",
+      "status": "blocked",
+      "evidence": "The pinned Hoplite revision includes bounded request ABI V3 and Nginx request-body binding. The pinned Tahto revision includes verified object closure, immutable commits, signed CAS heads and backup/restore planning. TAHTO-5 device enrolment/replay/sync was merged only into an already-merged feature branch and is not on Tahto main. A clean main-target landing, durable metadata transactions, an installed signature/freshness provider and the complete two-device fixture remain outstanding."
     }
   ],
   "candidates": [
     {
-      "id": "HARA-2",
-      "repository": "hara-lang/hara",
-      "pullRequest": 372,
-      "status": "draft-not-pinned"
-    },
-    {
-      "id": "HOPLITE-1",
-      "repository": "greenways-ai/hoplite",
-      "pullRequest": 24,
-      "status": "draft-not-pinned"
-    },
-    {
-      "id": "TAHTO-3",
+      "id": "TAHTO-5",
       "repository": "greenways-ai/tahto",
-      "pullRequest": 4,
-      "status": "draft-not-pinned"
+      "pullRequest": 7,
+      "status": "closed-not-on-main-refresh-required"
     }
   ]
 }
