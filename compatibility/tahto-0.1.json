@@ -29,7 +29,7 @@
       "id": "tahto",
       "repository": "greenways-ai/tahto",
       "path": "technology/tahto",
-      "sha": "e413c6bc6374cd546d29ac796a1989e554d5df68",
+      "sha": "f2ab5955b4645ebd170838578d5508bb1262ff8b",
       "role": "state-fabric"
     },
     {
@@ -84,21 +84,21 @@
       "id": "A4",
       "description": "greenways-ai/tahto exists with reviewable repository history.",
       "status": "passed",
-      "evidence": "Tahto is pinned at e413c6bc6374cd546d29ac796a1989e554d5df68, containing the object-vault kernel plus immutable commits, CAS heads and backup/restore plans."
+      "evidence": "Tahto is pinned at f2ab5955b4645ebd170838578d5508bb1262ff8b, containing the object vault, immutable history, CAS heads, backup/restore plans, device identity, replay protection and incremental sync planning."
     },
     {
       "id": "B1",
       "description": "Two devices exchange only missing objects, preserve signed divergent heads, create and restore a complete backup, and reject tampering, stale sequences and replayed nonces.",
       "status": "blocked",
-      "evidence": "The pinned Hoplite revision includes bounded request ABI V3 and Nginx request-body binding. The pinned Tahto revision includes verified object closure, immutable commits, signed CAS heads and backup/restore planning. TAHTO-5 device enrolment/replay/sync was merged only into an already-merged feature branch and is not on Tahto main. A clean main-target landing, durable metadata transactions, an installed signature/freshness provider and the complete two-device fixture remain outstanding."
+      "evidence": "The pinned Hoplite revision includes bounded request ABI V3 and Nginx request-body binding. The pinned Tahto revision includes object closure, immutable history, backup/restore planning, device enrolment and revocation, durable nonce/idempotency evidence and bounded incremental-sync plans. Atomic durable metadata transactions, an installed signature/freshness provider, object-transfer execution, replay retention compaction and the complete two-device fixture remain outstanding."
     }
   ],
   "candidates": [
     {
-      "id": "TAHTO-5",
+      "id": "TAHTO-6",
       "repository": "greenways-ai/tahto",
-      "pullRequest": 7,
-      "status": "closed-not-on-main-refresh-required"
+      "pullRequest": 9,
+      "status": "draft-not-pinned"
     }
   ]
 }
