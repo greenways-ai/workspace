@@ -65,10 +65,11 @@ Active unpinned candidates:
 | TAHTO-4 | `greenways-ai/tahto#6` | draft immutable commits, signed CAS heads, backups, restore planning and receipt evidence |
 | HOPLITE-2 | `greenways-ai/hoplite#30` | draft C/Rust native request and response body callback bridge |
 | HOPLITE-3 | `greenways-ai/hoplite#31` | stacked draft worker-local opaque resource registry |
+| HOPLITE-4 | `greenways-ai/hoplite#33` | stacked draft V3 request ABI projecting request-scoped body handles into Hara |
 
-HOPLITE-2 establishes callback ownership, bounded reads, seekable response sources, close semantics and a public C header. HOPLITE-3 mints non-zero request/response handles, enforces resource kind, rejects stale handles and closes all native descriptors with worker scope. Neither PR yet registers those descriptors in `HopliteRequestV2` or wires Nginx body backpressure.
+HOPLITE-2 establishes callback ownership, bounded reads, seekable response sources, close semantics and a public C header. HOPLITE-3 mints non-zero request/response handles, enforces resource kind, rejects stale handles and closes all native descriptors with worker scope. HOPLITE-4 preserves V2 while adding an optional V3 request-body descriptor, server-selected limits, direct Hara `:body-handle` projection and worker-scoped native read/finish functions. It deliberately rejects native handles on the portable `request+hta` adapter.
 
-Gate B still requires runtime/Nginx descriptor registration, durable metadata transactions, installed signature-provider verification with nonce/replay enforcement, device enrolment and a two-device end-to-end fixture. Those revisions will be pinned only after their repository-local PRs merge.
+The Hoplite stack still does not make Nginx populate the V3 body descriptor or apply backpressure. Gate B also requires durable metadata transactions, installed signature-provider verification with nonce/replay enforcement, device enrolment and a two-device end-to-end fixture. Those revisions will be pinned only after their repository-local PRs merge.
 
 ## Workspace commands
 
