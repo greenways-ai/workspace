@@ -11,7 +11,7 @@ status:  Gate A passed; Gate B in progress
 
 Hara's fabric-name reservation is complete. Live compiler/runtime namespaces use `lang.*`, serialized Hara-owned metadata writes `:lang…/*`, and the bounded legacy reader does not write new Tahto metadata. Tahto may therefore own `tahto.*` namespaces and `:tahto…/*` records without colliding with Hara's language layer.
 
-Gate B remains blocked on the complete application-neutral two-device scenario. The pinned baseline now contains bounded request ABI V3 and Nginx request-body binding in Hoplite, plus verified object closure, immutable commits, signed compare-and-swap heads, divergent-root preservation, backup/restore planning, device identity, replay protection and incremental-sync planning in Tahto.
+Gate B remains blocked on the complete application-neutral two-device scenario. The pinned baseline now contains bounded request ABI V3 and ordinary-source Nginx request-body binding in Hoplite, corrected native response ownership through Nginx request cleanup, and the complete TAHTO-3 through TAHTO-6 Hara state-kernel line.
 
 ## Pinned baseline
 
@@ -19,8 +19,8 @@ Gate B remains blocked on the complete application-neutral two-device scenario. 
 |---|---|---|---|---|
 | OS | `greenways-ai/greenways-os` | `application/greenways-os` | `9d39ecb037010b3ca6e4af6f7e7d38c8995fba92` | authority and suite host |
 | Language | `hara-lang/hara` | `technology/hara` | `60b59ccaa4af5c6cb77d5db6ed83ab5dfa57ded9` | language/runtime after the complete name cut and Workspace/runtime repairs |
-| Server | `greenways-ai/hoplite` | `technology/hoplite` | `3dae9e4ad30a3e1fc73ce42bbeb99eccb7e96fba` | application server through request ABI V3 and bounded Nginx body binding |
-| Fabric | `greenways-ai/tahto` | `technology/tahto` | `f2ab5955b4645ebd170838578d5508bb1262ff8b` | object vault, immutable history, CAS heads, backups, device identity, replay evidence and sync planning |
+| Server | `greenways-ai/hoplite` | `technology/hoplite` | `bd882b7c3a40135a0a780026861ade2e8da43c9b` | request ABI V3, Nginx request-body binding and request-scoped native response ownership |
+| Fabric | `greenways-ai/tahto` | `technology/tahto` | `9536f6b7a74801477fa24aa9993ccc7f8cbfc3c1` | objects, history, backups, devices, replay, sync plans, inert services and durable jobs |
 | Golden vertical | `greenways-ai/historia` | `technology/historia` | `3b38cdc36789d3a1c6323ddb78b0b0b399b82cab` | memory application |
 | Canonical execution | `greenways-ai/ignatius` | `technology/ignatius` | `acef9d008e5d3e0d7303d797dbcd55946104f5d6` | canonical chain |
 | Authority application | `greenways-ai/hestia` | `technology/hestia` | `02613e0de93a7b51e5b9fbbcf719aa840b014515` | rooms, mandates and receipts |
@@ -35,7 +35,7 @@ The matrix records exact reviewed revisions and preserves every independently pr
 | No live Hara compiler/runtime namespace begins with `tahto.` | Passed | `hara-lang/hara#371` hard-cut source, tests and generated mirrors to `lang.*` without a forwarding namespace. |
 | New Hara compiler records write `:lang/*` | Passed | `hara-lang/hara#372` moved serialized metadata and `#373` stabilized post-migration runtime paths; the current pin retains those changes. |
 | Architecture ADR merged | Passed | `docs/adr/0001-greenways-os-over-tahto.md` |
-| Tahto repository initialized | Passed | The Tahto pin contains TAHTO-3 object custody, TAHTO-4 immutable history/backups and the main-target TAHTO-5 device/replay/sync promotion. |
+| Tahto repository initialized | Passed | The Tahto pin contains TAHTO-3 object custody, TAHTO-4 immutable history/backups, TAHTO-5 device/replay/sync planning and TAHTO-6 service/job state. |
 
 Gate A is closed. A bounded compatibility reader in Hara does not reopen namespace ownership and does not grant fabric authority.
 
@@ -56,8 +56,9 @@ The pinned foundations provide:
 
 ```text
 Hara language/runtime name separation
-Hoplite bounded request/response transport
-Hoplite request ABI V3 and Nginx body registration
+Hoplite bounded request/response callback bridges
+Hoplite request ABI V3 and Nginx request-body registration
+Hoplite request-scoped ownership for borrowed native response slices
 Tahto namespace-scoped object closure and quota accounting
 Tahto immutable commits and per-device sequences
 Tahto signed compare-and-swap heads and divergent roots
@@ -65,6 +66,8 @@ Tahto immutable backup pins and deterministic restore manifests
 Tahto device enrolment and revocation identity
 Tahto durable nonce and request-idempotency evidence
 Tahto bounded push, pull and acknowledgement planning
+Tahto inert digest-pinned service registrations
+Tahto durable, bounded and terminal job transitions
 ```
 
 Still required for B1:
@@ -79,13 +82,13 @@ pairing and revocation UX in Greenways OS
 the complete two-device transfer, divergence, backup, restore and tamper fixture
 ```
 
-### TAHTO-5 promotion
+### Promoted repository work
 
-`greenways-ai/tahto#8` repaired the earlier stacked-branch topology and promoted the exact conformance-tested TAHTO-5 head to Tahto `main`. The workspace now pins merge commit `f2ab5955b4645ebd170838578d5508bb1262ff8b`; the former “closed but not on main” warning is resolved.
+- `greenways-ai/hoplite#37` materialized the bounded Nginx request-body adapter and application policy as ordinary source and moved its production POST checks into normal CI.
+- `greenways-ai/hoplite#43` corrected the native response lifetime so Rust-owned borrowed slices remain alive until Nginx request cleanup.
+- `greenways-ai/tahto#9` added the TAHTO-6 Hara kernel for inert service registrations and durable job transitions. Its complete Hara conformance line reports 86 passing tests.
 
-### Active next slice
-
-`greenways-ai/tahto#9` is the draft TAHTO-6 Hara kernel for inert digest-pinned service registrations and durable job transitions. It remains unpinned until review and conformance are complete. Worker installation and execution remain outside Tahto core.
+These changes improve the reviewed transport and state foundations but do not claim that an object transfer executor, durable provider or worker executor is installed.
 
 ## Workspace commands
 
