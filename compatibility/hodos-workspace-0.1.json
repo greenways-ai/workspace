@@ -1,7 +1,7 @@
 {
   "protocol": "greenways.release-train/1",
   "release": "hodos-workspace-0.1",
-  "status": "dev-problems-passed-next-slice-in-progress",
+  "status": "dev-explorer-passed-next-slice-in-progress",
   "architecture": "docs/adr/0002-hara-workspace-hodos-projection-greenways-studio.md",
   "pins": [
     {
@@ -29,15 +29,15 @@
       "id": "hara-playground",
       "repository": "hara-lang/hara-playground",
       "path": "application/hara-playground",
-      "sha": "e46106b7b4accbc230dcce1f6f90e896f2974d6b",
-      "role": "reference-hodos-dev-preview-editor-repl-value-inspector-and-problems-consumer"
+      "sha": "f677ad54c9feba69946cac0da92d5358ef1363f6",
+      "role": "reference-hodos-dev-explorer-preview-editor-repl-value-inspector-and-problems-consumer"
     },
     {
       "id": "hodos",
       "repository": "greenways-ai/hodos",
       "path": "technology/hodos",
-      "sha": "1eb77a47a44de7d4b84d610f499063aa1a1bc296",
-      "role": "workspace-projection-dev-preview-editor-repl-problems-value-inspector-and-world-abi"
+      "sha": "45d176cd1241c5de2fa0e70b9ce135345e8f2a3a",
+      "role": "workspace-projection-dev-explorer-preview-editor-repl-problems-value-inspector-and-world-abi"
     }
   ],
   "gates": [
@@ -57,13 +57,13 @@
       "id": "HW3",
       "description": "Hodos Web connects HAL-shaped Workspace component models to trusted packaged UI factories.",
       "status": "passed",
-      "evidence": "greenways-ai/hodos#24 established trusted component and area hosts, #25 added prepared Preview documents, #26 added the Editor boundary, #27 added the REPL boundary, #28 added retained-value inspection, and #29 added the Problems boundary for runtime, compiler and host diagnostics. The merged Hodos revision is pinned."
+      "evidence": "greenways-ai/hodos#24 established trusted component and area hosts, #25 added prepared Preview documents, #26 added the Editor boundary, #27 added the REPL boundary, #28 added retained-value inspection, #29 added the Problems boundary, and #30 added the Explorer boundary for canonical file and directory projection. The merged Hodos revision is pinned."
     },
     {
       "id": "HW4",
-      "description": "Playground mounts reusable Dev components through Hodos while retaining Hara browser-service and runtime authority.",
+      "description": "Playground mounts reusable Dev components through Hodos while retaining Hara browser-service, storage and runtime authority.",
       "status": "passed",
-      "evidence": "hara-lang/hara-playground#29-#31 mounted Preview and Editor through Hodos. #32 made Editor source and selection events authoritative and repaired direct Preview updates. #33 made REPL input, submission, clear, history and cancel events authoritative. #35 projects retained runtime values through the Hodos Value Inspector. #36 projects runtime and source diagnostics through Hodos Problems while keeping diagnostic production, source selection, filtering, clearing and clipboard policy in Hara and Playground; diagnostics remain visible in the REPL. The merged Playground revision passed ordinary CI and the complete Chromium/Supersonic workflow."
+      "evidence": "hara-lang/hara-playground#29-#31 mounted Preview and Editor through Hodos. #32 made Editor source and selection events authoritative and repaired direct Preview updates. #33 made REPL input, submission, clear, history and cancel events authoritative. #35 projects retained values through Value Inspector. #36 projects runtime and source diagnostics through Problems. #37 replaces the fixed file-tree renderer and direct select/create/delete handlers with the Hodos Explorer while keeping Workspace storage, GitHub import, prompts and destructive-operation policy in Playground. The merged Playground revision passed ordinary CI and the complete Chromium/Supersonic workflow."
     },
     {
       "id": "HW5",
