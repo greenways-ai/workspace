@@ -1,7 +1,7 @@
 {
   "protocol": "greenways.release-train/1",
   "release": "hodos-workspace-0.1",
-  "status": "dev-explorer-passed-next-slice-in-progress",
+  "status": "dev-catalog-passed-next-slice-in-progress",
   "architecture": "docs/adr/0002-hara-workspace-hodos-projection-greenways-studio.md",
   "pins": [
     {
@@ -29,15 +29,15 @@
       "id": "hara-playground",
       "repository": "hara-lang/hara-playground",
       "path": "application/hara-playground",
-      "sha": "f677ad54c9feba69946cac0da92d5358ef1363f6",
-      "role": "reference-hodos-dev-explorer-preview-editor-repl-value-inspector-and-problems-consumer"
+      "sha": "3eac2dabe1d2b99ede1f7b5560e0346f467b5a4f",
+      "role": "reference-hodos-dev-catalog-explorer-preview-editor-repl-value-inspector-and-problems-consumer"
     },
     {
       "id": "hodos",
       "repository": "greenways-ai/hodos",
       "path": "technology/hodos",
-      "sha": "45d176cd1241c5de2fa0e70b9ce135345e8f2a3a",
-      "role": "workspace-projection-dev-explorer-preview-editor-repl-problems-value-inspector-and-world-abi"
+      "sha": "940289542afeb33cd2a2ce97ea6ba9c41258b426",
+      "role": "workspace-projection-dev-catalog-explorer-preview-editor-repl-problems-value-inspector-and-world-abi"
     }
   ],
   "gates": [
@@ -57,13 +57,13 @@
       "id": "HW3",
       "description": "Hodos Web connects HAL-shaped Workspace component models to trusted packaged UI factories.",
       "status": "passed",
-      "evidence": "greenways-ai/hodos#24 established trusted component and area hosts, #25 added prepared Preview documents, #26 added the Editor boundary, #27 added the REPL boundary, #28 added retained-value inspection, #29 added the Problems boundary, and #30 added the Explorer boundary for canonical file and directory projection. The merged Hodos revision is pinned."
+      "evidence": "greenways-ai/hodos#24 established trusted component and area hosts, #25 added prepared Preview documents, #26 added the Editor boundary, #27 added the REPL boundary, #28 added retained-value inspection, #29 added the Problems boundary, #30 added the Explorer boundary, and #31 added the Catalog boundary for descriptive toolsets, tools, activities and run evidence. Catalog projection explicitly excludes executable snippets, starter source, check definitions and check expressions. The merged Hodos revision is pinned."
     },
     {
       "id": "HW4",
-      "description": "Playground mounts reusable Dev components through Hodos while retaining Hara browser-service, storage and runtime authority.",
+      "description": "Playground mounts reusable Dev components through Hodos while retaining Hara browser-service, storage, runtime and executable catalog authority.",
       "status": "passed",
-      "evidence": "hara-lang/hara-playground#29-#31 mounted Preview and Editor through Hodos. #32 made Editor source and selection events authoritative and repaired direct Preview updates. #33 made REPL input, submission, clear, history and cancel events authoritative. #35 projects retained values through Value Inspector. #36 projects runtime and source diagnostics through Problems. #37 replaces the fixed file-tree renderer and direct select/create/delete handlers with the Hodos Explorer while keeping Workspace storage, GitHub import, prompts and destructive-operation policy in Playground. The merged Playground revision passed ordinary CI and the complete Chromium/Supersonic workflow."
+      "evidence": "hara-lang/hara-playground#29-#31 mounted Preview and Editor through Hodos. #32 made Editor source and selection events authoritative and repaired direct Preview updates. #33 made REPL input, submission, clear, history and cancel events authoritative. #35 projects retained values through Value Inspector. #36 projects runtime and source diagnostics through Problems. #37 replaces the fixed file-tree renderer and direct select/create/delete handlers with Explorer. #38 replaces fixed tool/activity renderers and direct listeners with two Hodos Catalog surfaces while keeping snippets, starter source, check expressions, runtime evaluation, progress and confirmation policy in Playground. The merged Playground revision passed ordinary CI and the complete Chromium/Supersonic workflow."
     },
     {
       "id": "HW5",
