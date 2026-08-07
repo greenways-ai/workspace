@@ -15,7 +15,7 @@
       "id": "hara",
       "repository": "hara-lang/hara",
       "path": "technology/hara",
-      "sha": "568ef7d096be7e780874db7a9745d48e06e3d4e9",
+      "sha": "60b59ccaa4af5c6cb77d5db6ed83ab5dfa57ded9",
       "role": "language-runtime"
     },
     {
@@ -57,7 +57,7 @@
       "id": "hodos",
       "repository": "greenways-ai/hodos",
       "path": "technology/hodos",
-      "sha": "241f10521341ca75640fcae93eacbdccf442231a",
+      "sha": "4bf67b097da71947d12b902720296bf2a60be8bb",
       "role": "world-abi-and-workspace-projection"
     }
   ],
@@ -66,7 +66,7 @@
       "id": "A1",
       "description": "No live Hara compiler/runtime namespace begins with tahto.",
       "status": "passed",
-      "evidence": "hara-lang/hara#371 merged the hard tahto.* to lang.* cut at 568ef7d096be7e780874db7a9745d48e06e3d4e9 without forwarding namespaces."
+      "evidence": "hara-lang/hara#371 merged the hard tahto.* to lang.* cut without forwarding namespaces; the newer pinned Hara revision retains that boundary."
     },
     {
       "id": "A2",
