@@ -1,4 +1,4 @@
-.PHONY: list status fetch pull push sync force-update force-update-hard commit-push
+.PHONY: list status fetch pull push sync force-update force-update-hard commit-push sync-children
 
 list: ## List discovered repos and placeholder dirs
 	@./00-00-list.sh
@@ -26,3 +26,6 @@ force-update-hard: ## Like force-update but DISCARDS uncommitted changes in trac
 
 commit-push: ## Commit dirty repos with M="msg" (children first, super-repo last), then push
 	@./00-07-commit-push.sh "$(M)"
+
+sync-children: ## Clone newly added children, switch children to main, then pull all
+	@./00-08-sync-children.sh

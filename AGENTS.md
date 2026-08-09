@@ -40,6 +40,9 @@ Root `Makefile` delegates to section Makefiles under `scripts/`:
 
 - `make help` — list all targets
 - `make repo-status | repo-list | repo-fetch | repo-pull | repo-push | repo-sync`
+- `make repo-sync-children` — clone children newly registered in `.gitmodules`
+  (plain clones on `main`, never `git submodule update`), switch every clean
+  child onto `main` (dirty ones are reported and left alone), then pull all
 - `make repo-force-update` — reset everything to `origin/main` on `main`,
   stashing uncommitted changes (`repo-force-update-hard` discards them instead)
 - `make repo-commit-push M="msg"` — commit dirty children (`git add -A`),
