@@ -25,8 +25,8 @@ merge policy.
 
 Implemented in Tahto:
 
-- generic `hara.store` metadata persistence and exact revision CAS;
-- generic `hara.blob` object custody and upload orchestration;
+- generic `hoplite.store` metadata persistence and exact revision CAS;
+- generic `hoplite.blob` object custody and upload orchestration;
 - immutable objects, graph closure, commits, heads, backups, and receipts;
 - devices, idempotency evidence, cursors, and synchronization negotiation;
 - authorized response-source streaming;
@@ -103,7 +103,7 @@ Install the bounded trusted operation that produces
 
 Required behavior:
 
-1. Open the exact immutable value bytes through authorized `hara.blob` access.
+1. Open the exact immutable value bytes through authorized `hoplite.blob` access.
 2. Verify SHA-256 identity and declared size.
 3. Decode the bounded canonical `hara.hta/1` value.
 4. Resolve an already-installed, Greenways OS-approved specification package.
@@ -181,7 +181,7 @@ Every application must classify its data as:
 | Class | Treatment |
 | --- | --- |
 | Authoritative semantic state | Semantic objects, indexes, roots, commits, and heads |
-| Large immutable source | `hara.blob` object referenced by digest |
+| Large immutable source | `hoplite.blob` object referenced by digest |
 | Rebuildable derived state | Rebuild locally; cache only when useful |
 | Secret or live authority | Greenways OS/keyring only; never semantic state |
 
@@ -371,4 +371,3 @@ The first Semantic Fabric release is complete when:
 5. Build the portal's read-only node overview against current discovery/status.
 6. Design the production two-device/restart fixture before accepting the node
    API as release-ready.
-
