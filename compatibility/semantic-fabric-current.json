@@ -1,0 +1,76 @@
+{
+  "protocol": "greenways.semantic-fabric-status/1",
+  "updatedAt": "2026-08-09",
+  "repository": "greenways-ai/tahto",
+  "commit": "32a560e8a3841dcacd6aa7d70dd7e2a992ac8b69",
+  "phase": "late-kernel-early-production-integration",
+  "authority": {
+    "architecture": "docs/adr/0001-greenways-os-over-tahto.md",
+    "currentTracking": "https://github.com/greenways-ai/tahto/issues/29",
+    "historicalRoadmap": "docs/snapshots/tahto-semantic-fabric-roadmap-2026-08-09.md",
+    "statusRules": "docs/status-authority.md"
+  },
+  "components": {
+    "semanticProfiles": "ready",
+    "semanticAdmission": "ready",
+    "semanticIndexesRoots": "ready",
+    "semanticHistory": "ready",
+    "semanticReadKernel": "ready",
+    "semanticPrepareKernel": "ready",
+    "semanticSubmitKernel": "ready",
+    "pairingLaw": "ready",
+    "greenwaysOsPairingClient": "ready",
+    "canonicalValueContract": "ready",
+    "filesystemCanonicalValueProvider": "pending:greenways-ai/hoplite#80",
+    "canonicalValueProviderRegistration": "pending:greenways-ai/hoplite#82",
+    "installedSpecificationValidatorInvocation": "pending:greenways-ai/tahto#34",
+    "semanticRouteMapping": "pending:greenways-ai/tahto#65",
+    "semanticAuthenticationRealm": "pending:greenways-ai/tahto#66",
+    "semanticSelectedValueSource": "pending:greenways-ai/tahto#67",
+    "moduleAwareProductionBoot": "pending:greenways-ai/hoplite#22",
+    "productionPairingBoot": "pending:greenways-ai/tahto#58",
+    "productionTwoDeviceRecovery": "pending:greenways-ai/tahto#36",
+    "productionFixtureApplication": "pending:greenways-ai/tahto#47",
+    "pureHalManifestInterpretation": "pending:greenways-ai/tahto#19",
+    "semanticRecoveryAndNativeDeletion": "pending:greenways-ai/tahto#17"
+  },
+  "nextMerge": "greenways-ai/hoplite#80",
+  "releaseTrain": [
+    {
+      "order": 1,
+      "name": "value-and-specification-enforcement",
+      "issues": [
+        "greenways-ai/hoplite#80",
+        "greenways-ai/hoplite#82",
+        "greenways-ai/tahto#34"
+      ]
+    },
+    {
+      "order": 2,
+      "name": "installed-semantic-service",
+      "issues": [
+        "greenways-ai/tahto#65",
+        "greenways-ai/tahto#66",
+        "greenways-ai/tahto#67"
+      ]
+    },
+    {
+      "order": 3,
+      "name": "production-boot-and-two-device-proof",
+      "issues": [
+        "greenways-ai/hoplite#22",
+        "greenways-ai/tahto#58",
+        "greenways-ai/tahto#36",
+        "greenways-ai/tahto#47"
+      ]
+    },
+    {
+      "order": 4,
+      "name": "release-closure",
+      "issues": [
+        "greenways-ai/tahto#19",
+        "greenways-ai/tahto#17"
+      ]
+    }
+  ]
+}
