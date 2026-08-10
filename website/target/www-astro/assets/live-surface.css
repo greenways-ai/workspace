@@ -1,0 +1,114 @@
+/* Hara visual-language bridge for every @hara-lang/live surface.
+   The package keeps portable defaults; the canonical site supplies identity. */
+
+body .hara-live-card {
+  --hara-live-bg: var(--hara-bg-clean);
+  --hara-live-panel: var(--hara-surface-raised);
+  --hara-live-ink: var(--hara-text);
+  --hara-live-muted: var(--hara-muted);
+  --hara-live-accent: var(--hara-signal);
+  --hara-live-accent-2: color-mix(in srgb, var(--hara-signal) 62%, var(--hara-text));
+  --hara-live-border: var(--hara-line);
+  --hara-live-error: var(--hara-danger);
+  --hara-live-mono-font: var(--hara-font-mono);
+
+  border-radius: var(--hara-radius-md);
+  background: color-mix(in srgb, var(--hara-bg-clean) 96%, transparent);
+  box-shadow: var(--hara-shadow);
+}
+
+body .hara-live-card-header {
+  background: color-mix(in srgb, var(--hara-surface-solid) 92%, transparent);
+}
+
+body .hara-live-card-tabs {
+  background: color-mix(in srgb, var(--hara-surface-raised) 72%, var(--hara-bg-clean));
+}
+
+body .hara-live-card-tabs button[aria-selected="true"] {
+  background: var(--hara-bg-clean);
+}
+
+body .hara-live-card-run {
+  color: #fff;
+  background: var(--hara-signal);
+  border-color: var(--hara-signal);
+}
+
+body .hara-live-card-eval,
+body .hara-live-card-playground {
+  background: color-mix(in srgb, var(--hara-surface-solid) 84%, transparent);
+}
+
+body .hara-live-card-editor,
+body .hara-live-card-output {
+  background: var(--hara-bg-clean);
+}
+
+body .hara-live-card-resizer,
+body .hara-live-card-canvas-meta {
+  background-color: var(--hara-surface-raised);
+}
+
+body .hara-live-card .code-highlight .comment {
+  color: var(--hara-faint);
+}
+
+body .hara-live-card .code-highlight .string {
+  color: color-mix(in srgb, var(--hara-warning) 72%, var(--hara-text));
+}
+
+body .hara-live-card .code-highlight .keyword {
+  color: var(--hara-signal);
+}
+
+body .hara-live-card .code-highlight .paren-0 {
+  color: var(--hara-signal);
+}
+
+body .hara-live-card .code-highlight .paren-1 {
+  color: color-mix(in srgb, var(--hara-success) 76%, var(--hara-text));
+}
+
+body .hara-live-card .code-highlight .paren-2 {
+  color: color-mix(in srgb, var(--hara-warning) 74%, var(--hara-text));
+}
+
+body .hara-live-card .code-highlight .paren-3 {
+  color: color-mix(in srgb, var(--hara-signal) 54%, var(--hara-text));
+}
+
+body .hara-live-card .code-highlight .paren-4 {
+  color: color-mix(in srgb, var(--hara-success) 48%, var(--hara-text));
+}
+
+body .hara-live-card .code-highlight .paren-5 {
+  color: var(--hara-muted);
+}
+
+body .hara-live-card-canvas {
+  background: #03070d;
+}
+
+.code-stage-card > .hara-live-card,
+.live-stage > .hara-live-card,
+.sl-markdown-content .hara-live-card {
+  border-color: var(--hara-line-strong);
+}
+
+.sl-markdown-content .hara-live-card {
+  margin-block: 1.25rem;
+}
+
+@media (max-width: 720px) {
+  body .hara-live-card-header {
+    grid-template-columns: auto auto auto minmax(0, 1fr);
+  }
+
+  body .hara-live-card-playground {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    justify-self: stretch;
+    margin-top: 8px;
+  }
+}

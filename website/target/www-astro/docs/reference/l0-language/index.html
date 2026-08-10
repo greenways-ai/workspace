@@ -1,0 +1,412 @@
+<!DOCTYPE html><html lang="en" dir="ltr" data-theme="dark" data-has-toc data-has-sidebar class="astro-bguv2lll"> <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/><title>Hara L0 language contract | Hara</title><link rel="canonical" href="https://www.hara-lang.org/docs/reference/l0-language/"/><link rel="sitemap" href="/sitemap-index.xml"/><script type="module" src="/assets/identity-loader.js"></script><link rel="stylesheet" href="/docs-assets/stylesheets/syllabus.css"/><link rel="stylesheet" href="/docs-assets/live/style.css"/><link rel="stylesheet" href="/assets/live-surface.css"/><script type="module" src="/assets/docs-repl.js"></script><script type="module" src="/docs-assets/javascripts/syllabus.js"></script><link rel="shortcut icon" href="/assets/hara-favicon.svg" type="image/svg+xml"/><meta name="generator" content="Astro v5.18.2"/><meta name="generator" content="Starlight v0.37.7"/><meta property="og:title" content="Hara L0 language contract"/><meta property="og:type" content="article"/><meta property="og:url" content="https://www.hara-lang.org/docs/reference/l0-language/"/><meta property="og:locale" content="en"/><meta property="og:description" content="A small, high-performance Lisp for learning to build software from first principles."/><meta name="description" content="A small, high-performance Lisp for learning to build software from first principles."/><meta name="hara-identity-auto" content="starlight"/><meta property="og:site_name" content="Hara / Docs"/><meta property="og:image" content="https://www.hara-lang.org/og-hara-docs.jpg"/><meta property="og:image:secure_url" content="https://www.hara-lang.org/og-hara-docs.jpg"/><meta property="og:image:type" content="image/jpeg"/><meta property="og:image:width" content="1200"/><meta property="og:image:height" content="630"/><meta property="og:image:alt" content="Hara Docs — build live, across every host"/><meta name="twitter:card" content="summary_large_image"/><meta name="twitter:image" content="https://www.hara-lang.org/og-hara-docs.jpg"/><meta name="twitter:image:alt" content="Hara Docs — build live, across every host"/><script>
+	window.StarlightThemeProvider = (() => {
+		const storedTheme =
+			typeof localStorage !== 'undefined' && localStorage.getItem('starlight-theme');
+		const theme =
+			storedTheme ||
+			(window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+		document.documentElement.dataset.theme = theme === 'light' ? 'light' : 'dark';
+		return {
+			updatePickers(theme = storedTheme || 'auto') {
+				document.querySelectorAll('starlight-theme-select').forEach((picker) => {
+					const select = picker.querySelector('select');
+					if (select) select.value = theme;
+					/** @type {HTMLTemplateElement | null} */
+					const tmpl = document.querySelector(`#theme-icons`);
+					const newIcon = tmpl && tmpl.content.querySelector('.' + theme);
+					if (newIcon) {
+						const oldIcon = picker.querySelector('svg.label-icon');
+						if (oldIcon) {
+							oldIcon.replaceChildren(...newIcon.cloneNode(true).childNodes);
+						}
+					}
+				});
+			},
+		};
+	})();
+</script><template id="theme-icons"><svg aria-hidden="true" class="light astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M5 12a1 1 0 0 0-1-1H3a1 1 0 0 0 0 2h1a1 1 0 0 0 1-1Zm.64 5-.71.71a1 1 0 0 0 0 1.41 1 1 0 0 0 1.41 0l.71-.71A1 1 0 0 0 5.64 17ZM12 5a1 1 0 0 0 1-1V3a1 1 0 0 0-2 0v1a1 1 0 0 0 1 1Zm5.66 2.34a1 1 0 0 0 .7-.29l.71-.71a1 1 0 1 0-1.41-1.41l-.66.71a1 1 0 0 0 0 1.41 1 1 0 0 0 .66.29Zm-12-.29a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.71-.71a1.004 1.004 0 1 0-1.43 1.41l.73.71ZM21 11h-1a1 1 0 0 0 0 2h1a1 1 0 0 0 0-2Zm-2.64 6A1 1 0 0 0 17 18.36l.71.71a1 1 0 0 0 1.41 0 1 1 0 0 0 0-1.41l-.76-.66ZM12 6.5a5.5 5.5 0 1 0 5.5 5.5A5.51 5.51 0 0 0 12 6.5Zm0 9a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Zm0 3.5a1 1 0 0 0-1 1v1a1 1 0 0 0 2 0v-1a1 1 0 0 0-1-1Z"/></svg><svg aria-hidden="true" class="dark astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.64 13a1 1 0 0 0-1.05-.14 8.049 8.049 0 0 1-3.37.73 8.15 8.15 0 0 1-8.14-8.1 8.59 8.59 0 0 1 .25-2A1 1 0 0 0 8 2.36a10.14 10.14 0 1 0 14 11.69 1 1 0 0 0-.36-1.05Zm-9.5 6.69A8.14 8.14 0 0 1 7.08 5.22v.27a10.15 10.15 0 0 0 10.14 10.14 9.784 9.784 0 0 0 2.1-.22 8.11 8.11 0 0 1-7.18 4.32v-.04Z"/></svg><svg aria-hidden="true" class="auto astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg></template><link rel="stylesheet" href="/_astro/print.DNXP8c50.css" media="print"><link rel="stylesheet" href="/_astro/index.Dw9rhl4n.css"><script type="module" src="/_astro/page.B1D-nYk3.js"></script></head> <body class="astro-bguv2lll"> <a href="#_top" class="astro-7q3lir66">Skip to content</a>  <div class="page sl-flex astro-vrdttmbt"> <header class="header astro-vrdttmbt"><div class="header astro-kmkmnagf"> <div class="title-wrapper sl-flex astro-kmkmnagf"> <a href="/" class="site-title sl-flex astro-m46x6ez3">  <img class="light:sl-hidden print:hidden astro-m46x6ez3" alt="Hara" src="/_astro/hara-mark-dark.B8CT3bP-.svg" width="64" height="64"> <img class="dark:sl-hidden print:block astro-m46x6ez3" alt="Hara" src="/_astro/hara-mark-light.CYCbptF9.svg" width="64" height="64"> <span class="astro-m46x6ez3" translate="no"> Hara </span> </a>  </div> <div class="sl-flex print:hidden astro-kmkmnagf"> <site-search class="astro-kmkmnagf astro-v37mnknz" data-translations="{&#34;placeholder&#34;:&#34;Search&#34;}"> <button data-open-modal disabled aria-label="Search" aria-keyshortcuts="Control+K" class="astro-v37mnknz"> <svg aria-hidden="true" class="astro-v37mnknz astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21.71 20.29 18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z"/></svg> <span class="sl-hidden md:sl-block astro-v37mnknz" aria-hidden="true">Search</span> <kbd class="sl-hidden md:sl-flex astro-v37mnknz" style="display: none;"> <kbd class="astro-v37mnknz">Ctrl</kbd><kbd class="astro-v37mnknz">K</kbd> </kbd> </button> <dialog style="padding:0" aria-label="Search" class="astro-v37mnknz"> <div class="dialog-frame sl-flex astro-v37mnknz">  <button data-close-modal class="sl-flex md:sl-hidden astro-v37mnknz"> Cancel </button> <div class="search-container astro-v37mnknz"> <div id="starlight__search" class="astro-v37mnknz"></div> </div> </div> </dialog> </site-search>  <script>
+	(() => {
+		const openBtn = document.querySelector('button[data-open-modal]');
+		const shortcut = openBtn?.querySelector('kbd');
+		if (!openBtn || !(shortcut instanceof HTMLElement)) return;
+		const platformKey = shortcut.querySelector('kbd');
+		if (platformKey && /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
+			platformKey.textContent = '⌘';
+			openBtn.setAttribute('aria-keyshortcuts', 'Meta+K');
+		}
+		shortcut.style.display = '';
+	})();
+</script> <script type="module" src="/_astro/Search.astro_astro_type_script_index_0_lang.CLg7mG-P.js"></script>   </div> <div class="sl-hidden md:sl-flex print:hidden right-group astro-kmkmnagf"> <div class="sl-flex social-icons astro-kmkmnagf"> <a href="https://github.com/hara-lang/hara" rel="me" class="sl-flex astro-wy4te6ga"><span class="sr-only astro-wy4te6ga">GitHub</span><svg aria-hidden="true" class="astro-wy4te6ga astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"/></svg></a> </div> <starlight-theme-select>  <label style="--sl-select-width: 6.25em" class="astro-4yphtoen"> <span class="sr-only astro-4yphtoen">Select theme</span> <svg aria-hidden="true" class="icon label-icon astro-4yphtoen astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg> <select autocomplete="off" class="astro-4yphtoen"> <option value="dark" class="astro-4yphtoen">Dark</option><option value="light" class="astro-4yphtoen">Light</option><option value="auto" selected class="astro-4yphtoen">Auto</option> </select> <svg aria-hidden="true" class="icon caret astro-4yphtoen astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"/></svg> </label>  </starlight-theme-select>  <script>
+	StarlightThemeProvider.updatePickers();
+</script> <script type="module">const r="starlight-theme",o=e=>e==="auto"||e==="dark"||e==="light"?e:"auto",c=()=>o(typeof localStorage<"u"&&localStorage.getItem(r));function n(e){typeof localStorage<"u"&&localStorage.setItem(r,e==="light"||e==="dark"?e:"")}const l=()=>matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";function t(e){StarlightThemeProvider.updatePickers(e),document.documentElement.dataset.theme=e==="auto"?l():e,n(e)}matchMedia("(prefers-color-scheme: light)").addEventListener("change",()=>{c()==="auto"&&t("auto")});class s extends HTMLElement{constructor(){super(),t(c()),this.querySelector("select")?.addEventListener("change",a=>{a.currentTarget instanceof HTMLSelectElement&&t(o(a.currentTarget.value))})}}customElements.define("starlight-theme-select",s);</script> <script type="module">class s extends HTMLElement{constructor(){super();const e=this.querySelector("select");e&&(e.addEventListener("change",t=>{t.currentTarget instanceof HTMLSelectElement&&(window.location.pathname=t.currentTarget.value)}),window.addEventListener("pageshow",t=>{if(!t.persisted)return;const n=e.querySelector("option[selected]")?.index;n!==e.selectedIndex&&(e.selectedIndex=n??0)}))}}customElements.define("starlight-lang-select",s);</script> </div> </div> </header> <nav class="sidebar print:hidden astro-vrdttmbt" aria-label="Main"> <starlight-menu-button class="print:hidden astro-jif73yzw"> <button aria-expanded="false" aria-label="Menu" aria-controls="starlight__sidebar" class="sl-flex md:sl-hidden astro-jif73yzw"> <svg aria-hidden="true" class="open-menu astro-jif73yzw astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M3 8h18a1 1 0 1 0 0-2H3a1 1 0 0 0 0 2Zm18 8H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Zm0-5H3a1 1 0 0 0 0 2h18a1 1 0 0 0 0-2Z"/></svg> <svg aria-hidden="true" class="close-menu astro-jif73yzw astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="m13.41 12 6.3-6.29a1.004 1.004 0 1 0-1.42-1.42L12 10.59l-6.29-6.3a1.004 1.004 0 0 0-1.42 1.42l6.3 6.29-6.3 6.29a1 1 0 0 0 0 1.42.998.998 0 0 0 1.42 0l6.29-6.3 6.29 6.3a.999.999 0 0 0 1.42 0 1 1 0 0 0 0-1.42L13.41 12Z"/></svg> </button> </starlight-menu-button> <script type="module">class s extends HTMLElement{constructor(){super(),this.btn=this.querySelector("button"),this.btn.addEventListener("click",()=>this.toggleExpanded());const t=this.closest("nav");t&&t.addEventListener("keyup",e=>this.closeOnEscape(e))}setExpanded(t){this.setAttribute("aria-expanded",String(t)),document.body.toggleAttribute("data-mobile-menu-expanded",t)}toggleExpanded(){this.setExpanded(this.getAttribute("aria-expanded")!=="true")}closeOnEscape(t){t.code==="Escape"&&(this.setExpanded(!1),this.btn.focus())}}customElements.define("starlight-menu-button",s);</script>   <div id="starlight__sidebar" class="sidebar-pane astro-vrdttmbt"> <div class="sidebar-content sl-flex astro-vrdttmbt"> <sl-sidebar-state-persist data-hash="04zj731" class="astro-kku4brbg"> <script aria-hidden="true">
+		(() => {
+			try {
+				if (!matchMedia('(min-width: 50em)').matches) return;
+				/** @type {HTMLElement | null} */
+				const target = document.querySelector('sl-sidebar-state-persist');
+				const state = JSON.parse(sessionStorage.getItem('sl-sidebar-state') || '0');
+				if (!target || !state || target.dataset.hash !== state.hash) return;
+				window._starlightScrollRestore = state.scroll;
+				customElements.define(
+					'sl-sidebar-restore',
+					class SidebarRestore extends HTMLElement {
+						connectedCallback() {
+							try {
+								const idx = parseInt(this.dataset.index || '');
+								const details = this.closest('details');
+								if (details && typeof state.open[idx] === 'boolean') details.open = state.open[idx];
+							} catch {}
+						}
+					}
+				);
+			} catch {}
+		})();
+	</script>  <ul class="top-level astro-3ii7xxms"> <li class="astro-3ii7xxms"> <details open class="astro-3ii7xxms"> <summary class="astro-3ii7xxms"> <span class="group-label astro-3ii7xxms"> <span class="large astro-3ii7xxms">Start here</span>  </span> <svg aria-hidden="true" class="caret astro-3ii7xxms astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="0"></sl-sidebar-restore> <ul class="astro-3ii7xxms"> <li class="astro-3ii7xxms"> <a href="/docs/start/orientation/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">01 — Why Hara?</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/learn-programming/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">02 — Read Hara and build from scratch</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/getting-started/playground/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">03 — Try Hara in the browser</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/create/first-game/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">04 — Build Tic Tac Toe</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/getting-started/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">05 — Choose your setup</span>  </a> </li> </ul>  </details> </li><li class="astro-3ii7xxms"> <details open class="astro-3ii7xxms"> <summary class="astro-3ii7xxms"> <span class="group-label astro-3ii7xxms"> <span class="large astro-3ii7xxms">Interactive courses</span>  </span> <svg aria-hidden="true" class="caret astro-3ii7xxms astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="1"></sl-sidebar-restore> <ul class="astro-3ii7xxms"> <li class="astro-3ii7xxms"> <a href="/docs/learn/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Choose a learning path</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/learn/first-contact/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">First Contact</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/learn/protocols/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Protocols for Builders</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/learn/protocols/collections/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Collection Protocols</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/learn/protocols/state-lifecycle/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">State and Lifecycle Protocols</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/learn/protocols/atlas/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Protocol Atlas</span>  </a> </li> </ul>  </details> </li><li class="astro-3ii7xxms"> <details class="astro-3ii7xxms"> <summary class="astro-3ii7xxms"> <span class="group-label astro-3ii7xxms"> <span class="large astro-3ii7xxms">Build Tic Tac Toe</span>  </span> <svg aria-hidden="true" class="caret astro-3ii7xxms astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="2"></sl-sidebar-restore> <ul class="astro-3ii7xxms"> <li class="astro-3ii7xxms"> <a href="/docs/create/tictactoe/board/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Part I — Draw the board</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/create/tictactoe/files/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Part II — Organise the game</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/create/tictactoe/state/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Part III — State and rules</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/create/tictactoe/input/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Part IV — Pointer input</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/create/tictactoe/rendering/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Part V — Rendering</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/create/tictactoe/live/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Part VI — Make it live</span>  </a> </li> </ul>  </details> </li><li class="astro-3ii7xxms"> <details open class="astro-3ii7xxms"> <summary class="astro-3ii7xxms"> <span class="group-label astro-3ii7xxms"> <span class="large astro-3ii7xxms">Hara language course</span>  </span> <svg aria-hidden="true" class="caret astro-3ii7xxms astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="3"></sl-sidebar-restore> <ul class="astro-3ii7xxms"> <li class="astro-3ii7xxms"> <a href="/docs/hal-intro/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Course map</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/hal-intro/01-basic-data/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">01 — Basic data and persistent collections</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/hal-intro/02-functions-and-atoms/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">02 — Functions and atoms</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/hal-intro/03-iterators-and-streaming/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">03 — Sequences, iterators, and streaming</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/hal-intro/04-coroutines-and-promises/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">04 — Coroutines and promises</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/hal-intro/05-array-and-object/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">05 — Arrays and objects</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/hal-intro/06-bytes-and-strings/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">06 — Bytes and strings</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/hal-intro/07-io-and-files/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">07 — I/O and files</span>  </a> </li> </ul>  </details> </li><li class="astro-3ii7xxms"> <details class="astro-3ii7xxms"> <summary class="astro-3ii7xxms"> <span class="group-label astro-3ii7xxms"> <span class="large astro-3ii7xxms">Work with Hara</span>  </span> <svg aria-hidden="true" class="caret astro-3ii7xxms astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="4"></sl-sidebar-restore> <ul class="astro-3ii7xxms"> <li class="astro-3ii7xxms"> <a href="/docs/getting-started/cli/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">CLI</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/getting-started/web/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Web</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/getting-started/jvm/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">JVM</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/getting-started/vscode/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">VS Code</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/getting-started/emacs/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Emacs</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/concepts/runtime-driven-development/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Runtime-driven development</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/concepts/live-coding/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Live coding</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/concepts/unified-representation/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Unified representation</span>  </a> </li> </ul>  </details> </li><li class="astro-3ii7xxms"> <details open class="astro-3ii7xxms"> <summary class="astro-3ii7xxms"> <span class="group-label astro-3ii7xxms"> <span class="large astro-3ii7xxms">Guides &amp; reference</span>  </span> <svg aria-hidden="true" class="caret astro-3ii7xxms astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="5"></sl-sidebar-restore> <ul class="astro-3ii7xxms"> <li class="astro-3ii7xxms"> <a href="/docs/reference/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Language and runtime API reference</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/cli-contract/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">CLI application contract</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/clojure-core-compatibility/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Clojure core / Hara core compatibility</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/extensions/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Hara extensions</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/extensions-contract/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Hara extensions</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/jvm-flavor/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">JVM native flavor</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/l0-language/" aria-current="page" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Hara L0 language contract</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/namespaces/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Namespace catalog</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/native-flavors/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Native runtime flavors</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/project-manifest/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">project.edn</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/repl/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Hara REPL UX specification</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/resp-protocol/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Hara RESP Protocol</span>  </a> </li><li class="astro-3ii7xxms"> <details open class="astro-3ii7xxms"> <summary class="astro-3ii7xxms"> <span class="group-label astro-3ii7xxms"> <span class="large astro-3ii7xxms">runtime</span>  </span> <svg aria-hidden="true" class="caret astro-3ii7xxms astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="6"></sl-sidebar-restore> <ul class="astro-3ii7xxms"> <li class="astro-3ii7xxms"> <details open class="astro-3ii7xxms"> <summary class="astro-3ii7xxms"> <span class="group-label astro-3ii7xxms"> <span class="large astro-3ii7xxms">kernel-architecture</span>  </span> <svg aria-hidden="true" class="caret astro-3ii7xxms astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.25rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg> </summary> <sl-sidebar-restore data-index="7"></sl-sidebar-restore> <ul class="astro-3ii7xxms"> <li class="astro-3ii7xxms"> <a href="/docs/reference/runtime/kernel-architecture/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Kernel architecture</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/runtime/kernel-architecture/multi-session-kernels/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Multi-session kernels with attachable filesystems</span>  </a> </li> </ul>  </details> </li> </ul>  </details> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/runtime-benchmarks/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Runtime Benchmarks</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/runtime-libraries/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Hara runtime libraries</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/rust-runtime/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Rust and WASM runtime mapping</span>  </a> </li><li class="astro-3ii7xxms"> <a href="/docs/reference/xtalk-equivalence/" class="astro-3ii7xxms"> <span class="astro-3ii7xxms">Hara and xtalk equivalence</span>  </a> </li> </ul>  </details> </li> </ul>   <script aria-hidden="true">
+		(() => {
+			const scroller = document.getElementById('starlight__sidebar');
+			if (!window._starlightScrollRestore || !scroller) return;
+			scroller.scrollTop = window._starlightScrollRestore;
+			delete window._starlightScrollRestore;
+		})();
+	</script> </sl-sidebar-state-persist>  <div class="md:sl-hidden"> <div class="mobile-preferences sl-flex astro-wu23bvmt"> <div class="social-icons astro-wu23bvmt"> <a href="https://github.com/hara-lang/hara" rel="me" class="sl-flex astro-wy4te6ga"><span class="sr-only astro-wy4te6ga">GitHub</span><svg aria-hidden="true" class="astro-wy4te6ga astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M12 .3a12 12 0 0 0-3.8 23.38c.6.12.83-.26.83-.57L9 21.07c-3.34.72-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.08-.74.09-.73.09-.73 1.2.09 1.83 1.24 1.83 1.24 1.08 1.83 2.81 1.3 3.5 1 .1-.78.42-1.31.76-1.61-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.14-.3-.54-1.52.1-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.64 1.66.24 2.88.12 3.18a4.65 4.65 0 0 1 1.23 3.22c0 4.61-2.8 5.63-5.48 5.92.42.36.81 1.1.81 2.22l-.01 3.29c0 .31.2.69.82.57A12 12 0 0 0 12 .3Z"/></svg></a> </div> <starlight-theme-select>  <label style="--sl-select-width: 6.25em" class="astro-4yphtoen"> <span class="sr-only astro-4yphtoen">Select theme</span> <svg aria-hidden="true" class="icon label-icon astro-4yphtoen astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M21 14h-1V7a3 3 0 0 0-3-3H7a3 3 0 0 0-3 3v7H3a1 1 0 0 0-1 1v2a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3v-2a1 1 0 0 0-1-1ZM6 7a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v7H6V7Zm14 10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-1h16v1Z"/></svg> <select autocomplete="off" class="astro-4yphtoen"> <option value="dark" class="astro-4yphtoen">Dark</option><option value="light" class="astro-4yphtoen">Light</option><option value="auto" selected class="astro-4yphtoen">Auto</option> </select> <svg aria-hidden="true" class="icon caret astro-4yphtoen astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1em;"><path d="M17 9.17a1 1 0 0 0-1.41 0L12 12.71 8.46 9.17a1 1 0 1 0-1.41 1.42l4.24 4.24a1.002 1.002 0 0 0 1.42 0L17 10.59a1.002 1.002 0 0 0 0-1.42Z"/></svg> </label>  </starlight-theme-select>  <script>
+	StarlightThemeProvider.updatePickers();
+</script>   </div>  </div> </div> </div> </nav> <div class="main-frame astro-vrdttmbt">  <script type="module">const a=document.getElementById("starlight__sidebar"),n=a?.querySelector("sl-sidebar-state-persist"),o="sl-sidebar-state",i=()=>{let t=[];const e=n?.dataset.hash||"";try{const s=sessionStorage.getItem(o),r=JSON.parse(s||"{}");Array.isArray(r.open)&&r.hash===e&&(t=r.open)}catch{}return{hash:e,open:t,scroll:a?.scrollTop||0}},c=t=>{try{sessionStorage.setItem(o,JSON.stringify(t))}catch{}},d=()=>c(i()),l=(t,e)=>{const s=i();s.open[e]=t,c(s)};n?.addEventListener("click",t=>{if(!(t.target instanceof Element))return;const e=t.target.closest("summary")?.closest("details");if(!e)return;const s=e.querySelector("sl-sidebar-restore"),r=parseInt(s?.dataset.index||"");isNaN(r)||l(!e.open,r)});addEventListener("visibilitychange",()=>{document.visibilityState==="hidden"&&d()});addEventListener("pageHide",d);</script> <div class="lg:sl-flex astro-67yu43on"> <aside class="right-sidebar-container print:hidden astro-67yu43on"> <div class="right-sidebar astro-67yu43on"> <script type="module" src="/_astro/MobileTableOfContents.astro_astro_type_script_index_0_lang.hwBsy0Mo.js"></script><script type="module" src="/_astro/TableOfContents.astro_astro_type_script_index_0_lang.FuRcXuRY.js"></script><div class="lg:sl-hidden astro-pb3aqygn"><mobile-starlight-toc data-min-h="2" data-max-h="3" class="astro-doynk5tl"><nav aria-labelledby="starlight__on-this-page--mobile" class="astro-doynk5tl"><details id="starlight__mobile-toc" class="astro-doynk5tl"><summary id="starlight__on-this-page--mobile" class="sl-flex astro-doynk5tl"><span class="toggle sl-flex astro-doynk5tl">On this page<svg aria-hidden="true" class="caret astro-doynk5tl astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1rem;"><path d="m14.83 11.29-4.24-4.24a1 1 0 1 0-1.42 1.41L12.71 12l-3.54 3.54a1 1 0 0 0 0 1.41 1 1 0 0 0 .71.29 1 1 0 0 0 .71-.29l4.24-4.24a1.002 1.002 0 0 0 0-1.42Z"/></svg></span><span class="display-current astro-doynk5tl"></span></summary><div class="dropdown astro-doynk5tl"><ul class="isMobile astro-g2bywc46" style="--depth: 0;"> <li class="astro-g2bywc46" style="--depth: 0;"> <a href="#_top" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">Overview</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#1-source-and-reader" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">1. Source and reader</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#2-values-and-evaluation" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">2. Values and evaluation</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#3-exceptions-and-cleanup" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">3. Exceptions and cleanup</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#4-persistent-collections-and-iteration" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">4. Persistent collections and iteration</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#5-explicit-marker-values-and-bytes" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">5. Explicit marker values and bytes</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#6-numbers" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">6. Numbers</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#7-protocols-structs-and-multimethods" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">7. Protocols, structs, and multimethods</span> </a> <ul class="isMobile astro-g2bywc46" style="--depth: 1;"> <li class="astro-g2bywc46" style="--depth: 1;"> <a href="#71-collection-operation-matrix" class="astro-g2bywc46" style="--depth: 1;"> <span class="astro-g2bywc46" style="--depth: 1;">7.1 Collection operation matrix</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 1;"> <a href="#72-protocol-dispatch-and-language-extensions" class="astro-g2bywc46" style="--depth: 1;"> <span class="astro-g2bywc46" style="--depth: 1;">7.2 Protocol dispatch and language extensions</span> </a>  </li> </ul>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#8-vars-namespaces-macros-and-modules" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">8. Vars, namespaces, macros, and modules</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#9-host-and-native-image-boundary" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">9. Host and Native Image boundary</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#10-conformance-and-intentional-differences" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">10. Conformance and intentional differences</span> </a>  </li> </ul> </div></details></nav></mobile-starlight-toc></div><div class="right-sidebar-panel sl-hidden lg:sl-block astro-pb3aqygn"><div class="sl-container astro-pb3aqygn"><starlight-toc data-min-h="2" data-max-h="3"><nav aria-labelledby="starlight__on-this-page"><h2 id="starlight__on-this-page">On this page</h2><ul class="astro-g2bywc46" style="--depth: 0;"> <li class="astro-g2bywc46" style="--depth: 0;"> <a href="#_top" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">Overview</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#1-source-and-reader" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">1. Source and reader</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#2-values-and-evaluation" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">2. Values and evaluation</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#3-exceptions-and-cleanup" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">3. Exceptions and cleanup</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#4-persistent-collections-and-iteration" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">4. Persistent collections and iteration</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#5-explicit-marker-values-and-bytes" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">5. Explicit marker values and bytes</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#6-numbers" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">6. Numbers</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#7-protocols-structs-and-multimethods" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">7. Protocols, structs, and multimethods</span> </a> <ul class="astro-g2bywc46" style="--depth: 1;"> <li class="astro-g2bywc46" style="--depth: 1;"> <a href="#71-collection-operation-matrix" class="astro-g2bywc46" style="--depth: 1;"> <span class="astro-g2bywc46" style="--depth: 1;">7.1 Collection operation matrix</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 1;"> <a href="#72-protocol-dispatch-and-language-extensions" class="astro-g2bywc46" style="--depth: 1;"> <span class="astro-g2bywc46" style="--depth: 1;">7.2 Protocol dispatch and language extensions</span> </a>  </li> </ul>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#8-vars-namespaces-macros-and-modules" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">8. Vars, namespaces, macros, and modules</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#9-host-and-native-image-boundary" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">9. Host and Native Image boundary</span> </a>  </li><li class="astro-g2bywc46" style="--depth: 0;"> <a href="#10-conformance-and-intentional-differences" class="astro-g2bywc46" style="--depth: 0;"> <span class="astro-g2bywc46" style="--depth: 0;">10. Conformance and intentional differences</span> </a>  </li> </ul> </nav></starlight-toc></div></div> </div> </aside> <div class="main-pane astro-67yu43on">  <main data-pagefind-body class="astro-bguv2lll" lang="en" dir="ltr">    <div class="content-panel astro-7nkwcw3z"> <div class="sl-container astro-7nkwcw3z"> <h1 id="_top" class="astro-j6tvhyss">Hara L0 language contract</h1>  </div> </div>  <div class="content-panel astro-7nkwcw3z"> <div class="sl-container astro-7nkwcw3z"> <div class="sl-markdown-content"> <p>Version: <code dir="auto">0.1</code></p>
+<p>This document is the normative, implementation-independent contract for the
+Truffle-hosted Hara L0 runtime. The executable examples and expected values
+are maintained in <a href="l0-conformance.edn"><code dir="auto">l0-conformance.edn</code></a>. An implementation
+may use different storage or compiler techniques, but it must preserve the
+observable behavior described here.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="1-source-and-reader">1. Source and reader</h2><a class="sl-anchor-link" href="#1-source-and-reader"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “1. Source and reader”</span></a></div>
+<p>Hara source is read as immutable forms. Whitespace, commas, and semicolon
+comments are discarded. Multiple forms may occur in one source. Supported
+literal forms are nil, booleans, strings, characters, symbols, keywords,
+integers, floating-point values, <code dir="auto">N</code>-suffixed big integers, <code dir="auto">M</code>-suffixed
+big decimals, lists, vectors, maps, sets, quote, syntax-quote, unquote,
+unquote-splicing, deref, metadata, and discard (<code dir="auto">#_</code>).</p>
+<p>Collections require matching delimiters. EOF, mismatched delimiters, invalid
+dispatch, incomplete reader prefixes, invalid escapes, and invalid numeric
+tokens are reader errors. Reader errors include the source name, line, and
+column when a source name is available. Leading whitespace is not part of a
+form’s source span.</p>
+<p>Aggregate forms may carry <code dir="auto">:line</code>, <code dir="auto">:column</code>, <code dir="auto">:end-line</code>, and <code dir="auto">:end-column</code>
+metadata. This metadata is diagnostic information and does not change value
+equality or symbol/keyword identity. Readable immutable values use canonical
+printing and must round-trip through the reader. Ratios are rejected.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="2-values-and-evaluation">2. Values and evaluation</h2><a class="sl-anchor-link" href="#2-values-and-evaluation"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “2. Values and evaluation”</span></a></div>
+<p>Nil and <code dir="auto">false</code> are falsey; every other value, including zero, the empty
+collection, and the empty string, is truthy. Expressions evaluate from left to
+right. A <code dir="auto">do</code> form returns its final expression, and a source containing
+multiple top-level forms returns the final result.</p>
+<p>The core special forms are <code dir="auto">quote</code>, <code dir="auto">if</code>, <code dir="auto">do</code>, <code dir="auto">when</code>, <code dir="auto">when-not</code>, <code dir="auto">and</code>,
+<code dir="auto">or</code>, <code dir="auto">cond</code>, <code dir="auto">let</code>, <code dir="auto">letfn</code>, <code dir="auto">binding</code>, <code dir="auto">loop</code>, <code dir="auto">recur</code>, <code dir="auto">fn</code>, <code dir="auto">def</code>,
+<code dir="auto">defn</code>, <code dir="auto">defn-</code>, <code dir="auto">declare</code>, <code dir="auto">defmulti</code>, <code dir="auto">defmethod</code>, <code dir="auto">var</code>, <code dir="auto">deref</code>, <code dir="auto">set!</code>,
+<code dir="auto">throw</code>, <code dir="auto">try</code>, <code dir="auto">ns</code>, <code dir="auto">in-ns</code>, <code dir="auto">require</code>, <code dir="auto">refer</code>, <code dir="auto">use</code>, <code dir="auto">alias</code>,
+<code dir="auto">defstruct</code>, <code dir="auto">defprotocol</code>, <code dir="auto">extend-type</code>, <code dir="auto">field</code>, and
+<code dir="auto">apply</code>. <code dir="auto">defn</code> is the only function-definition form; there is no <code dir="auto">defn.xt</code>.</p>
+<p>The ordinary collection functions <code dir="auto">count</code>, <code dir="auto">get</code>, <code dir="auto">assoc</code>, <code dir="auto">conj</code>, <code dir="auto">cons</code>,
+<code dir="auto">nth</code>, and <code dir="auto">empty</code> are protocol-backed language functions. <code dir="auto">cons</code> follows the
+public <code dir="auto">(cons item collection)</code> argument order; the other update/lookup
+functions place the collection first. Protocol method Vars dispatch through
+the same context-local registry, so language-defined extensions are visible
+without requiring Java interface implementation.</p>
+<p><code dir="auto">let</code> initializers are evaluated in parallel against the enclosing lexical
+environment. <code dir="auto">letfn</code> installs all local function bindings before evaluating
+the body, so self-recursion and mutual recursion work. Closures capture the
+lexical values they reference. <code dir="auto">recur</code> is valid only in tail position and
+must match the enclosing <code dir="auto">loop</code> or function arity.</p>
+<p>Functions support fixed arities, variadic parameter vectors using a final
+<code dir="auto">&#x26;</code> binding, and multiple arity clauses. Exact arities take precedence over a
+variadic fallback. <code dir="auto">apply</code> spreads the final sequential argument into the
+call. Invocation supports Hara functions, protocol <code dir="auto">IFn</code> implementations,
+multifunctions, and <code dir="auto">defstruct</code> constructors.</p>
+<p>The packaged <code dir="auto">std/foundation.hal</code> bootstrap defines <code dir="auto">nil?</code>, <code dir="auto">false?</code>, <code dir="auto">true?</code>,
+<code dir="auto">empty?</code>, <code dir="auto">first</code>, <code dir="auto">second</code>, <code dir="auto">rest</code>, and <code dir="auto">not-empty</code> using ordinary L0 forms
+and iterator operations. <code dir="auto">rest</code> returns a lazy <code dir="auto">Seq</code>, or nil when no values
+remain. There is no separate <code dir="auto">next</code> operation.</p>
+<p>A <code dir="auto">Seq</code> is a guaranteed non-empty lazy cell. Mathematically, Hara uses
+<code dir="auto">HaraSeq(A) = Option(NonEmptyLazySeq(A))</code>: <code dir="auto">nil</code> is the empty option, while a
+value satisfying <code dir="auto">seq?</code> has a head and a lazy tail that eventually yields
+another <code dir="auto">Seq</code> or <code dir="auto">nil</code>. A <code dir="auto">Seq</code> is also a one-shot iterator, so both <code dir="auto">seq?</code>
+and <code dir="auto">iter?</code> return true for it. An empty vector and an exhausted iterator are
+not identical to <code dir="auto">nil</code>, but all three expose the empty element stream through
+their conversions:</p>
+<div class="expressive-code"><link rel="stylesheet" href="/_astro/ec.v4551.css"><script type="module" src="/_astro/ec.0vx5m.js"></script><figure class="frame not-content"><figcaption class="header"></figcaption><pre data-language="clojure"><code><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">(</span><span style="--0:#82AAFF;--1:#3B61B0">seq</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">nil</span><span style="--0:#D6DEEB;--1:#403F53">)          </span><span style="--0:#919F9F;--1:#5F636F">; => nil</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">(</span><span style="--0:#82AAFF;--1:#3B61B0">seq</span><span style="--0:#D6DEEB;--1:#403F53"> [])           </span><span style="--0:#919F9F;--1:#5F636F">; => nil</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">(</span><span style="--0:#82AAFF;--1:#3B61B0">rest</span><span style="--0:#D6DEEB;--1:#403F53"> [])          </span><span style="--0:#919F9F;--1:#5F636F">; => nil</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">(</span><span style="--0:#82AAFF;--1:#3B61B0">rest</span><span style="--0:#D6DEEB;--1:#403F53"> [</span><span style="--0:#F78C6C;--1:#AA0982">1</span><span style="--0:#D6DEEB;--1:#403F53">])         </span><span style="--0:#919F9F;--1:#5F636F">; => nil</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">(</span><span style="--0:#82AAFF;--1:#3B61B0">seq?</span><span style="--0:#D6DEEB;--1:#403F53"> (</span><span style="--0:#82AAFF;--1:#3B61B0">rest</span><span style="--0:#D6DEEB;--1:#403F53"> [</span><span style="--0:#F78C6C;--1:#AA0982">1</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#F78C6C;--1:#AA0982">2</span><span style="--0:#D6DEEB;--1:#403F53">]))</span><span style="--0:#919F9F;--1:#5F636F">; => true</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">(</span><span style="--0:#82AAFF;--1:#3B61B0">iter?</span><span style="--0:#D6DEEB;--1:#403F53"> (</span><span style="--0:#82AAFF;--1:#3B61B0">rest</span><span style="--0:#D6DEEB;--1:#403F53"> [</span><span style="--0:#F78C6C;--1:#AA0982">1</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#F78C6C;--1:#AA0982">2</span><span style="--0:#D6DEEB;--1:#403F53">]))</span><span style="--0:#919F9F;--1:#5F636F">; => true</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">(</span><span style="--0:#82AAFF;--1:#3B61B0">vec</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#82AAFF;--1:#3B61B0">nil</span><span style="--0:#D6DEEB;--1:#403F53">)          </span><span style="--0:#919F9F;--1:#5F636F">; => []</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">(</span><span style="--0:#82AAFF;--1:#3B61B0">vec</span><span style="--0:#D6DEEB;--1:#403F53"> (</span><span style="--0:#82AAFF;--1:#3B61B0">rest</span><span style="--0:#D6DEEB;--1:#403F53"> [</span><span style="--0:#F78C6C;--1:#AA0982">1</span><span style="--0:#D6DEEB;--1:#403F53">]))   </span><span style="--0:#919F9F;--1:#5F636F">; => []</span></div></div><div class="ec-line"><div class="code"><span style="--0:#D6DEEB;--1:#403F53">(</span><span style="--0:#82AAFF;--1:#3B61B0">vec</span><span style="--0:#D6DEEB;--1:#403F53"> (</span><span style="--0:#82AAFF;--1:#3B61B0">rest</span><span style="--0:#D6DEEB;--1:#403F53"> [</span><span style="--0:#F78C6C;--1:#AA0982">1</span><span style="--0:#D6DEEB;--1:#403F53"> </span><span style="--0:#F78C6C;--1:#AA0982">2</span><span style="--0:#D6DEEB;--1:#403F53">])) </span><span style="--0:#919F9F;--1:#5F636F">; => [2]</span></div></div></code></pre><div class="copy"><div aria-live="polite"></div><button title="Copy to clipboard" data-copied="Copied!" data-code="(seq nil)          ; => nil(seq [])           ; => nil(rest [])          ; => nil(rest [1])         ; => nil(seq? (rest [1 2])); => true(iter? (rest [1 2])); => true(vec nil)          ; => [](vec (rest [1]))   ; => [](vec (rest [1 2])) ; => [2]"><div></div></button></div></figure></div>
+<p><code dir="auto">iter-has?</code> observes the next iterator step exactly and buffers a discovered
+item. Calling it repeatedly does not logically advance the cursor; the next
+<code dir="auto">iter-next</code> returns that item. Exhaustion returns <code dir="auto">false</code>, while other iterator
+failures propagate.</p>
+<p>Iterator operations remain strict about representation: <code dir="auto">(iter nil)</code> creates
+an exhausted cursor, while <code dir="auto">(iter-has? nil)</code> is an error. <code dir="auto">cons</code> can prepend
+to a <code dir="auto">Seq</code> without realizing its tail; <code dir="auto">conj</code> is not defined for <code dir="auto">Seq</code>.
+<code dir="auto">cycle</code> requires a non-empty source and rejects an empty one.</p>
+<p>The same bootstrap provides ordinary names <code dir="auto">map</code>, <code dir="auto">filter</code>, <code dir="auto">take</code>, <code dir="auto">drop</code>,
+<code dir="auto">mapcat</code>, <code dir="auto">keep</code>, <code dir="auto">cycle</code>, <code dir="auto">zip</code>, and <code dir="auto">partition-pair</code>; their <code dir="auto">iter-*</code>
+counterparts return raw one-shot iterators. Direct <code dir="auto">(map f concrete)</code> eagerly
+materializes and preserves the first collection’s shape. Curried <code dir="auto">((map f) source)</code> is lazy, as is <code dir="auto">(map f (seq source))</code>; <code dir="auto">seq</code> makes that lazy boundary
+explicit. Predicate reductions <code dir="auto">every?</code> and <code dir="auto">any?</code> consume an iterator lazily
+until their result is known.</p>
+<p>The bootstrap also provides <code dir="auto">get-in</code>, <code dir="auto">assoc-in</code>, <code dir="auto">update</code>, and <code dir="auto">update-in</code> for
+persistent nested values. These are ordinary <code dir="auto">.hal</code> functions built on the
+collection protocol functions; they do not introduce mutable update semantics.</p>
+<p>Collection navigation also includes <code dir="auto">last</code>, <code dir="auto">reverse</code>, <code dir="auto">key</code>, <code dir="auto">val</code>, <code dir="auto">keys</code>,
+and <code dir="auto">vals</code>. Membership is protocol-based: use <code dir="auto">IFind/find</code> to retrieve an
+entry and public <code dir="auto">has?</code> to distinguish absence from a present nil value.
+<code dir="auto">keys</code> and <code dir="auto">vals</code> return lazy <code dir="auto">Seq</code> values, while <code dir="auto">reverse</code> returns a
+persistent list and does not mutate its input.</p>
+<p><code dir="auto">reduce</code> eagerly consumes an iterator with either <code dir="auto">(reduce function value)</code>
+or <code dir="auto">(reduce function initial value)</code>. The two-argument form uses the first
+source element as its accumulator and rejects an empty source; the three-
+argument form returns the initial value for an empty source. The callback is an
+ordinary Hara function receiving accumulator and element.</p>
+<p>Destructuring supports nested positional vector patterns, vector rest
+bindings, map <code dir="auto">:keys</code>, <code dir="auto">:strs</code>, <code dir="auto">:syms</code>, <code dir="auto">:as</code>, and <code dir="auto">:or</code> patterns in function,
+<code dir="auto">let</code>, and <code dir="auto">loop</code> bindings. Missing sequential or map values produce nil
+unless a map default applies.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="3-exceptions-and-cleanup">3. Exceptions and cleanup</h2><a class="sl-anchor-link" href="#3-exceptions-and-cleanup"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “3. Exceptions and cleanup”</span></a></div>
+<p><code dir="auto">throw</code> propagates a guest value. <code dir="auto">try</code> supports ordered typed catch clauses
+and an optional <code dir="auto">finally</code>; typed catches match Hara struct types and the
+documented scalar/generic exception categories. Unmatched guest values
+propagate. <code dir="auto">finally</code> executes during normal completion and exception
+unwinding. Arity, unbound symbol, invalid form, reader, protocol, and
+interop failures are stable Hara errors and retain source sections where the
+offending form has a source span.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="4-persistent-collections-and-iteration">4. Persistent collections and iteration</h2><a class="sl-anchor-link" href="#4-persistent-collections-and-iteration"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “4. Persistent collections and iteration”</span></a></div>
+<p>Lists, vectors, maps, sets, queues, tuples, ordered collections, and sorted
+collections are persistent values. Literal <code dir="auto">[]</code>, <code dir="auto">{}</code>, lists, and sets never
+become mutable merely because they cross a host boundary. Protocol operations
+such as count, lookup, nth, assoc, dissoc, conj, cons, first, and
+empty preserve the collection-family rules tested by the conformance suites.</p>
+<p>The ordinary <code dir="auto">dissoc</code> function accepts a collection followed by one or more
+keys and returns persistent updates. <code dir="auto">peek</code> and <code dir="auto">pop</code> expose first-element
+navigation through the collection protocol; they never mutate the input.</p>
+<p>The bootstrap provides lazy <code dir="auto">range</code>, <code dir="auto">repeat</code>, <code dir="auto">repeatedly</code>, and <code dir="auto">iterate</code>
+generators. These return <code dir="auto">Seq</code> values; their <code dir="auto">iter-*</code> primitives return raw
+iterators. Infinite forms remain lazy until consumed by <code dir="auto">take</code>, <code dir="auto">iter-next</code>, or
+another iterator operation.</p>
+<p><code dir="auto">take-while</code> and <code dir="auto">drop-while</code> are lazy iterator combinators. They evaluate
+predicates only as demand advances and close their source when it is exhausted
+or the stopping predicate is reached.</p>
+<p><code dir="auto">partition-all</code> emits lazy persistent vector chunks and retains a final partial
+chunk; <code dir="auto">partition</code> emits only complete chunks and discards an unmatched tail.
+Both require a positive chunk size.</p>
+<p><code dir="auto">map</code> and <code dir="auto">iter-map</code> accept one or more sources. With multiple sources they
+advance them in lockstep and stop at the shortest source, invoking the function
+with one value from each source.</p>
+<p><code dir="auto">interpose</code> lazily inserts a separator between source values. <code dir="auto">interleave</code>
+round-robins multiple sources and stops when the shortest source is exhausted.</p>
+<p>Hara is iterator-first. It does not require Clojure <code dir="auto">ISeq</code>/<code dir="auto">Seq</code> semantics.
+The core iterator forms are:</p>
+<ul>
+<li><code dir="auto">iter</code>, <code dir="auto">iter-has?</code>, <code dir="auto">iter-next</code>, and <code dir="auto">iter-close</code>;</li>
+<li>lazy <code dir="auto">concat</code>, <code dir="auto">iter-map</code>, <code dir="auto">iter-filter</code>, <code dir="auto">iter-take</code>, <code dir="auto">iter-drop</code>, and
+<code dir="auto">iter-zip</code>, <code dir="auto">iter-cycle</code>, <code dir="auto">iter-partition-pair</code>, <code dir="auto">iter-mapcat</code>, and
+<code dir="auto">iter-keep</code>.</li>
+</ul>
+<p><code dir="auto">iter-cycle</code> re-acquires a replayable source only after its current iteration
+is exhausted. <code dir="auto">iter-partition-pair</code> emits two-element persistent vectors and
+drops an unmatched final element.</p>
+<p>Iterator sources are acquired only when demanded. <code dir="auto">iter-next</code> reports a stable
+exhaustion error, and closing a wrapper closes its acquired source iterators.
+The language does not include mandatory transducers, <code dir="auto">transduce</code>, or
+<code dir="auto">eduction</code>.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="5-explicit-marker-values-and-bytes">5. Explicit marker values and bytes</h2><a class="sl-anchor-link" href="#5-explicit-marker-values-and-bytes"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “5. Explicit marker values and bytes”</span></a></div>
+<p>Persistent literals remain distinct from target-like mutable values:</p>
+<ul>
+<li><code dir="auto">array</code> creates a mutable indexed marker.</li>
+<li><code dir="auto">object</code> creates a mutable string-keyed marker.</li>
+</ul>
+<p>Only values created by these markers accept restricted dot calls. Array methods
+are <code dir="auto">get</code>, <code dir="auto">set</code>, <code dir="auto">push-first</code>, <code dir="auto">push-last</code>, <code dir="auto">pop-first</code>, <code dir="auto">pop-last</code>, <code dir="auto">insert</code>,
+<code dir="auto">remove</code>, <code dir="auto">clone</code>, <code dir="auto">slice</code>, <code dir="auto">map</code>, <code dir="auto">filter</code>, <code dir="auto">fold-left</code>, and <code dir="auto">fold-right</code>.
+Object methods are <code dir="auto">has?</code>, <code dir="auto">get</code>, <code dir="auto">set</code>, <code dir="auto">delete</code>, <code dir="auto">clone</code>, <code dir="auto">assign</code>, <code dir="auto">keys</code>,
+<code dir="auto">vals</code>, and <code dir="auto">pairs</code>. A call has the form <code dir="auto">(. target (method arguments...))</code> and
+does not expose host members or reflection. Marker arrays also implement the
+ordinary <code dir="auto">ICount</code> and <code dir="auto">INth</code> collection protocols. Mutable values have identity
+semantics and are not specified as thread-safe.</p>
+<p>Bytes are an ordinary value category constructed with <code dir="auto">(bytes ...)</code>. Elements
+use signed-byte storage and accept the checked <code dir="auto">-128..255</code> input domain.
+Operations live in <code dir="auto">std.lib.bytes</code>: <code dir="auto">bytes/count</code>, <code dir="auto">bytes/get</code>, <code dir="auto">bytes/set</code>,
+<code dir="auto">bytes/copy</code>, <code dir="auto">bytes/slice</code>, <code dir="auto">bytes/u8</code>, and <code dir="auto">bytes/s8</code>. <code dir="auto">bytes/get</code> returns an
+unsigned element in the range <code dir="auto">0..255</code> and accepts an optional fallback for an
+invalid index; without a fallback it reports a bounds error. Protocol
+<code dir="auto">INth/nth</code> exposes the signed stored element. <code dir="auto">bytes/set</code> mutates and returns
+the same byte array after checked conversion. Copy and
+slice allocate independent storage. Readable bytes print as <code dir="auto">(bytes ...)</code>,
+and equality/hashing use byte content. Raw connector transport preserves
+bytes as bytes.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="6-numbers">6. Numbers</h2><a class="sl-anchor-link" href="#6-numbers"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “6. Numbers”</span></a></div>
+<p>The numeric categories are fixed-width integral values, floating-point values,
+<code dir="auto">java.math.BigInteger</code>, and <code dir="auto">java.math.BigDecimal</code>. Arithmetic promotes to a
+representation capable of preserving the operation result; primitive pairs
+use specialized Truffle paths and big-number cases use generic fallback.
+<code dir="auto">+</code>, <code dir="auto">-</code>, <code dir="auto">*</code>, <code dir="auto">/</code>, and <code dir="auto">mod</code> are variadic with the documented identities and
+unary behavior and are also callable Vars, so they can be passed to functions
+such as <code dir="auto">reduce</code>. Division is ratio-free: <code dir="auto">(/ 2)</code> evaluates to integer <code dir="auto">0</code>.
+Division or remainder by zero is an error. Numeric equality and hashing
+normalize equivalent integral/decimal representations, decimal scale, and
+signed zero according to the conformance cases. NaN and infinities are valid
+floating values with the specified comparison behavior.</p>
+<p>The comparison and equality operators <code dir="auto">&#x3C;</code>, <code dir="auto">&#x3C;=</code>, <code dir="auto">></code>, <code dir="auto">>=</code>, <code dir="auto">=</code>, and <code dir="auto">not=</code> are
+also callable Vars. They require at least two arguments and apply pairwise from
+left to right, so they can be passed to iterator consumers such as <code dir="auto">reduce</code>.</p>
+<p>Ratios, implicit complex numbers, and an implicit irrational-number tower are
+not L0 numeric categories. They may be explicit library or host values later.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="7-protocols-structs-and-multimethods">7. Protocols, structs, and multimethods</h2><a class="sl-anchor-link" href="#7-protocols-structs-and-multimethods"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “7. Protocols, structs, and multimethods”</span></a></div>
+<div class="sl-heading-wrapper level-h3"><h3 id="71-collection-operation-matrix">7.1 Collection operation matrix</h3><a class="sl-anchor-link" href="#71-collection-operation-matrix"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “7.1 Collection operation matrix”</span></a></div>
+<p>The collection profile distinguishes language values from dispatch categories. A
+Java object participates only when it implements a Hara protocol adapter; being
+a <code dir="auto">java.util.Collection</code> does not implicitly grant language operations. Foreign
+polyglot values likewise require an explicit protocol extension.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Receiver family</th><th>Lookup / invocation</th><th>Persistent update</th><th>Count / empty</th><th>Indexed access</th><th>Iteration</th></tr></thead><tbody><tr><td>Persistent maps (HAMT, ordered, sorted, trie)</td><td>keys preserve present-<code dir="auto">nil</code> versus missing fallback; maps are callable</td><td><code dir="auto">assoc</code>/<code dir="auto">dissoc</code> return the same concrete family and preserve the original</td><td>supported; <code dir="auto">empty</code> preserves the family</td><td>unsupported unless the concrete ordered/sorted contract declares it</td><td>entries are Hara <code dir="auto">IPair</code> values</td></tr><tr><td>Persistent sets (HAMT, ordered, sorted)</td><td>callable membership returns the stored value or fallback</td><td><code dir="auto">conj</code>/removal return the same family and preserve the original</td><td>supported; <code dir="auto">empty</code> preserves the family</td><td>ordered/sorted forms expose only their declared indexed contract</td><td>yields unique values</td></tr><tr><td>Vector</td><td>callable <code dir="auto">nth</code></td><td><code dir="auto">assoc</code> and <code dir="auto">conj</code> return a new vector</td><td>supported</td><td>supported; negative and past-end indexes fail</td><td>insertion order</td></tr><tr><td>List</td><td>lookup and <code dir="auto">nth</code> through its sequential contract</td><td><code dir="auto">cons</code>/<code dir="auto">push-first</code> prepend; navigation returns new lists</td><td>supported</td><td>supported by its declared sequential contract</td><td>head to tail</td></tr><tr><td>Queue</td><td>sequential lookup</td><td><code dir="auto">conj</code>/<code dir="auto">push-last</code> enqueue and preserve the original</td><td>supported</td><td>supported by its declared sequential contract</td><td>head to tail</td></tr><tr><td>Tuple</td><td>callable <code dir="auto">nth</code></td><td>fixed-arity operations return the canonical resulting tuple arity</td><td>supported; empty is canonical <code dir="auto">Tup0</code></td><td>supported</td><td>tuple order</td></tr><tr><td>Mutable Hara collections and <code dir="auto">array</code>/<code dir="auto">object</code> markers</td><td>supported only by their declared protocols or restricted dot methods</td><td>mutation returns the same identity and is immediately visible</td><td>declared collection protocols only</td><td>arrays support indexed access; objects use string keys</td><td>declared protocol only</td></tr><tr><td>Bytes</td><td>byte lookup supports a fallback; <code dir="auto">INth</code> exposes signed storage</td><td><code dir="auto">bytes/set</code> mutates the byte buffer and returns its identity</td><td>count supported</td><td>checked bounds</td><td>byte order</td></tr><tr><td><code dir="auto">nil</code></td><td>lookup returns <code dir="auto">nil</code> or the supplied fallback</td><td><code dir="auto">conj</code> creates a singleton list; <code dir="auto">assoc</code> is unsupported</td><td>count is zero and empty is <code dir="auto">nil</code></td><td>unsupported</td><td>empty iterator where explicitly requested</td></tr><tr><td>Primitive scalar</td><td>no collection lookup or update</td><td>unsupported</td><td>unsupported unless explicitly extended</td><td>unsupported</td><td>unsupported</td></tr><tr><td>Foreign polyglot value</td><td>only explicitly installed foreign extensions</td><td>only explicitly installed foreign extensions</td><td>only explicitly installed foreign extensions</td><td>only explicitly installed foreign extensions</td><td>only explicitly installed foreign extensions</td></tr></tbody></table>
+<p>Duplicate map keys retain one entry with the last associated value. Duplicate set
+items retain one value. Invalid indexes and missing protocol implementations are
+errors identifying the protocol/method, receiver category, and searched dispatch
+path. Mutable and persistent operations must never silently cross their identity
+boundary.</p>
+<p>Hara remains iterator-first: this matrix does not imply Clojure <code dir="auto">ISeq</code>,
+transducers, <code dir="auto">transduce</code>, or <code dir="auto">eduction</code> semantics.</p>
+<div class="sl-heading-wrapper level-h3"><h3 id="72-protocol-dispatch-and-language-extensions">7.2 Protocol dispatch and language extensions</h3><a class="sl-anchor-link" href="#72-protocol-dispatch-and-language-extensions"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “7.2 Protocol dispatch and language extensions”</span></a></div>
+<p>Protocols are language descriptors with context-local dispatch registries.
+Java interfaces are optional adapters and fast paths, not the language
+definition. <code dir="auto">defprotocol</code> declares direct namespace method Vars; <code dir="auto">extend-type</code>
+installs language implementations; calling the method Var performs dispatch. Dispatch supports Hara
+values, adapted Java values, primitives, nil, and foreign values. Replacing a
+method or extension invalidates affected dispatch assumptions.</p>
+<p><code dir="auto">defstruct</code> creates immutable <code dir="auto">HaraStruct</code> values. Struct metadata is separate
+from fields and survives <code dir="auto">with-meta</code>; metadata does not affect value equality
+or hashing. <code dir="auto">IFn</code> is a language protocol and can be extended to structs.
+<code dir="auto">defmulti</code>/<code dir="auto">defmethod</code> dispatch by Hara equality and support <code dir="auto">:default</code>.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="8-vars-namespaces-macros-and-modules">8. Vars, namespaces, macros, and modules</h2><a class="sl-anchor-link" href="#8-vars-namespaces-macros-and-modules"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “8. Vars, namespaces, macros, and modules”</span></a></div>
+<p>Definitions live in namespace Vars. <code dir="auto">var</code>, <code dir="auto">deref</code>, <code dir="auto">set!</code>, <code dir="auto">alter-var-root</code>,
+and <code dir="auto">binding</code> implement root and dynamic binding behavior. Dynamic bindings
+are restored after normal completion and guest errors. Namespace aliases and
+referred Vars preserve live Var identity.</p>
+<p><code dir="auto">defmacro</code> runs in the context-local compile-time registry. Syntax-quote,
+unquote, unquote-splicing, variadic macros, <code dir="auto">macroexpand-1</code>, and recursive
+<code dir="auto">macroexpand</code> are supported. Literal <code dir="auto">require</code> loads filesystem or packaged
+<code dir="auto">.hal</code> modules during analysis when necessary, supports aliases, <code dir="auto">:refer</code>,
+<code dir="auto">:refer-macros</code>, and <code dir="auto">:reload</code>, and rolls back failed loads transactionally.
+Already compiled Truffle call targets are immutable; a newly compiled source
+observes a reloaded macro/module definition.</p>
+<p>The packaged L0 bootstrap is intentionally small and language-level: its
+current functions are defined in <code dir="auto">std/foundation.hal</code>. The complete Foundation
+stdlib and KMI/L1 port are later migration work, not hidden Java semantics.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="9-host-and-native-image-boundary">9. Host and Native Image boundary</h2><a class="sl-anchor-link" href="#9-host-and-native-image-boundary"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “9. Host and Native Image boundary”</span></a></div>
+<p>Level 0 has no guest-visible JVM or general host interop. <code dir="auto">host-symbol</code>,
+<code dir="auto">host-get</code>, and <code dir="auto">host-call</code> are unbound symbols. Polyglot array/member access is
+available only for values that explicitly expose that interop; guest dot calls
+remain restricted to <code dir="auto">array</code> and <code dir="auto">object</code> markers.
+Native Image must include the same language resources and supported adapters;
+reflection, generated classes, mutable classpaths, and unrestricted host
+loading are not required by the core profile.</p>
+<p>The JVM and Native Image profiles must execute the same conformance manifest.
+Native Image startup, binary size, reachability/build-report, and benchmark
+results are release evidence rather than language semantics.</p>
+<div class="sl-heading-wrapper level-h2"><h2 id="10-conformance-and-intentional-differences">10. Conformance and intentional differences</h2><a class="sl-anchor-link" href="#10-conformance-and-intentional-differences"><span aria-hidden="true" class="sl-anchor-icon"><svg width="16" height="16" viewBox="0 0 24 24"><path fill="currentcolor" d="m12.11 15.39-3.88 3.88a2.52 2.52 0 0 1-3.5 0 2.47 2.47 0 0 1 0-3.5l3.88-3.88a1 1 0 0 0-1.42-1.42l-3.88 3.89a4.48 4.48 0 0 0 6.33 6.33l3.89-3.88a1 1 0 1 0-1.42-1.42Zm8.58-12.08a4.49 4.49 0 0 0-6.33 0l-3.89 3.88a1 1 0 0 0 1.42 1.42l3.88-3.88a2.52 2.52 0 0 1 3.5 0 2.47 2.47 0 0 1 0 3.5l-3.88 3.88a1 1 0 1 0 1.42 1.42l3.88-3.89a4.49 4.49 0 0 0 0-6.33ZM8.83 15.17a1 1 0 0 0 1.1.22 1 1 0 0 0 .32-.22l4.92-4.92a1 1 0 0 0-1.42-1.42l-4.92 4.92a1 1 0 0 0 0 1.42Z"></path></svg></span><span class="sr-only" data-pagefind-ignore="">Section titled “10. Conformance and intentional differences”</span></a></div>
+<p><code dir="auto">l0-conformance.edn</code> is the stable executable corpus. Each case has an ID,
+category, source/setup, and expected value, type, readable form, or error.
+Implementations classify mismatches as a bug, a capability difference, or an
+approved specification revision. The current intentional differences from
+Clojure are: no mandatory ISeq/Seq, no ratios, no transducers/
+<code dir="auto">transduce</code>/<code dir="auto">eduction</code>, no Clojure-style host record contract (<code dir="auto">defstruct</code> is the primitive struct form), no <code dir="auto">deftype</code>, and no <code dir="auto">defn.xt</code>.</p> </div> <footer class="sl-flex astro-3yyafb3n"> <div class="meta sl-flex astro-3yyafb3n">   </div> <div class="pagination-links print:hidden astro-u2l5gyhi" dir="ltr"> <a href="/docs/reference/jvm-flavor/" rel="prev" class="astro-u2l5gyhi"> <svg aria-hidden="true" class="astro-u2l5gyhi astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17 11H9.41l3.3-3.29a1.004 1.004 0 1 0-1.42-1.42l-5 5a1 1 0 0 0-.21.33 1 1 0 0 0 0 .76 1 1 0 0 0 .21.33l5 5a1.002 1.002 0 0 0 1.639-.325 1 1 0 0 0-.219-1.095L9.41 13H17a1 1 0 0 0 0-2Z"/></svg> <span class="astro-u2l5gyhi"> Previous <br class="astro-u2l5gyhi"> <span class="link-title astro-u2l5gyhi">JVM native flavor</span> </span> </a> <a href="/docs/reference/namespaces/" rel="next" class="astro-u2l5gyhi"> <svg aria-hidden="true" class="astro-u2l5gyhi astro-c6vsoqas" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="--sl-icon-size: 1.5rem;"><path d="M17.92 11.62a1.001 1.001 0 0 0-.21-.33l-5-5a1.003 1.003 0 1 0-1.42 1.42l3.3 3.29H7a1 1 0 0 0 0 2h7.59l-3.3 3.29a1.002 1.002 0 0 0 .325 1.639 1 1 0 0 0 1.095-.219l5-5a1 1 0 0 0 .21-.33 1 1 0 0 0 0-.76Z"/></svg> <span class="astro-u2l5gyhi"> Next <br class="astro-u2l5gyhi"> <span class="link-title astro-u2l5gyhi">Namespace catalog</span> </span> </a> </div>   </footer>  </div> </div>   </main> </div> </div>  </div> </div>  </body></html>

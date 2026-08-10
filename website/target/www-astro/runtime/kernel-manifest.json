@@ -1,0 +1,55 @@
+{
+  "schema": "hara-kernel-manifest/v1",
+  "version": "0.1.5",
+  "htaAbi": 2,
+  "variants": {
+    "core": {
+      "file": "hara-wasm-core-0.1.5.wasm",
+      "features": [
+        "interpreter",
+        "hta",
+        "sessions",
+        "host-bridges"
+      ],
+      "url": "/runtime/hara-wasm-core-0.1.5.wasm",
+      "sha256": "c4f5e4cf0405be6da4feaa227d4ed3b541fcae055b59d5ac315845063f9a536f",
+      "bytes": {
+        "raw": 996208,
+        "gzip": 339083,
+        "brotli": 268600
+      }
+    },
+    "vm": {
+      "file": "hara-wasm-vm-0.1.5.wasm",
+      "features": [
+        "bytecode-vm",
+        "hta",
+        "sessions",
+        "host-bridges"
+      ],
+      "url": "/runtime/hara-wasm-vm-0.1.5.wasm",
+      "sha256": "bcc36341f2aa4af5f34c1f1ed13cbf1719ba9055d71f0b21e7b5523896194a3c",
+      "bytes": {
+        "raw": 1148471,
+        "gzip": 392196,
+        "brotli": 310341
+      }
+    },
+    "trace": {
+      "file": "hara-wasm-trace-0.1.5.wasm",
+      "features": [
+        "dev-trace",
+        "hta",
+        "sessions",
+        "host-bridges"
+      ],
+      "url": "/runtime/hara-wasm-trace-0.1.5.wasm",
+      "sha256": "b9badb9891f3541d2400b92d0e83de27b968af621149b6441243f601e4395677",
+      "bytes": {
+        "raw": 1012448,
+        "gzip": 345973,
+        "brotli": 274024
+      }
+    }
+  }
+}
