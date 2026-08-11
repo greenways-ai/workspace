@@ -90,10 +90,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git add .gitattributes AGENTS.md ARCHITECTURE.md assets scripts/00-repo .github/workflows/lfs-assets.yml
+          git add .gitattributes AGENTS.md ARCHITECTURE.md assets scripts/00-repo
           make repo-lfs-check
-          rm -rf .bootstrap-workspace-lfs .github/workflows/bootstrap-lfs-media.yml
-          git add -A
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git commit -m "Add Workspace Git LFS media store"
