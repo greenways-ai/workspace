@@ -1,0 +1,28 @@
+# Canonical 3D source formats stored under assets/3d through Git LFS.
+assets/3d/**/*.glb filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.gltf filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.bin filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.blend filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.blend1 filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.fbx filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.obj filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.mtl filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.stl filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.ply filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.dae filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.abc filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.3ds filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.vox filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.usd filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.usda filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.usdc filter=lfs diff=lfs merge=lfs -text
+assets/3d/**/*.usdz filter=lfs diff=lfs merge=lfs -text
+
+# Canonical video masters stored under assets/video through Git LFS.
+assets/video/**/*.mp4 filter=lfs diff=lfs merge=lfs -text
+assets/video/**/*.m4v filter=lfs diff=lfs merge=lfs -text
+assets/video/**/*.mov filter=lfs diff=lfs merge=lfs -text
+assets/video/**/*.webm filter=lfs diff=lfs merge=lfs -text
+assets/video/**/*.mkv filter=lfs diff=lfs merge=lfs -text
+assets/video/**/*.avi filter=lfs diff=lfs merge=lfs -text
+assets/video/**/*.ogv filter=lfs diff=lfs merge=lfs -text
