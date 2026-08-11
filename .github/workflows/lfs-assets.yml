@@ -1,0 +1,32 @@
+name: Git LFS media integrity
+
+on:
+  pull_request:
+    paths:
+      - .gitattributes
+      - assets/**
+      - scripts/00-repo/00-09-lfs-check.sh
+      - scripts/00-repo/Makefile
+      - .github/workflows/lfs-assets.yml
+  push:
+    branches: [main]
+    paths:
+      - .gitattributes
+      - assets/**
+      - scripts/00-repo/00-09-lfs-check.sh
+      - scripts/00-repo/Makefile
+      - .github/workflows/lfs-assets.yml
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: false
+      - run: git lfs install --local
+      - run: make repo-lfs-check

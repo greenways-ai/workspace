@@ -1,4 +1,4 @@
-.PHONY: list status fetch pull push sync force-update force-update-hard commit-push sync-children
+.PHONY: list status fetch pull push sync force-update force-update-hard commit-push sync-children lfs-install lfs-pull lfs-check
 
 list: ## List discovered repos and placeholder dirs
 	@./00-00-list.sh
@@ -29,3 +29,12 @@ commit-push: ## Commit dirty repos with M="msg" (children first, super-repo last
 
 sync-children: ## Clone newly added children, switch children to main, then pull all
 	@./00-08-sync-children.sh
+
+lfs-install: ## Install Git LFS hooks for the workspace clone
+	@git -C ../.. lfs install
+
+lfs-pull: ## Hydrate canonical 3D and video sources from Git LFS
+	@git -C ../.. lfs pull --include="assets/3d/**,assets/video/**"
+
+lfs-check: ## Verify the workspace media Git LFS contract
+	@./00-09-lfs-check.sh
