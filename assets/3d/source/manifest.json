@@ -1,0 +1,37 @@
+{
+  "protocol": "greenways.workspace-media-source/1",
+  "originRepository": "greenways-ai/greenways-ai.github.io",
+  "originCommit": "b1b385dba7e757f88f715db5e69e229b631bc7aa",
+  "assets": [
+    {
+      "path": "assets/3d/source/greenways-3d-logo.glb",
+      "bytes": 61698152,
+      "sha256": "8e267a5d1eeeeec05e5fefb74afca9dac6db2a36a9da67d4582cbeb86c3b62b0",
+      "origin": "https://github.com/greenways-ai/greenways-ai.github.io/blob/b1b385dba7e757f88f715db5e69e229b631bc7aa/assets/3d/greenways-3d-logo.glb"
+    },
+    {
+      "path": "assets/3d/source/greenways-os-logo.glb",
+      "bytes": 60512588,
+      "sha256": "e363a61dc0b40749dae3cc66f331f35a28137a1232e54e14fc366bfec7eefcba",
+      "origin": "https://github.com/greenways-ai/greenways-ai.github.io/blob/b1b385dba7e757f88f715db5e69e229b631bc7aa/assets/3d/greenways-os-logo.glb"
+    },
+    {
+      "path": "assets/3d/source/hestia-logo.glb",
+      "bytes": 62549112,
+      "sha256": "7a9a387ef1f4b984b0edb755446e65959102962f5222cd4c7d8258802f353bb4",
+      "origin": "https://github.com/greenways-ai/greenways-ai.github.io/blob/b1b385dba7e757f88f715db5e69e229b631bc7aa/assets/3d/hestia-logo.glb"
+    },
+    {
+      "path": "assets/3d/source/historia-3d-logo.glb",
+      "bytes": 61123424,
+      "sha256": "666830541e669568d96092cdce3c1e4c0d550f07f0501b2af02833012709a600",
+      "origin": "https://github.com/greenways-ai/greenways-ai.github.io/blob/b1b385dba7e757f88f715db5e69e229b631bc7aa/assets/3d/historia-3d-logo.glb"
+    },
+    {
+      "path": "assets/3d/source/hodos-3d-logo.glb",
+      "bytes": 63892924,
+      "sha256": "b2ce35c0af0e7bb0196fc5033caffa76423e5f0ddf2d03ad2d51c0331f5ce9d4",
+      "origin": "https://github.com/greenways-ai/greenways-ai.github.io/blob/b1b385dba7e757f88f715db5e69e229b631bc7aa/assets/3d/hodos-3d-logo.glb"
+    }
+  ]
+}

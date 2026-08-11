@@ -7,6 +7,9 @@ worked in as ordinary clones on the `main` branch, tracking `origin/main`.
 ## Layout
 
 - `application/` — deployable products (greenways-os)
+- `assets/` — canonical large 3D and video source media tracked through Git LFS;
+  small manifests and notes remain in ordinary Git, while publishing repos own
+  web-ready derivatives
 - `infra/` — packaging and registries (`greenways-homebrew` for Greenways product
   formulas, `greenways-homebrew-tap` for Hara formulas, hara-id, hara-packages)
 - `technology/` — core tech (hara, hara-archive, hara-specs-registry, hestia,
@@ -49,6 +52,9 @@ Root `Makefile` delegates to section Makefiles under `scripts/`:
   stashing uncommitted changes (`repo-force-update-hard` discards them instead)
 - `make repo-commit-push M="msg"` — commit dirty children (`git add -A`),
   push, then commit the super-repo last so submodule pointers are captured
+- `make repo-lfs-install | repo-lfs-pull | repo-lfs-check` — install Git LFS,
+  hydrate canonical 3D/video sources, and verify all media is represented by LFS
+  pointers
 - `make projects-detect | projects-build | projects-test` — per-project ops
   dispatched by manifest (make / npm / cargo / bb / python)
 - `make crossover-grep Q="pat"`, `crossover-branch B="name"`,
@@ -56,7 +62,7 @@ Root `Makefile` delegates to section Makefiles under `scripts/`:
 
 Scripts live in numbered sections, named `<section>-<index>-<name>.sh`:
 
-```
+```text
 scripts/lib/common.sh     # repo discovery + serial each_repo loop (source it)
 scripts/00-repo/          # git lifecycle
 scripts/01-projects/      # per-project build/test
@@ -78,6 +84,9 @@ Execution is serial by design; leave gaps in numbering for future scripts.
   it detaches every child onto the recorded SHA.
 - Don't create commits or push in child repos unless the user asks; use
   `make repo-commit-push` for coordinated multi-repo commits.
+- Put canonical heavy 3D/video sources only under `assets/3d` or `assets/video`,
+  run `make repo-lfs-check`, and keep directly served derivatives in the owning
+  product or publishing repository.
 
 ## Language-specific notes
 
