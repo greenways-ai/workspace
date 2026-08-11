@@ -49,6 +49,9 @@
 [submodule "website/greenways-www"]
 	path = website/greenways-www
 	url = https://github.com/greenways-ai/www.git
+[submodule "website/greenways-visual-language"]
+	path = website/greenways-visual-language
+	url = https://github.com/greenways-ai/visual-language.git
 [submodule "website/hara-benchmarks"]
 	path = website/hara-benchmarks
 	url = git@github.com:hara-lang/hara-benchmarks.git

@@ -14,8 +14,9 @@ worked in as ordinary clones on the `main` branch, tracking `origin/main`.
   (language runtime and libraries), `packaging/` (release and distribution
   scripts), and remaining support directories; its former `archive`,
   `extensions`, `specs` and `website` submodules are now external siblings.
-- `website/` — public sites (greenways-oss, greenways-www, hara-www, hara-docs,
-  hara-specs, hara-benchmarks, hara-visual-language, hara-world)
+- `website/` — public sites (greenways-oss, greenways-visual-language,
+  greenways-www, hara-www, hara-docs, hara-specs, hara-benchmarks,
+  hara-visual-language, hara-world)
 - `extensions/` — editor and browser apps for hara (hara-emacs, hara-lsp,
   hara-vscode). `hara-chrome` has been folded into
   `application/greenways-os/extension/hara-chrome`.
@@ -29,10 +30,11 @@ remote; skip them in network operations rather than failing.
 
 The following local integration symlinks are gitignored convenience links:
 
-- `technology/hara/hara-specs-registry` → `technology/hara-specs-registry`
-  (expected by `technology/hara` source paths and tests).
 - `website/docs` → `website/hara-docs` (expected by
   `website/hara-www/scripts/prepare-docs.mjs`).
+
+Hara integrations use `HARA_WORKSPACE_ROOT` and direct workspace paths; legacy
+links beneath `technology/hara` are no longer created.
 
 ## Repo management tooling
 
