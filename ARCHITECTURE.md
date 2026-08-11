@@ -34,6 +34,10 @@ Tahto core ─────────▶ no application repositories
 
 Application repositories may define optional Tahto workers and adapters. Tahto core must remain application-neutral. Greenways OS remains the authority for installation, consent, private keys, provider credentials, and application grants.
 
+## Media source boundary
+
+`assets/` is a source-media boundary rather than a runtime service. Canonical 3D and video masters are versioned through Git LFS together with small ordinary-Git manifests. Product and website repositories own reproducible web-ready models, still images, poster frames, and delivery encodes. No application may depend on a Git LFS object being directly served at runtime.
+
 ## Release-train rule
 
 Cross-repository changes are delivered as small architectural pull requests with explicit gates. The workspace pins compatible revisions only after each repository-local contract is reviewable and its conformance fixtures exist.
