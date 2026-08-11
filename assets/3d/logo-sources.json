@@ -1,0 +1,37 @@
+{
+  "protocol": "greenways.workspace-media-import/1",
+  "sourceRepository": "greenways-ai/greenways-ai.github.io",
+  "sourceCommit": "b1b385dba7e757f88f715db5e69e229b631bc7aa",
+  "assets": [
+    {
+      "sourcePath": "assets/3d/greenways-3d-logo.glb",
+      "targetPath": "assets/3d/source/greenways-3d-logo.glb",
+      "gitBlobSha": "b48efd3536aa46f1a3101b59d42ebe4f031718e4",
+      "bytes": 61698152
+    },
+    {
+      "sourcePath": "assets/3d/greenways-os-logo.glb",
+      "targetPath": "assets/3d/source/greenways-os-logo.glb",
+      "gitBlobSha": "bcc3380c986deb99ee44d1e6a40992f1880ba94b",
+      "bytes": 60512588
+    },
+    {
+      "sourcePath": "assets/3d/hestia-logo.glb",
+      "targetPath": "assets/3d/source/hestia-logo.glb",
+      "gitBlobSha": "c825422eb6502bbd48828645950928a7bd1b3888",
+      "bytes": 62549112
+    },
+    {
+      "sourcePath": "assets/3d/historia-3d-logo.glb",
+      "targetPath": "assets/3d/source/historia-3d-logo.glb",
+      "gitBlobSha": "d30d475f06dad6defe3d3271de86453f73b2c2f6",
+      "bytes": 61123424
+    },
+    {
+      "sourcePath": "assets/3d/hodos-3d-logo.glb",
+      "targetPath": "assets/3d/source/hodos-3d-logo.glb",
+      "gitBlobSha": "28089af7168d8a81e4d6a37495cf7d1089d46cca",
+      "bytes": 63892924
+    }
+  ]
+}
