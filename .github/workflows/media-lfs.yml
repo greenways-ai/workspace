@@ -1,0 +1,40 @@
+name: Workspace media LFS
+
+on:
+  pull_request:
+    paths:
+      - .gitattributes
+      - assets/**
+      - scripts/00-repo/00-09-lfs.sh
+      - scripts/00-repo/Makefile
+      - .github/workflows/media-lfs.yml
+  push:
+    branches: [main]
+    paths:
+      - .gitattributes
+      - assets/**
+      - scripts/00-repo/00-09-lfs.sh
+      - scripts/00-repo/Makefile
+      - .github/workflows/media-lfs.yml
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          fetch-depth: 0
+      - name: Verify Git LFS pointers
+        run: |
+          git lfs version
+          git lfs fsck --pointers
+      - name: Verify source directory coverage
+        run: |
+          test "$(git check-attr filter -- assets/3d/source/example.custom | sed 's/.*: //')" = lfs
+          test "$(git check-attr filter -- assets/video/source/example.custom | sed 's/.*: //')" = lfs
+          test "$(git check-attr filter -- example.glb | sed 's/.*: //')" = lfs
+          test "$(git check-attr filter -- example.mp4 | sed 's/.*: //')" = lfs
