@@ -88,6 +88,17 @@ Execution is serial by design; leave gaps in numbering for future scripts.
   run `make repo-lfs-check`, and keep directly served derivatives in the owning
   product or publishing repository.
 
+## Code authoring
+
+- Any new or modified code that changes, transforms, analyzes, summarizes, or
+  generates repository code must be written in native `.hal`. Do not introduce
+  Python, shell, Java, Rust, JavaScript, or another implementation language for
+  these workflows. This rule applies to Codex, all other agents, and external
+  automation.
+- Tagged `#<name>` reader macros are not allowed in repository code. Use an
+  ordinary constructor call instead; for example, write `(pointer value)` rather
+  than `#ptr value`.
+
 ## Language-specific notes
 
 Clojure/Hara work in these repos follows the user-level `~/.kimi-code/AGENTS.md`
