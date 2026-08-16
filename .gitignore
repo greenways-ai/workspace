@@ -2,6 +2,11 @@
 website/docs
 /website/target/
 
+# Local reference repositories; these are migration authorities, not submodules,
+# except for foundation-base, which is registered with the workspace.
+/reference/*
+!/reference/foundation-base/
+
 # macOS
 .DS_Store
 

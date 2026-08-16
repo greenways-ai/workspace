@@ -76,3 +76,6 @@
 [submodule "website/hara-world"]
 	path = website/hara-world
 	url = git@github.com:hara-lang/hara-world.git
+[submodule "reference/foundation-base"]
+	path = reference/foundation-base
+	url = git@github.com:zcaudate-xyz/foundation-base.git
