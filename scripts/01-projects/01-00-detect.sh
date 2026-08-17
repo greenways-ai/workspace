@@ -19,4 +19,4 @@ detect_types() {
 
 while IFS= read -r repo; do
   printf '%-40s %s\n' "$(relpath "$repo")" "$(detect_types "$repo")"
-done < <(discover_repos)
+done < <(discover_all_repos)

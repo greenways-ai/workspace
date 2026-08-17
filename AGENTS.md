@@ -20,6 +20,12 @@ worked in as ordinary clones on the `main` branch, tracking `origin/main`.
 - `website/` — public sites (greenways-oss, greenways-visual-language,
   greenways-www, hara-www, hara-docs, hara-specs, hara-benchmarks,
   hara-visual-language, hara-world)
+- `reference/` — read-only migration authorities. Only `foundation-base` is
+  registered as a workspace gitlink; the rest of the group is gitignored.
+  Reference repos are included in status, fetch, pull, detection, and test
+  operations, but excluded from bulk push, force-update, and commit-push;
+  `repo-commit-push` fails closed when a reference gitlink is dirty, drifted
+  from the recorded pin, or potentially unpublished.
 - `extensions/` — editor and browser apps for hara (hara-emacs, hara-lsp,
   hara-vscode). `hara-chrome` has been folded into
   `application/greenways-os/extension/hara-chrome`.
@@ -35,6 +41,9 @@ The following local integration symlinks are gitignored convenience links:
 
 - `website/docs` → `website/hara-docs` (expected by
   `website/hara-www/scripts/prepare-docs.mjs`).
+
+`technology/hoplite-p256-wt` is a gitignored local git worktree of
+`technology/hoplite`, not a workspace child; never stage it as a gitlink.
 
 Hara integrations use `HARA_WORKSPACE_ROOT` and direct workspace paths; legacy
 links beneath `technology/hara` are no longer created.
@@ -56,7 +65,10 @@ Root `Makefile` delegates to section Makefiles under `scripts/`:
   hydrate canonical 3D/video sources, and verify all media is represented by LFS
   pointers
 - `make projects-detect | projects-build | projects-test` — per-project ops
-  dispatched by manifest (make / npm / cargo / bb / python)
+  dispatched by manifest (make / npm / cargo / bb / python); a repo with a
+  checked-in executable `./lein` launcher and `project.clj` is tested through
+  `./lein test` (a `test/` directory would otherwise make `make -n test`
+  succeed vacuously)
 - `make crossover-grep Q="pat"`, `crossover-branch B="name"`,
   `crossover-exec CMD="..."` — operations spanning all repos
 

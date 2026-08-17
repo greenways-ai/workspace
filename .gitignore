@@ -7,6 +7,9 @@ website/docs
 /reference/*
 !/reference/foundation-base/
 
+# Local git worktree of technology/hoplite; never a workspace child.
+/technology/hoplite-p256-wt/
+
 # macOS
 .DS_Store
 

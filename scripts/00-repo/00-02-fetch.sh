@@ -10,4 +10,4 @@ fetch_repo() {
   git fetch --all --prune
 }
 
-each_repo fetch -- fetch_repo
+each_repo_all fetch -- fetch_repo
