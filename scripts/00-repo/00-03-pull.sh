@@ -14,4 +14,4 @@ pull_repo() {
   git pull --rebase --autostash
 }
 
-each_repo pull -- pull_repo
+each_repo_all pull -- pull_repo

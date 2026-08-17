@@ -22,7 +22,7 @@ while IFS= read -r repo; do
   fi
   has_origin "$repo" || line="$line [no-origin]"
   echo "$line"
-done < <(discover_repos)
+done < <(discover_all_repos)
 
 echo
 echo "Note: ahead/behind is computed against the last fetch; run 00-02-fetch.sh to refresh."

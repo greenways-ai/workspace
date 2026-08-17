@@ -12,6 +12,14 @@ if [ $# -lt 1 ] || [ -z "$1" ]; then
 fi
 message="$1"
 
+# Fail closed when a reference gitlink is dirty, drifted, or potentially
+# unpublished; bulk commits must never capture a bad reference pin.
+echo "==> checking reference pins"
+if ! check_reference_pins; then
+  echo "refusing bulk commit-push: resolve the reference repositories above first" >&2
+  exit 1
+fi
+
 commit_push_repo() {
   local committed=0 ahead=0
   if [ -n "$(git status --porcelain)" ]; then
