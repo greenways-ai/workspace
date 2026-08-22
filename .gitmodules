@@ -25,9 +25,9 @@
 [submodule "application/greenways-platform"]
 	path = application/greenways-platform
 	url = git@github.com:greenways-ai/greenways-platform.git
-[submodule "application/hara-playground"]
-	path = application/hara-playground
-	url = git@github.com:hara-lang/hara-playground.git
+[submodule "application/hara-play"]
+	path = application/hara-play
+	url = git@github.com:hara-lang/hara-play.git
 [submodule "infra/greenways-homebrew-tap"]
 	path = infra/greenways-homebrew-tap
 	url = https://github.com/hara-lang/homebrew-tap.git
@@ -73,12 +73,12 @@
 [submodule "technology/hara-specs-registry"]
 	path = technology/hara-specs-registry
 	url = git@github.com:hara-lang/hara-specs-registry.git
-[submodule "website/hara-specs"]
-	path = website/hara-specs
-	url = git@github.com:hara-lang/hara-specs.git
-[submodule "website/hara-world"]
-	path = website/hara-world
-	url = git@github.com:hara-lang/hara-world.git
+[submodule "website/hara-build"]
+	path = website/hara-build
+	url = git@github.com:hara-lang/hara-build.git
+[submodule "website/hara-learn"]
+	path = website/hara-learn
+	url = git@github.com:hara-lang/hara-learn.git
 [submodule "reference/foundation-base"]
 	path = reference/foundation-base
 	url = git@github.com:zcaudate-xyz/foundation-base.git
