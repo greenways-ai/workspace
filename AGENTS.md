@@ -18,17 +18,17 @@ worked in as ordinary clones on the `main` branch, tracking `origin/main`.
   scripts), and remaining support directories; its former `archive`,
   `extensions`, `specs` and `website` submodules are now external siblings.
 - `website/` — public sites (greenways-oss, greenways-visual-language,
-  greenways-www, hara-www, hara-docs, hara-specs, hara-benchmarks,
-  hara-visual-language, hara-world)
+  greenways-www, hara-www, hara-docs, hara-build, hara-benchmarks,
+  hara-visual-language, hara-learn)
 - `reference/` — read-only migration authorities. Only `foundation-base` is
   registered as a workspace gitlink; the rest of the group is gitignored.
   Reference repos are included in status, fetch, pull, detection, and test
   operations, but excluded from bulk push, force-update, and commit-push;
   `repo-commit-push` fails closed when a reference gitlink is dirty, drifted
   from the recorded pin, or potentially unpublished.
-- `extensions/` — editor and browser apps for hara (hara-emacs, hara-lsp,
-  hara-vscode). `hara-chrome` has been folded into
-  `application/greenways-os/extension/hara-chrome`.
+- `extensions/` — editor and browser apps for hara (hara-chrome, hara-emacs,
+  hara-lsp, hara-vscode). `hara-chrome` owns its shared UI submodules here;
+  Greenways OS consumes it as an extension rather than owning its source.
 
 A group subdir with no `.git` is a placeholder for a project not yet cloned —
 report it, never treat it as an error. Some children may lack an `origin`
@@ -110,6 +110,58 @@ Execution is serial by design; leave gaps in numbering for future scripts.
 - Tagged `#<name>` reader macros are not allowed in repository code. Use an
   ordinary constructor call instead; for example, write `(pointer value)` rather
   than `#ptr value`.
+- Do not introduce top-level `defn-`, `defmacro-`, or private Vars in `.hal`
+  source. Put implementation functions in a namespace declared with `(:config
+  {:role :internal})`, where they remain directly testable. Use a publication-
+  only `(:config {:role :facade})` namespace with `intern-all` when the complete
+  coherent internal surface is the supported API; use `intern-in` when only a
+  selected surface is supported.
+- Mark supported, recommended API Vars with `^{:public true}` so autocomplete
+  and documentation tools prioritize them. The marker is a tooling priority,
+  not a visibility or publication mechanism: unmarked Vars remain directly
+  testable, internal namespaces remain internal, and facades still publish only
+  through `intern-all` or `intern-in`.
+
+## Reversible systems
+
+- Every component that owns mutable, cached, process, registry, or lifecycle
+  state must provide a deterministic reset, teardown, or snapshot/restore
+  boundary. Reset and teardown operations must be idempotent and restore the
+  documented baseline even after partial initialization or failure.
+- Data-format transformations must have an inverse and round-trip tests. When a
+  transformation is intentionally lossy or canonicalizing, document that
+  boundary, retain enough source/provenance to restore or reconstruct the
+  prior representation, and test canonicalization for idempotence.
+- Focused tests for stateful systems must start from a known baseline and
+  restore it on every exit path so test order and reused processes cannot affect
+  results.
+
+## Corresponding Hara tests
+
+- Treat each Hara source file and its path-matched test file as one unit of
+  work. Every function or macro, including ordinary definitions in `:internal`
+  namespaces, must have a corresponding test block that identifies it with
+  `^{:refer namespace/symbol}` and contains a real behavioral assertion.
+- Immediately after the source implementation is stable, scaffold its tests
+  before writing test bodies by running `hara --project <root> --offline manage
+  scaffold <namespace>` and then the same command with `--write`. Use the
+  bootstrap test generator for bootstrap, native, or protocol seams that use
+  `Test/run` blocks.
+- Generated facts or empty `Test/run` blocks are pending work, not test
+  coverage. Replace them with assertions, run the path-matched focused test,
+  and verify `code.manage` reports no missing, TODO, or unchecked tests for the
+  changed namespace.
+- Treat scaffolding as an inventory of test obligations, never as test
+  authorship. Read each implementation and hand-write the permanent test from
+  its semantic contract. Prefer exact values, state transitions, branch and
+  boundary cases, expected failures, cleanup/reset behavior, and inverse or
+  round-trip properties. A type-only, truthy, non-nil, or "does not throw"
+  assertion is sufficient only when that is the documented contract.
+- Prove that a new or materially changed test can detect failure: run it
+  against the pre-change behavior or a deliberately incorrect candidate or
+  expectation, observe the focused test fail, then restore the correct code
+  and expectation and observe it pass. Correspondence is the minimum index;
+  add as many assertions as the function's behavior requires.
 
 ## Language-specific notes
 
