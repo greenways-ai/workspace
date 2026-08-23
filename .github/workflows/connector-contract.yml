@@ -31,6 +31,7 @@ jobs:
           ref: main
           path: technology/hara
           fetch-depth: 1
+      - uses: dtolnay/rust-toolchain@stable
       - name: Build native Hara tools
         run: cargo build --manifest-path technology/hara/core/rust/Cargo.toml --locked --bin hara --bin hara-test
       - name: Check connector contract
