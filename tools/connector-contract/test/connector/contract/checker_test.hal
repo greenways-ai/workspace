@@ -1,0 +1,497 @@
+(ns connector.contract.checker-test
+  (:require [connector.contract :as contract]
+            [connector.contract.checker :as checker]
+            [connector.contract.fixtures :as fixtures]))
+
+^{:refer connector.contract.checker/normalize-title}
+(Test/run
+ [{:name "normalizes section labels"
+   :test (fn [] (checker/normalize-title "  Context and Authority  "))
+   :expected "context and authority"}])
+
+^{:refer connector.contract.checker/heading-title}
+(Test/run
+ [{:name "reads Markdown heading titles"
+   :test (fn [] (checker/heading-title "### Outcome"))
+   :expected "Outcome"}
+  {:name "rejects plain text as a heading"
+   :test (fn [] (checker/heading-title "Outcome"))
+   :expected nil}
+  {:name "rejects a heading without a separator"
+   :test (fn [] (checker/heading-title "##Validation"))
+   :expected nil}])
+
+^{:refer connector.contract.checker/heading-text}
+(Test/run
+ [{:name "strips heading hashes"
+   :test (fn [] (checker/heading-text "### Outcome"))
+   :expected "Outcome"}])
+
+^{:refer connector.contract.checker/heading-valid?}
+(Test/run
+ [{:name "checks the Markdown heading separator"
+   :test (fn []
+           [(checker/heading-valid? "## Outcome")
+            (checker/heading-valid? "##Outcome")])
+   :expected [true false]}])
+
+^{:refer connector.contract.checker/section-key}
+(Test/run
+ [{:name "maps supported labels to stable keys"
+   :test (fn [] (checker/section-key "Acceptance criteria"))
+   :expected :acceptance}
+  {:name "rejects unknown labels"
+   :test (fn [] (checker/section-key "not a contract section"))
+   :expected nil}])
+
+^{:refer connector.contract.checker/malformed-heading-key}
+(Test/run
+ [{:name "classifies malformed supported headings"
+   :test (fn []
+           [(checker/malformed-heading-key "##Validation")
+            (checker/malformed-heading-key "## Validation")])
+   :expected [:validation nil]}])
+
+^{:refer connector.contract.checker/parse-document}
+(Test/run
+ [{:name "preserves headings, keys, bodies, and source lines"
+   :test (fn []
+           (select-keys
+            (checker/parse-document "## Outcome\nA result.\n## Validation\nRun it.")
+            [:lines :sections]))
+   :expected {:lines ["## Outcome" "A result." "## Validation" "Run it."]
+              :sections [{:title "Outcome"
+                          :key :outcome
+                          :body "A result."}
+                         {:title "Validation"
+                          :key :validation
+                           :body "Run it."}]}}])
+
+^{:refer connector.contract.checker/heading-sections}
+(Test/run
+ [{:name "selects only sections with the requested key"
+   :test (fn []
+           (count
+            (checker/heading-sections
+             (checker/parse-document "## Validation\nRun it.")
+             :validation)))
+   :expected 1}])
+
+^{:refer connector.contract.checker/table-marker?}
+(Test/run
+ [{:name "recognizes complete table columns"
+   :test (fn []
+           (checker/table-marker?
+            "| Repository | Responsibility | Connector entry | Validation authority |"
+            "Validation authority"))
+   :expected true}
+  {:name "rejects absent table columns"
+   :test (fn []
+           (checker/table-marker? "| Repository | Responsibility |" "Project"))
+   :expected false}])
+
+^{:refer connector.contract.checker/marker-line?}
+(Test/run
+ [{:name "recognizes issue-form labels"
+   :test (fn [] (checker/marker-line? "label: Outcome" :outcome))
+   :expected true}
+  {:name "recognizes field labels"
+   :test (fn []
+           (checker/marker-line?
+            "Project: https://github.com/greenways-ai/workspace"
+            :project))
+   :expected true}
+  {:name "recognizes catalog columns"
+   :test (fn []
+           (checker/marker-line?
+            "| Repository | Responsibility | Connector entry | Validation authority |"
+            :repository))
+   :expected true}])
+
+^{:refer connector.contract.checker/id-marker-line?}
+(Test/run
+ [{:name "recognizes issue-form ids"
+   :test (fn [] (checker/id-marker-line? "id: outcome" :outcome))
+   :expected true}
+  {:name "rejects a different issue-form id"
+   :test (fn [] (checker/id-marker-line? "id: validation" :outcome))
+   :expected false}])
+
+^{:refer connector.contract.checker/count-marker-lines}
+(Test/run
+ [{:name "counts marker lines with a supplied predicate"
+   :test (fn []
+           (checker/count-marker-lines
+            ["Outcome" "Scope" "Outcome"]
+            (fn [line] (= line "Outcome"))))
+   :expected 2}])
+
+^{:refer connector.contract.checker/marker-count}
+(Test/run
+ [{:name "prefers headings and supports table markers"
+   :test (fn []
+           [(checker/marker-count
+             (checker/parse-document (:source fixtures/passing-issue-form))
+             :outcome)
+            (checker/marker-count
+             (checker/parse-document (:source fixtures/passing-catalog))
+             :repository)])
+   :expected [1 1]}])
+
+^{:refer connector.contract.checker/required-section-findings}
+(Test/run
+ [{:name "passes a complete issue form"
+   :test (fn []
+           (vec
+            (map :code
+                 (checker/required-section-findings
+                  :issue-form
+                  (checker/parse-document (:source fixtures/passing-issue-form))))))
+   :expected []}
+  {:name "reports a missing section"
+   :test (fn []
+           (vec
+            (map :code
+                 (checker/required-section-findings
+                  :issue-form
+                  (checker/parse-document (:source fixtures/missing-fields))))))
+   :expected [:section/missing]}
+  {:name "reports a duplicate section"
+   :test (fn []
+           (vec
+            (map :code
+                 (checker/required-section-findings
+                  :issue-form
+                  (checker/parse-document (:source fixtures/duplicate-sections))))))
+   :expected [:section/duplicate]}
+  {:name "reports an empty section"
+   :test (fn []
+           (vec
+            (map :code
+                 (checker/required-section-findings
+                  :issue-form
+                  (checker/parse-document (:source fixtures/empty-section))))))
+   :expected [:section/empty]}
+  {:name "reports a malformed section heading"
+   :test (fn []
+           (vec
+            (map :code
+                 (checker/required-section-findings
+                  :issue-form
+                  (checker/parse-document (:source fixtures/malformed-sections))))))
+   :expected [:section/malformed]}])
+
+^{:refer connector.contract.checker/relationship-findings}
+(Test/run
+ [{:name "accepts Advances for incomplete work"
+   :test (fn []
+           (checker/relationship-findings
+            :issue-form
+            {}
+            (checker/parse-document (:source fixtures/passing-issue-form))))
+   :expected []}
+  {:name "rejects Closes-only for incomplete work"
+   :test (fn []
+           (vec
+            (map :code
+                 (checker/relationship-findings
+                  :pull-request
+                  {}
+                  (checker/parse-document (:source fixtures/closes-only))))))
+   :expected [:relationship/closes-only]}
+  {:name "allows Closes for complete work"
+   :test (fn []
+           (checker/relationship-findings
+            :pull-request
+            {:complete? true}
+            (checker/parse-document (:source fixtures/closes-only))))
+   :expected []}])
+
+^{:refer connector.contract.checker/canonical-github-link?}
+(Test/run
+ [{:name "accepts a canonical repository link"
+   :test (fn []
+           (checker/canonical-github-link?
+            "https://github.com/greenways-ai/workspace"))
+   :expected true}
+  {:name "accepts a canonical organization project link"
+   :test (fn []
+           (checker/canonical-github-link?
+            "https://github.com/orgs/greenways-ai/projects/2"))
+   :expected true}
+  {:name "rejects HTTP links"
+   :test (fn []
+           (checker/canonical-github-link?
+            "http://github.com/greenways-ai/workspace"))
+   :expected false}
+  {:name "rejects an unknown owner"
+   :test (fn []
+           (checker/canonical-github-link?
+            "https://github.com/example/project"))
+   :expected false}])
+
+^{:refer connector.contract.checker/canonical-repository-url?}
+(Test/run
+ [{:name "distinguishes repository roots from issue links"
+   :test (fn []
+           [(checker/canonical-repository-url?
+             "https://github.com/greenways-ai/workspace")
+            (checker/canonical-repository-url?
+             "https://github.com/greenways-ai/workspace/issues/26")])
+   :expected [true false]}])
+
+^{:refer connector.contract.checker/canonical-repository-id}
+(Test/run
+ [{:name "extracts current owner and repository coordinates"
+   :test (fn []
+           [(checker/canonical-repository-id
+             "https://github.com/hara-lang/hara/issues/1088")
+            (checker/canonical-repository-id "README.md")])
+   :expected ["hara-lang/hara" nil]}])
+
+^{:refer connector.contract.checker/trim-link-punctuation}
+(Test/run
+ [{:name "removes sentence punctuation without changing URL content"
+   :test (fn []
+           (checker/trim-link-punctuation
+            "https://github.com/greenways-ai/workspace.,"))
+   :expected "https://github.com/greenways-ai/workspace"}])
+
+^{:refer connector.contract.checker/extract-links}
+(Test/run
+ [{:name "extracts and normalizes HTTP(S) links"
+   :test (fn []
+           (checker/extract-links
+            "See https://github.com/greenways-ai/workspace, then http://example.invalid/x."))
+   :expected ["https://github.com/greenways-ai/workspace"
+              "http://example.invalid/x"]}])
+
+^{:refer connector.contract.checker/retired-target}
+(Test/run
+ [{:name "resolves retired aliases to current names"
+   :test (fn []
+           [(checker/retired-target "hara-playground")
+            (checker/retired-target "hara-specs")
+            (checker/retired-target "https://github.com/hara-lang/hara-world")
+            (checker/retired-target "hara-play")])
+   :expected ["hara-play" "hara-specs-registry" "hara-learn" nil]}])
+
+^{:refer connector.contract.checker/link-values}
+(Test/run
+ [{:name "prefers explicit links"
+   :test (fn []
+           (checker/link-values
+            {:links ["https://github.com/greenways-ai/workspace"]}
+            (checker/parse-document "ignored")))
+   :expected ["https://github.com/greenways-ai/workspace"]}
+  {:name "extracts links when none are supplied"
+   :test (fn []
+           (checker/link-values
+            {}
+            (checker/parse-document
+             "See https://github.com/greenways-ai/workspace.")))
+   :expected ["https://github.com/greenways-ai/workspace"]}])
+
+^{:refer connector.contract.checker/validate-links}
+(Test/run
+ [{:name "reports indexed noncanonical links"
+   :test (fn []
+           (vec
+            (map :code
+                 (checker/validate-links
+                  fixtures/invalid-links
+                  (checker/parse-document (:source fixtures/invalid-links))))))
+   :expected [:link/noncanonical :link/noncanonical]}
+  {:name "accepts passing links"
+   :test (fn []
+           (checker/validate-links
+            fixtures/passing-pull-request
+            (checker/parse-document (:source fixtures/passing-pull-request))))
+   :expected []}])
+
+^{:refer connector.contract.checker/classification-value}
+(Test/run
+ [{:name "normalizes access and readiness labels"
+   :test (fn []
+           [(checker/classification-value "Access required")
+            (checker/classification-value "Needs access")
+            (checker/classification-value :ready)
+            (checker/classification-value "unknown")])
+   :expected [:required :needs-access :ready nil]}])
+
+^{:refer connector.contract.checker/classification-findings}
+(Test/run
+ [{:name "requires both classifications"
+   :test (fn []
+           (vec
+            (map :code
+                 (checker/classification-findings {} "contract"))))
+   :expected [:classification/access-missing
+              :classification/readiness-missing]}
+  {:name "accepts a coherent access gate"
+   :test (fn []
+           (checker/classification-findings
+            {:access :required :readiness :needs-access}
+            "contract"))
+   :expected []}
+  {:name "rejects contradictory classifications"
+   :test (fn []
+           (vec
+            (map :code
+                 (checker/classification-findings
+                  {:access :public :readiness :needs-access}
+                  "contract"))))
+   :expected [:classification/access-readiness-mismatch]}])
+
+^{:refer connector.contract.checker/present-value?}
+(Test/run
+ [{:name "rejects nil and empty values"
+   :test (fn []
+           [(checker/present-value? nil)
+            (checker/present-value? "")
+            (checker/present-value? [])
+            (checker/present-value? "documented")])
+   :expected [false false false true]}])
+
+^{:refer connector.contract.checker/validation-map-findings}
+(Test/run
+ [{:name "requires a validation map"
+   :test (fn []
+           (vec
+            (map :code
+                 (checker/validation-map-findings {} "validation-map"))))
+   :expected [:validation-map/missing]}
+  {:name "rejects an empty validation map"
+   :test (fn []
+           (vec
+            (map :code
+                 (checker/validation-map-findings
+                  {:validation-map {}}
+                  "validation-map"))))
+   :expected [:validation-map/missing]}
+  {:name "accepts an access-gated validation map"
+   :test (fn []
+           (checker/validation-map-findings
+            {:validation-map {:status :needs-access}}
+            "validation-map"))
+   :expected []}])
+
+^{:refer connector.contract.checker/repository-entry-findings}
+(Test/run
+ [{:name "accepts a current repository row"
+   :test (fn []
+           (checker/repository-entry-findings
+            (first (:repositories fixtures/passing-catalog))
+            0))
+   :expected []}
+  {:name "accepts a current Hara repository alias"
+   :test (fn []
+           (checker/repository-entry-findings
+            (assoc (first (:repositories fixtures/passing-catalog))
+                   :alias "hara-play"
+                   :url "https://github.com/hara-lang/hara-play")
+            0))
+   :expected []}
+  {:name "rejects a retired repository alias"
+   :test (fn []
+           (vec
+            (map :code
+                 (checker/repository-entry-findings
+                  (first (:repositories fixtures/stale-aliases))
+                  0))))
+   :expected [:repository/stale-alias]}])
+
+^{:refer connector.contract.checker/repository-findings}
+(Test/run
+ [{:name "checks every catalog repository row"
+   :test (fn []
+           [(checker/repository-findings (:repositories fixtures/passing-catalog))
+            (vec
+             (map :code
+                  (checker/repository-findings
+                   (:repositories fixtures/stale-aliases))))])
+   :expected [[] [:repository/stale-alias
+                  :repository/stale-alias
+                  :repository/stale-alias]]}])
+
+^{:refer connector.contract.checker/stable-findings}
+(Test/run
+ [{:name "sorts findings by path, code, and message"
+   :test (fn []
+           (mapv
+            :path
+            (checker/stable-findings
+             [{:path "links/2" :code :link/noncanonical :message "c"}
+              {:path "links/0" :code :link/noncanonical :message "a"}
+              {:path "links/1" :code :link/noncanonical :message "b"}])))
+   :expected ["links/0" "links/1" "links/2"]}])
+
+^{:refer connector.contract.checker/report}
+(Test/run
+ [{:name "builds a pass boundary with classifications"
+   :test (fn []
+           (select-keys
+            (checker/report
+             {:kind :catalog :access :required :readiness :needs-access}
+             [])
+            [:status :valid? :kind :classifications :findings :summary]))
+   :expected {:status :pass
+              :valid? true
+              :kind :catalog
+              :classifications {:access :required
+                                :readiness :needs-access
+                                :access-gated? true}
+              :findings []
+              :summary {:total 0 :errors 0}}}])
+
+^{:refer connector.contract.checker/check-contract}
+(Test/run
+ [{:name "checks all deterministic fixture classifications"
+   :test (fn []
+           (mapv
+            (fn [fixture]
+              (:status (checker/check-contract fixture)))
+            [fixtures/passing-catalog
+             fixtures/passing-issue-form
+             fixtures/passing-pull-request
+             fixtures/passing-repository-instruction
+             fixtures/missing-fields
+             fixtures/duplicate-sections
+             fixtures/empty-section
+             fixtures/malformed-sections
+             fixtures/stale-aliases
+             fixtures/invalid-links
+             fixtures/closes-only
+             fixtures/missing-maps
+             fixtures/access-gated]))
+   :expected [:pass :pass :pass :pass :fail :fail :fail :fail :fail :fail :fail :fail :pass]}
+  {:name "keeps failure codes and access classification stable"
+   :test (fn []
+           [(vec
+             (map :code
+                  (:findings (checker/check-contract fixtures/missing-fields))))
+            (vec
+             (map :code
+                  (:findings (checker/check-contract fixtures/stale-aliases))))
+             (vec
+              (map :code
+                   (:findings (checker/check-contract fixtures/closes-only))))
+             (:classifications (checker/check-contract fixtures/access-gated))])
+   :expected [[:section/missing]
+               [:repository/stale-alias
+                :repository/stale-alias
+                :repository/stale-alias
+                :repository/stale-alias
+                :repository/stale-alias
+                :repository/stale-alias]
+               [:relationship/closes-only]
+               {:access :required
+               :readiness :needs-access
+               :access-gated? true}]}])
+
+^{:refer connector.contract/check-contract}
+(Test/run
+ [{:name "publishes the checker through the facade"
+   :test (fn []
+           (:status (contract/check-contract fixtures/passing-issue-form)))
+   :expected :pass}])
