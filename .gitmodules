@@ -40,6 +40,10 @@
 [submodule "technology/hodos"]
 	path = technology/hodos
 	url = git@github.com:greenways-ai/hodos.git
+
+[submodule "technology/svg-tool"]
+	path = technology/svg-tool
+	url = git@github.com:hara-lang/svg-tool.git
 [submodule "technology/hoplite"]
 	path = technology/hoplite
 	url = https://github.com/greenways-ai/hoplite.git
