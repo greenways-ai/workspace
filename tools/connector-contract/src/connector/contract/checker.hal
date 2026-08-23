@@ -1,0 +1,750 @@
+(ns connector.contract.checker
+  (:config {:role :internal})
+  (:require [std.foundation.string :as string]))
+
+(def +required-sections+
+  {:catalog [:project :repository :responsibility :connector-entry :validation-authority]
+   :issue-form [:outcome :context :scope :acceptance :validation :relationships :readiness :delivery]
+   :pull-request [:primary-issue :changes :reason :validation :evidence :compatibility :relationships :agent-execution :remaining]
+   :repository-instruction [:purpose :authority :working-rules :validation]})
+
+(def +section-labels+
+  {:project "Project"
+   :repository "Repository"
+   :responsibility "Responsibility"
+   :connector-entry "Connector entry"
+   :validation-authority "Validation authority"
+   :outcome "Outcome"
+   :context "Context and authority"
+   :scope "Scope"
+   :acceptance "Acceptance criteria"
+   :validation "Validation"
+   :relationships "Relationships"
+   :readiness "Readiness"
+   :delivery "Delivery boundary"
+   :primary-issue "Primary issue"
+   :changes "Changes"
+   :reason "Reason"
+   :evidence "Evidence"
+   :compatibility "Compatibility and risk"
+   :agent-execution "Agent execution"
+   :remaining "Remaining work"
+   :purpose "Purpose"
+   :authority "Authority"
+   :working-rules "Working rules"})
+
+(def +section-ids+
+  {:outcome "outcome"
+   :context "context"
+   :scope "scope"
+   :acceptance "acceptance"
+   :validation "validation"
+   :relationships "relationships"
+   :readiness "readiness"
+   :delivery "delivery"
+   :primary-issue "primary-issue"
+   :changes "changes"
+   :reason "reason"
+   :evidence "evidence"
+   :compatibility "compatibility"
+   :agent-execution "agent-execution"
+   :remaining "remaining"
+   :purpose "purpose"
+   :authority "authority"
+   :working-rules "working-rules"
+   :project "project"
+   :repository "repository"
+   :responsibility "responsibility"
+   :connector-entry "connector-entry"
+   :validation-authority "validation-authority"})
+
+(def +retired-repository-aliases+
+  {"hara-specs" "hara-specs-registry"
+   "hara-playground" "hara-play"
+   "hara-world" "hara-learn"})
+
+(def +current-repository-aliases+
+  {"hara-build" "hara-lang/hara-build"
+   "hara-play" "hara-lang/hara-play"
+   "hara-learn" "hara-lang/hara-learn"
+   "hara-specs-registry" "hara-lang/hara-specs-registry"
+   "workspace" "greenways-ai/workspace"
+   "greenways-platform" "greenways-ai/greenways-platform"})
+
+(def +canonical-owners+ #{"greenways-ai" "hara-lang"})
+(def +access-values+ #{:public :required})
+(def +readiness-values+
+  #{:ready :in-progress :needs-decision :needs-specification
+    :needs-reproduction :needs-access :waiting-on-human})
+
+(defn normalize-title
+  "Normalizes a document label for deterministic matching."
+  [value]
+  (string/lower-case (string/trim (or value ""))))
+
+(defn heading-text
+  "Returns a trimmed heading title after removing its hash prefix."
+  [line]
+  (loop [current (string/trim (or line ""))]
+    (if (string/starts-with? current "#")
+      (recur (string/slice current 1))
+      (string/trim current))))
+
+(defn heading-valid?
+  "Returns true when a hash-prefixed line has a Markdown separator."
+  [line]
+  (let [value (string/trim (or line ""))]
+    (if (not (string/starts-with? value "#"))
+      false
+      (loop [current value]
+        (if (string/starts-with? current "#")
+          (recur (string/slice current 1))
+          (string/starts-with? current " "))))))
+
+(defn heading-title
+  "Returns the title from a Markdown heading line, or nil."
+  [line]
+  (if (heading-valid? line)
+    (heading-text line)
+    nil))
+
+(defn section-key
+  "Maps a supported section title to its stable keyword."
+  [title]
+  (case (normalize-title title)
+    "project" :project
+    "repository" :repository
+    "responsibility" :responsibility
+    "connector entry" :connector-entry
+    "validation authority" :validation-authority
+    "outcome" :outcome
+    "context and authority" :context
+    "scope" :scope
+    "acceptance criteria" :acceptance
+    "validation" :validation
+    "relationships" :relationships
+    "readiness" :readiness
+    "delivery boundary" :delivery
+    "primary issue" :primary-issue
+    "changes" :changes
+    "reason" :reason
+    "evidence" :evidence
+    "compatibility and risk" :compatibility
+    "agent execution" :agent-execution
+    "remaining work" :remaining
+    "purpose" :purpose
+    "authority" :authority
+    "working rules" :working-rules
+    nil))
+
+(defn malformed-heading-key
+  "Returns the supported key for a malformed Markdown heading, or nil."
+  [line]
+  (if (and (string/starts-with? (string/trim (or line "")) "#")
+           (not (heading-valid? line)))
+    (section-key (heading-text line))
+    nil))
+
+^{:public true}
+(defn parse-document
+  "Parses Markdown-style headings while preserving source lines and bodies."
+  [source]
+  (let [text (if (string? source) source "")
+        lines (string/split-lines text)]
+    (loop [remaining lines
+           current nil
+           sections []]
+      (if (empty? remaining)
+        {:text text
+         :lines lines
+         :sections (if current
+                     (conj sections
+                           (assoc current
+                                  :body
+                                  (string/join "\n" (:body current))))
+                     sections)}
+        (let [line (first remaining)
+              title (heading-title line)]
+          (if title
+            (let [complete
+                  (if current
+                    (conj sections
+                          (assoc current
+                                 :body
+                                 (string/join "\n" (:body current))))
+                    sections)]
+              (recur (rest remaining)
+                     {:title title
+                      :key (section-key title)
+                      :body []}
+                     complete))
+            (recur (rest remaining)
+                   (if current
+                     (assoc current :body (conj (:body current) line))
+                     current)
+                   sections)))))))
+
+(defn heading-sections
+  "Returns parsed sections whose title is the requested supported key."
+  [document key]
+  (vec
+   (filter
+    (fn [section]
+      (= key (:key section)))
+    (:sections document))))
+
+(defn table-marker?
+  "Returns true when a table row contains a complete section label."
+  [line label]
+  (let [compact (string/replace (normalize-title line) " " "")
+        token (str "|" (string/replace (normalize-title label) " " "") "|")]
+    (string/includes? compact token)))
+
+(defn marker-line?
+  "Recognizes issue-form labels, field labels, headings, and table columns."
+  [line key]
+  (let [value (normalize-title line)
+        label (normalize-title (get +section-labels+ key))
+        title (heading-title line)]
+    (or (and title (= key (section-key title)))
+        (string/starts-with? value (str "label: " label))
+        (string/starts-with? value (str label ":"))
+        (table-marker? line label))))
+
+(defn id-marker-line?
+  "Recognizes an issue-form id when a label is not available."
+  [line key]
+  (= (normalize-title line)
+     (str "id: " (get +section-ids+ key))))
+
+(defn count-marker-lines
+  "Counts lines accepted by a supplied marker predicate."
+  [lines predicate]
+  (loop [remaining lines
+         total 0]
+    (if (empty? remaining)
+      total
+      (recur (rest remaining)
+             (if (predicate (first remaining))
+               (inc total)
+               total)))))
+
+(defn marker-count
+  "Returns the stable occurrence count for a parsed section marker."
+  [document key]
+  (let [headings (heading-sections document key)
+        heading-total (count headings)
+        marker-total
+        (count-marker-lines (:lines document)
+                            (fn [line]
+                              (marker-line? line key)))
+        id-total
+        (count-marker-lines (:lines document)
+                            (fn [line]
+                              (id-marker-line? line key)))]
+    (if (> heading-total 0)
+      heading-total
+      (if (> marker-total 0)
+        marker-total
+        id-total))))
+
+(defn required-section-findings
+  "Reports missing, duplicate, empty, or unsupported contract sections."
+  [kind document]
+  (let [required (get +required-sections+ kind)]
+    (if (nil? required)
+      [{:code :contract/unknown-kind
+        :path "kind"
+        :severity :error
+        :message (str "Unsupported contract kind: " (str kind))}]
+      (loop [remaining required
+             findings []]
+        (if (empty? remaining)
+          findings
+          (let [key (first remaining)
+                headings (heading-sections document key)
+                heading-total (count headings)
+                total (marker-count document key)
+                malformed-total
+                (count-marker-lines
+                 (:lines document)
+                 (fn [line]
+                   (= key (malformed-heading-key line))))
+                findings
+                (cond
+                  (> malformed-total 0)
+                  (conj findings
+                        {:code :section/malformed
+                         :path (str "sections/" (name key))
+                         :severity :error
+                         :message (str "Malformed required section heading: "
+                                       (get +section-labels+ key))})
+
+                  (= total 0)
+                  (conj findings
+                        {:code :section/missing
+                         :path (str "sections/" (name key))
+                         :severity :error
+                         :message (str "Missing required section: "
+                                       (get +section-labels+ key))})
+
+                  (> total 1)
+                  (conj findings
+                        {:code :section/duplicate
+                         :path (str "sections/" (name key))
+                         :severity :error
+                         :message (str "Duplicate required section: "
+                                       (get +section-labels+ key))})
+
+                  (and (= heading-total 1)
+                       (string/blank? (:body (first headings))))
+                  (conj findings
+                        {:code :section/empty
+                         :path (str "sections/" (name key))
+                         :severity :error
+                         :message (str "Empty required section: "
+                                       (get +section-labels+ key))})
+
+                  :else findings)]
+            (recur (rest remaining) findings)))))))
+
+(defn relationship-findings
+  "Requires Advances for incomplete issue and pull-request contracts."
+  [kind input document]
+  (if (or (not (or (= kind :issue-form)
+                   (= kind :pull-request)))
+          (= true (:complete? input)))
+    []
+    (let [sections (heading-sections document :relationships)
+          section-body (if (= 1 (count sections))
+                         (:body (first sections))
+                         (:text document))
+          body (if (has? input :relationship)
+                 (if (string? (:relationship input))
+                   (:relationship input)
+                   "")
+                 section-body)
+          normalized (string/lower-case body)
+          advances? (string/includes? normalized "advances")
+          closes? (string/includes? normalized "closes")]
+      (cond
+        (and closes? (not advances?))
+        [{:code :relationship/closes-only
+          :path "sections/relationships"
+          :severity :error
+          :message "Incomplete work must use Advances rather than Closes-only"}]
+
+        (not advances?)
+        [{:code :relationship/advances-missing
+          :path "sections/relationships"
+          :severity :error
+          :message "Incomplete work must declare an Advances relationship"}]
+
+        :else []))))
+
+^{:public true}
+(defn canonical-github-link?
+  "Returns true only for canonical GitHub links owned by Greenways or Hara."
+  [value]
+  (if (not (string? value))
+    false
+    (let [parts (string/split value "/")]
+      (and (>= (count parts) 5)
+           (= "https:" (nth parts 0))
+           (= "" (nth parts 1))
+           (= "github.com" (nth parts 2))
+           (or (has? +canonical-owners+ (nth parts 3))
+               (and (= "orgs" (nth parts 3))
+                    (has? +canonical-owners+ (nth parts 4))))
+           (not (string/blank? (nth parts 4)))
+           (not (string/ends-with? value "/"))
+           (not (string/includes? value "?"))
+           (not (string/includes? value "#"))))))
+
+^{:public true}
+(defn canonical-repository-url?
+  "Returns true only for a canonical owner/repository GitHub URL."
+  [value]
+  (and (canonical-github-link? value)
+       (= 5 (count (string/split value "/")))))
+
+(defn canonical-repository-id
+  "Returns owner/repository for a canonical GitHub link, or nil."
+  [value]
+  (if (canonical-github-link? value)
+    (let [parts (string/split value "/")]
+      (str (nth parts 3) "/" (nth parts 4)))
+    nil))
+
+(defn trim-link-punctuation
+  "Removes sentence punctuation from an extracted URL token."
+  [value]
+  (loop [current value]
+    (if (and (string? current)
+             (> (string/length current) 0)
+             (or (string/ends-with? current ".")
+                 (string/ends-with? current ",")
+                 (string/ends-with? current ";")))
+      (recur (string/slice current 0 (dec (string/length current))))
+      current)))
+
+(defn extract-links
+  "Extracts HTTP(S) URL tokens from deterministic document text."
+  [text]
+  (vec
+   (filter
+    (fn [token]
+      (or (string/starts-with? token "https://")
+          (string/starts-with? token "http://")))
+    (map trim-link-punctuation
+         (re-split "[^A-Za-z0-9:/._-]+" (if (string? text) text ""))))))
+
+(defn retired-target
+  "Returns the current repository name for a retired alias, or nil."
+  [value]
+  (let [target (get +retired-repository-aliases+ value)]
+    (if target
+      target
+      (let [id (canonical-repository-id value)
+            parts (if id (string/split id "/") [])
+            repository (if (= 2 (count parts)) (nth parts 1) nil)]
+        (get +retired-repository-aliases+ repository)))))
+
+(defn link-values
+  "Uses supplied links when present, otherwise extracts them from source text."
+  [input document]
+  (if (has? input :links)
+    (if (vector? (:links input)) (:links input) [])
+    (extract-links (:text document))))
+
+(defn validate-links
+  "Reports missing, noncanonical, and retired-alias links in stable order."
+  [input document]
+  (let [links (link-values input document)]
+    (if (empty? links)
+      [{:code :link/missing
+        :path "links"
+        :severity :error
+        :message "At least one canonical GitHub link is required"}]
+      (loop [remaining links
+             index 0
+             findings []]
+        (if (empty? remaining)
+          findings
+          (let [link (first remaining)
+                path (str "links/" index)
+                findings
+                (if (not (canonical-github-link? link))
+                  (conj findings
+                        {:code :link/noncanonical
+                         :path path
+                         :severity :error
+                         :message (str "Link is not a canonical GitHub URL: "
+                                       (str link))})
+                  (let [target (retired-target link)]
+                    (if target
+                      (conj findings
+                            {:code :repository/stale-alias
+                             :path path
+                             :severity :error
+                             :message (str "Repository alias is retired; use "
+                                           target)})
+                      findings)))]
+            (recur (rest remaining) (inc index) findings)))))))
+
+(defn classification-value
+  "Normalizes supported access and readiness values from keywords or labels."
+  [value]
+  (if (keyword? value)
+    value
+    (if (string? value)
+      (case (normalize-title value)
+        "public" :public
+        "required" :required
+        "access required" :required
+        "ready" :ready
+        "in progress" :in-progress
+        "needs decision" :needs-decision
+        "needs specification" :needs-specification
+        "needs reproduction" :needs-reproduction
+        "needs access" :needs-access
+        "waiting on human" :waiting-on-human
+        nil)
+      nil)))
+
+(defn classification-findings
+  "Reports absent, invalid, or contradictory access/readiness classifications."
+  [input path]
+  (let [findings []
+        access (classification-value (:access input))
+        readiness (classification-value (:readiness input))
+        findings
+        (if (not (has? input :access))
+          (conj findings
+                {:code :classification/access-missing
+                 :path (str path "/access")
+                 :severity :error
+                 :message "Access classification is required"})
+          (if (not (has? +access-values+ access))
+            (conj findings
+                  {:code :classification/access-invalid
+                   :path (str path "/access")
+                   :severity :error
+                   :message "Access classification must be public or required"})
+            findings))
+        findings
+        (if (not (has? input :readiness))
+          (conj findings
+                {:code :classification/readiness-missing
+                 :path (str path "/readiness")
+                 :severity :error
+                 :message "Readiness classification is required"})
+          (if (not (has? +readiness-values+ readiness))
+            (conj findings
+                  {:code :classification/readiness-invalid
+                   :path (str path "/readiness")
+                   :severity :error
+                   :message "Readiness classification is not recognized"})
+            findings))
+        findings
+        (if (and (has? +access-values+ access)
+                 (has? +readiness-values+ readiness)
+                 (= access :required)
+                 (not (or (= readiness :needs-access)
+                          (= readiness :waiting-on-human))))
+          (conj findings
+                {:code :classification/access-readiness-mismatch
+                 :path path
+                 :severity :error
+                 :message "Required access must be paired with Needs access or Waiting on human"})
+          findings)
+        findings
+        (if (and (has? +access-values+ access)
+                 (has? +readiness-values+ readiness)
+                 (= readiness :needs-access)
+                 (not= access :required))
+          (conj findings
+                {:code :classification/access-readiness-mismatch
+                 :path path
+                 :severity :error
+                 :message "Needs access readiness must be paired with required access"})
+          findings)]
+    findings))
+
+(defn present-value?
+  "Returns true for non-empty scalar, vector, or map values."
+  [value]
+  (cond
+    (nil? value) false
+    (string? value) (not (string/blank? value))
+    (vector? value) (not (empty? value))
+    (map? value) (not (empty? value))
+    :else true))
+
+(defn validation-map-findings
+  "Reports an absent, empty, or non-map validation map."
+  [input path]
+  (cond
+    (not (has? input :validation-map))
+    [{:code :validation-map/missing
+      :path path
+      :severity :error
+      :message "A validation map is required"}]
+
+    (not (map? (:validation-map input)))
+    [{:code :validation-map/invalid
+      :path path
+      :severity :error
+      :message "Validation map must be a non-empty map"}]
+
+    (empty? (:validation-map input))
+    [{:code :validation-map/missing
+      :path path
+      :severity :error
+      :message "A validation map is required"}]
+
+    :else []))
+
+(defn repository-entry-findings
+  "Checks one catalog repository entry and its local contract metadata."
+  [entry index]
+  (if (not (map? entry))
+    [{:code :repository/invalid
+      :path (str "repositories/" index)
+      :severity :error
+      :message "Repository entry must be a map"}]
+    (let [path (str "repositories/" index)
+          alias (or (:alias entry) (:name entry))
+          url (:url entry)
+          repository-id (canonical-repository-id url)
+          parts (if repository-id (string/split repository-id "/") [])
+          repository-name (if (= 2 (count parts)) (nth parts 1) nil)
+          current-repository (get +current-repository-aliases+ alias)
+          target (or (get +retired-repository-aliases+ alias)
+                     (get +retired-repository-aliases+ repository-name))
+          findings []
+          findings
+          (if (not (present-value? alias))
+            (conj findings
+                  {:code :repository/alias-missing
+                   :path (str path "/alias")
+                   :severity :error
+                   :message "Repository alias is required"})
+            findings)
+          findings
+          (if (not (canonical-repository-url? url))
+            (conj findings
+                  {:code :link/noncanonical
+                   :path (str path "/url")
+                   :severity :error
+                   :message "Repository URL must be a canonical repository URL"})
+            findings)
+          findings
+          (if target
+            (conj findings
+                  {:code :repository/stale-alias
+                   :path (str path "/alias")
+                   :severity :error
+                   :message (str "Repository alias is retired; use " target)})
+            findings)
+          findings
+          (if (and current-repository
+                   repository-id
+                   (not= current-repository repository-id))
+            (conj findings
+                  {:code :repository/alias-mismatch
+                   :path (str path "/alias")
+                   :severity :error
+                   :message (str "Alias must point to current repository: "
+                                 current-repository)})
+            findings)
+          findings
+          (if (and (nil? current-repository)
+                   (present-value? alias)
+                   (present-value? repository-name)
+                   (not= (string/lower-case (str alias))
+                         (string/lower-case repository-name)))
+            (conj findings
+                  {:code :repository/alias-mismatch
+                   :path (str path "/alias")
+                   :severity :error
+                   :message (str "Alias must match the current repository name: "
+                                 repository-name)})
+            findings)
+          findings
+          (if (not (present-value? (:responsibility entry)))
+            (conj findings
+                  {:code :repository/responsibility-missing
+                   :path (str path "/responsibility")
+                   :severity :error
+                   :message "Repository responsibility is required"})
+            findings)
+          findings
+          (if (not (present-value? (:connector-entry entry)))
+            (conj findings
+                  {:code :repository/connector-entry-missing
+                   :path (str path "/connector-entry")
+                   :severity :error
+                   :message "Connector entry is required"})
+            findings)
+          findings
+          (if (not (present-value? (:validation-authority entry)))
+            (conj findings
+                  {:code :repository/validation-authority-missing
+                   :path (str path "/validation-authority")
+                   :severity :error
+                   :message "Validation authority is required"})
+            findings)]
+      (vec
+       (concat findings
+               (classification-findings entry path)
+               (validation-map-findings entry
+                                         (str path "/validation-map")))))))
+
+(defn repository-findings
+  "Checks the catalog repository collection and each entry."
+  [repositories]
+  (cond
+    (nil? repositories)
+    [{:code :catalog/repositories-missing
+      :path "repositories"
+      :severity :error
+      :message "Catalog must provide repository entries"}]
+
+    (not (vector? repositories))
+    [{:code :catalog/repositories-invalid
+      :path "repositories"
+      :severity :error
+      :message "Catalog repositories must be a vector"}]
+
+    (empty? repositories)
+    [{:code :catalog/repositories-missing
+      :path "repositories"
+      :severity :error
+      :message "Catalog must provide repository entries"}]
+
+    :else
+    (loop [remaining repositories
+           index 0
+           findings []]
+      (if (empty? remaining)
+        (vec findings)
+        (recur (rest remaining)
+               (inc index)
+               (concat findings
+                       (repository-entry-findings (first remaining) index)))))))
+
+(defn stable-findings
+  "Sorts diagnostics by path, code, and message for stable output."
+  [findings]
+  (vec
+   (sort-by
+    (fn [finding]
+      (str (:path finding)
+           "|"
+           (name (:code finding))
+           "|"
+           (:message finding)))
+    findings)))
+
+(defn report
+  "Builds the deterministic pass/fail report boundary."
+  [input findings]
+  (let [sorted (stable-findings findings)
+        access (classification-value (:access input))
+        readiness (classification-value (:readiness input))
+        valid? (empty? sorted)]
+    {:status (if valid? :pass :fail)
+     :valid? valid?
+     :kind (:kind input)
+     :classifications {:access access
+                       :readiness readiness
+                       :access-gated? (= access :required)}
+     :findings sorted
+     :summary {:total (count sorted)
+               :errors (count sorted)}}))
+
+^{:public true}
+(defn check-contract
+  "Checks one connector contract without network or credential access."
+  [input]
+  (if (not (map? input))
+    (report {}
+            [{:code :contract/invalid-input
+              :path "contract"
+              :severity :error
+              :message "Contract input must be a map"}])
+    (let [kind (:kind input)
+          document (parse-document (:source input))
+          findings
+          (concat (required-section-findings kind document)
+                  (relationship-findings kind input document)
+                  (validate-links input document)
+                  (classification-findings input "contract")
+                  (validation-map-findings input "validation-map")
+                  (if (has? input :repositories)
+                    (repository-findings (:repositories input))
+                    (if (= kind :catalog)
+                      (repository-findings nil)
+                      [])))]
+      (report input findings))))

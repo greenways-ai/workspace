@@ -6,6 +6,9 @@ repo-%:
 projects-%:
 	@$(MAKE) -sC scripts/01-projects $*
 
+connector-contract-check:
+	@$(MAKE) -sC scripts/01-projects $@
+
 crossover-%:
 	@$(MAKE) -sC scripts/02-crossover $*
 

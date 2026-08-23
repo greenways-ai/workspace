@@ -1,0 +1,394 @@
+(ns connector.contract.fixtures)
+
+(def passing-catalog
+  {:kind :catalog
+   :source (str
+            "# Greenways repository catalog\n"
+            "## Project\n"
+            "https://github.com/orgs/greenways-ai/projects/2\n"
+            "## Repository\n"
+            "| Repository | Responsibility | Connector entry | Validation authority |\n"
+            "## Responsibility\n"
+            "Cross-repository workspace coordination.\n"
+            "## Connector entry\n"
+            "README.md and AGENTS.md.\n"
+            "## Validation authority\n"
+            "Root AGENTS.md and Makefile.\n")
+   :links ["https://github.com/orgs/greenways-ai/projects/2"
+           "https://github.com/greenways-ai/workspace"]
+   :access :public
+   :readiness :ready
+   :validation-map {:status :documented
+                    :commands ["make projects-test"]}
+   :repositories
+   [{:alias "workspace"
+     :url "https://github.com/greenways-ai/workspace"
+     :responsibility "Cross-repository workspace coordination."
+     :connector-entry "README.md and AGENTS.md"
+     :validation-authority "Root AGENTS.md and Makefile."
+     :access :public
+     :readiness :ready
+     :validation-map {:status :documented
+                      :commands ["make projects-test"]}}]})
+
+(def passing-issue-form
+  {:kind :issue-form
+   :source (str
+            "name: Agent-ready work contract\n"
+            "body:\n"
+            "  - type: textarea\n"
+            "    id: outcome\n"
+            "    attributes:\n"
+            "      label: Outcome\n"
+            "      description: A fresh agent can execute the issue.\n"
+            "  - type: textarea\n"
+            "    id: context\n"
+            "    attributes:\n"
+            "      label: Context and authority\n"
+            "      description: GitHub issue 26 is authoritative.\n"
+            "  - type: textarea\n"
+            "    id: scope\n"
+            "    attributes:\n"
+            "      label: Scope\n"
+            "      description: Implement the deterministic checker.\n"
+            "  - type: textarea\n"
+            "    id: acceptance\n"
+            "    attributes:\n"
+            "      label: Acceptance criteria\n"
+            "      description: Findings are stable.\n"
+            "  - type: textarea\n"
+            "    id: validation\n"
+            "    attributes:\n"
+            "      label: Validation\n"
+            "      description: Run the focused Hara test.\n"
+            "  - type: textarea\n"
+            "    id: relationships\n"
+            "    attributes:\n"
+            "      label: Relationships\n"
+            "      description: Advances https://github.com/greenways-ai/workspace/issues/26.\n"
+            "  - type: dropdown\n"
+            "    id: readiness\n"
+            "    attributes:\n"
+            "      label: Readiness\n"
+            "      description: Ready.\n"
+            "  - type: textarea\n"
+            "    id: delivery\n"
+            "    attributes:\n"
+            "      label: Delivery boundary\n"
+            "      description: Owning repository: greenways-ai/workspace.\n")
+   :links ["https://github.com/greenways-ai/workspace/issues/26"]
+   :relationship "Advances https://github.com/greenways-ai/workspace/issues/26"
+   :access :public
+   :readiness :ready
+   :validation-map {:status :documented
+                    :commands ["hara --project . --offline run test/connector/contract/checker_test.hal"]}})
+
+(def passing-pull-request
+  {:kind :pull-request
+   :source (str
+            "## Primary issue\n"
+            "https://github.com/greenways-ai/workspace/issues/26\n"
+            "## Changes\n"
+            "Added the native checker.\n"
+            "## Reason\n"
+            "Mechanical contract failures should be visible.\n"
+            "## Validation\n"
+            "Focused Hara tests pass.\n"
+            "## Evidence\n"
+            "Fresh-process output is stable.\n"
+            "## Compatibility and risk\n"
+            "No network or credential access.\n"
+            "## Relationships\n"
+            "Advances https://github.com/greenways-ai/workspace/issues/26.\n"
+            "## Agent execution\n"
+            "Native Hara runtime.\n"
+            "## Remaining work\n"
+            "Connector authorization remains outside this checker.\n")
+   :links ["https://github.com/greenways-ai/workspace/issues/26"]
+   :access :public
+   :readiness :ready
+   :validation-map {:status :documented
+                    :commands ["hara --project . --offline run test/connector/contract/checker_test.hal"]}})
+
+(def passing-repository-instruction
+  {:kind :repository-instruction
+   :source (str
+            "# Repository instructions\n"
+            "## Purpose\n"
+            "Orient contributors from connector-visible repository truth.\n"
+            "## Authority\n"
+            "https://github.com/greenways-ai/workspace\n"
+            "## Working rules\n"
+            "Keep validation evidence in GitHub.\n"
+            "## Validation\n"
+            "make projects-test\n")
+   :links ["https://github.com/greenways-ai/workspace"]
+   :access :public
+   :readiness :ready
+   :validation-map {:status :documented
+                    :commands ["make projects-test"]}})
+
+(def missing-fields
+  {:kind :issue-form
+   :source (str
+            "body:\n"
+            "  - id: outcome\n"
+            "    label: Outcome\n"
+            "  - id: context\n"
+            "    label: Context and authority\n"
+            "  - id: scope\n"
+            "    label: Scope\n"
+            "  - id: acceptance\n"
+            "    label: Acceptance criteria\n"
+            "  - id: relationships\n"
+            "    label: Relationships\n"
+            "  - id: readiness\n"
+            "    label: Readiness\n"
+            "  - id: delivery\n"
+            "    label: Delivery boundary\n")
+   :links ["https://github.com/greenways-ai/workspace/issues/26"]
+   :relationship "Advances https://github.com/greenways-ai/workspace/issues/26"
+   :access :public
+   :readiness :ready
+   :validation-map {:status :documented
+                    :commands ["focused test"]}})
+
+(def duplicate-sections
+  {:kind :issue-form
+   :source (str
+            "## Outcome\n"
+            "First outcome.\n"
+            "## Outcome\n"
+            "Second outcome.\n"
+            "## Context and authority\n"
+            "Authority.\n"
+            "## Scope\n"
+            "Scope.\n"
+            "## Acceptance criteria\n"
+            "Acceptance.\n"
+            "## Validation\n"
+            "Validation.\n"
+            "## Relationships\n"
+            "Advances.\n"
+            "## Readiness\n"
+            "Ready.\n"
+            "## Delivery boundary\n"
+            "Delivery.\n")
+   :links ["https://github.com/greenways-ai/workspace/issues/26"]
+   :access :public
+   :readiness :ready
+   :validation-map {:status :documented}})
+
+(def empty-section
+  {:kind :issue-form
+   :source (str
+            "## Outcome\n"
+            "\n"
+            "## Context and authority\n"
+            "Authority.\n"
+            "## Scope\n"
+            "Scope.\n"
+            "## Acceptance criteria\n"
+            "Acceptance.\n"
+            "## Validation\n"
+            "Validation.\n"
+            "## Relationships\n"
+            "Advances.\n"
+            "## Readiness\n"
+            "Ready.\n"
+            "## Delivery boundary\n"
+            "Delivery.\n")
+   :links ["https://github.com/greenways-ai/workspace/issues/26"]
+   :access :public
+   :readiness :ready
+   :validation-map {:status :documented}})
+
+(def malformed-sections
+  {:kind :issue-form
+   :source (str
+            "## Outcome\n"
+            "Outcome.\n"
+            "## Context and authority\n"
+            "Authority.\n"
+            "## Scope\n"
+            "Scope.\n"
+            "## Acceptance criteria\n"
+            "Acceptance.\n"
+            "##Validation\n"
+            "Validation.\n"
+            "## Relationships\n"
+            "Advances.\n"
+            "## Readiness\n"
+            "Ready.\n"
+            "## Delivery boundary\n"
+            "Delivery.\n")
+   :links ["https://github.com/greenways-ai/workspace/issues/26"]
+   :access :public
+   :readiness :ready
+   :validation-map {:status :documented}})
+
+(def stale-aliases
+  {:kind :catalog
+   :source (str
+            "# Hara repository catalog\n"
+            "## Project\n"
+            "https://github.com/orgs/hara-lang/projects/2\n"
+            "## Repository\n"
+            "| Repository | Responsibility | Connector entry | Validation authority |\n"
+            "## Responsibility\n"
+            "Community resources.\n"
+            "## Connector entry\n"
+            "README.md and AGENTS.md.\n"
+            "## Validation authority\n"
+            "Repository AGENTS.md.\n")
+   :links ["https://github.com/orgs/hara-lang/projects/2"
+           "https://github.com/hara-lang/hara-playground"
+           "https://github.com/hara-lang/hara-specs"
+           "https://github.com/hara-lang/hara-world"]
+   :access :public
+   :readiness :ready
+   :validation-map {:status :documented
+                    :commands ["focused test"]}
+   :repositories
+   [{:alias "hara-playground"
+     :url "https://github.com/hara-lang/hara-playground"
+     :responsibility "Community resources."
+     :connector-entry "README.md and AGENTS.md."
+     :validation-authority "Repository AGENTS.md."
+     :access :public
+     :readiness :ready
+     :validation-map {:status :documented
+                      :commands ["focused test"]}}
+    {:alias "hara-specs"
+     :url "https://github.com/hara-lang/hara-specs"
+     :responsibility "Published language specifications."
+     :connector-entry "README.md and AGENTS.md."
+     :validation-authority "Repository AGENTS.md."
+     :access :public
+     :readiness :ready
+     :validation-map {:status :documented
+                      :commands ["focused test"]}}
+    {:alias "hara-world"
+     :url "https://github.com/hara-lang/hara-world"
+     :responsibility "Community resources."
+     :connector-entry "README.md and AGENTS.md."
+     :validation-authority "Repository AGENTS.md."
+     :access :public
+     :readiness :ready
+     :validation-map {:status :documented
+                      :commands ["focused test"]}}]})
+
+(def invalid-links
+  {:kind :pull-request
+   :source (str
+            "## Primary issue\n"
+            "http://github.com/greenways-ai/workspace/issues/26\n"
+            "## Changes\n"
+            "Changed.\n"
+            "## Reason\n"
+            "Needed.\n"
+            "## Validation\n"
+            "Tested.\n"
+            "## Evidence\n"
+            "Recorded.\n"
+            "## Compatibility and risk\n"
+            "Low.\n"
+            "## Relationships\n"
+            "Advances.\n"
+            "## Agent execution\n"
+            "Native.\n"
+            "## Remaining work\n"
+            "None.\n")
+   :links ["http://github.com/greenways-ai/workspace/issues/26"
+           "README.md"]
+   :access :public
+   :readiness :ready
+   :validation-map {:status :documented
+                    :commands ["focused test"]}})
+
+(def closes-only
+  {:kind :pull-request
+   :source (str
+            "## Primary issue\n"
+            "https://github.com/greenways-ai/workspace/issues/26\n"
+            "## Changes\n"
+            "Changed.\n"
+            "## Reason\n"
+            "Needed.\n"
+            "## Validation\n"
+            "Tested.\n"
+            "## Evidence\n"
+            "Recorded.\n"
+            "## Compatibility and risk\n"
+            "Low.\n"
+            "## Relationships\n"
+            "Closes https://github.com/greenways-ai/workspace/issues/26.\n"
+            "## Agent execution\n"
+            "Native.\n"
+            "## Remaining work\n"
+            "None.\n")
+   :links ["https://github.com/greenways-ai/workspace/issues/26"]
+   :access :public
+   :readiness :ready
+   :validation-map {:status :documented
+                    :commands ["focused test"]}})
+
+(def missing-maps
+  {:kind :repository-instruction
+   :source (str
+            "# Repository instructions\n"
+            "## Purpose\n"
+            "Orient contributors.\n"
+            "## Authority\n"
+            "https://github.com/greenways-ai/workspace\n"
+            "## Working rules\n"
+            "Keep evidence visible.\n"
+            "## Validation\n"
+            "make projects-test\n")
+   :links ["https://github.com/greenways-ai/workspace"]
+   :access :public
+   :readiness :ready})
+
+(def access-gated
+  {:kind :catalog
+   :source (str
+            "# Greenways repository catalog\n"
+            "## Project\n"
+            "https://github.com/orgs/greenways-ai/projects/2\n"
+            "## Repository\n"
+            "| Repository | Responsibility | Connector entry | Validation authority |\n"
+            "## Responsibility\n"
+            "Private scene-generation engine.\n"
+            "## Connector entry\n"
+            "Repository access required.\n"
+            "## Validation authority\n"
+            "Needs access and validation map.\n")
+   :links ["https://github.com/orgs/greenways-ai/projects/2"
+           "https://github.com/greenways-ai/sanskara"]
+   :access :required
+   :readiness :needs-access
+   :validation-map {:status :needs-access}
+   :repositories
+   [{:alias "sanskara"
+     :url "https://github.com/greenways-ai/sanskara"
+     :responsibility "Private scene-generation engine."
+     :connector-entry "Repository access required."
+     :validation-authority "Needs access and validation map."
+     :access :required
+     :readiness :needs-access
+     :validation-map {:status :needs-access}}]})
+
+(def all-fixtures
+  [["passing-catalog" passing-catalog]
+   ["passing-issue-form" passing-issue-form]
+   ["passing-pull-request" passing-pull-request]
+   ["passing-repository-instruction" passing-repository-instruction]
+   ["missing-fields" missing-fields]
+   ["duplicate-sections" duplicate-sections]
+   ["empty-section" empty-section]
+   ["malformed-sections" malformed-sections]
+   ["stale-aliases" stale-aliases]
+   ["invalid-links" invalid-links]
+   ["closes-only" closes-only]
+   ["missing-maps" missing-maps]
+   ["access-gated" access-gated]])
