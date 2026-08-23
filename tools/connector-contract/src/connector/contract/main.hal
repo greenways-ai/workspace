@@ -1,0 +1,13 @@
+(ns connector.contract.main
+  (:require [connector.contract :as contract]
+            [connector.contract.fixtures :as fixtures]))
+
+(println
+ (mapv
+  (fn [entry]
+    (let [result (contract/check-contract (nth entry 1))]
+      {:fixture (first entry)
+       :status (:status result)
+       :findings (mapv (fn [finding] (:code finding))
+                        (:findings result))}))
+  fixtures/all-fixtures))

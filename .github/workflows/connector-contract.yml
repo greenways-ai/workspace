@@ -1,0 +1,38 @@
+name: Connector contract checker
+
+on:
+  pull_request:
+    paths:
+      - tools/connector-contract/**
+      - Makefile
+      - scripts/01-projects/Makefile
+      - .github/workflows/connector-contract.yml
+  push:
+    branches: [main]
+    paths:
+      - tools/connector-contract/**
+      - Makefile
+      - scripts/01-projects/Makefile
+      - .github/workflows/connector-contract.yml
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - uses: actions/checkout@v4
+        with:
+          repository: hara-lang/hara
+          ref: main
+          path: technology/hara
+          fetch-depth: 1
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build native Hara tools
+        run: cargo build --manifest-path technology/hara/core/rust/Cargo.toml --locked --bin hara --bin hara-test
+      - name: Check connector contract
+        run: make connector-contract-check

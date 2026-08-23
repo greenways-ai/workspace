@@ -1,0 +1,9 @@
+(ns connector.contract
+  (:config {:role :facade})
+  (:require [connector.contract.checker :as checker]))
+
+(intern-in
+ [check-contract checker/check-contract]
+ [parse-document checker/parse-document]
+ [canonical-github-link? checker/canonical-github-link?]
+ [canonical-repository-url? checker/canonical-repository-url?])
