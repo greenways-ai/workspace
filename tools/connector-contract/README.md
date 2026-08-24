@@ -12,11 +12,12 @@ Implementation lives in `workspace/tools/connector-contract`; it does not edit
 From the workspace root, run the deterministic fixture report:
 
 ```shell
-technology/hara/core/rust/target/debug/hara \
-  --project "$PWD/tools/connector-contract" --offline project run
+make connector-contract-check
 ```
 
-Run the paired behavioral tests:
+The target is read-only: it checks the project, emits the deterministic
+fixture report, and runs the path-matched native test file. To run only the
+paired behavioral tests:
 
 ```shell
 technology/hara/core/rust/target/debug/hara-test \
