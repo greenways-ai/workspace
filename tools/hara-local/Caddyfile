@@ -1,0 +1,73 @@
+{
+  auto_https off
+  admin off
+}
+
+hara.localhost:80 {
+  # Keep the source-owned wrapper as a static module. Passing it through
+  # Astro/Vite makes dynamic imports fail because public/ files are copied
+  # verbatim during the site build. The assembled runtime lives outside
+  # Astro's public/ tree.
+  handle /runtime/browser-kernel.js {
+    root * /workspace/website/hara-www/public
+    file_server
+  }
+
+  handle_path /runtime-live/studio/* {
+    root * /workspace/technology/hara/core/rust/web/studio
+    file_server
+  }
+
+  handle_path /runtime-live/host/* {
+    root * /workspace/technology/hara/core/rust/web/host
+    file_server
+  }
+
+  handle_path /runtime-live/packages/* {
+    root * /workspace/technology/hara/core/rust/web/packages
+    file_server
+  }
+
+  # Keep the shared canvas host live during local development. Production
+  # assembly copies this module into target/www/runtime/studio.
+  handle_path /runtime/studio/* {
+    root * /workspace/technology/hara/core/rust/web/studio
+    file_server
+  }
+
+  handle /runtime/* {
+    root * /workspace/technology/hara/core/target/www
+    file_server
+  }
+
+  # Keep the homepage's editable example source on the Astro side of the
+  # boundary instead of requiring a generated copy for local development.
+  handle /examples/studio-backgrounds/src/* {
+    root * /workspace/website/hara-www
+    file_server
+  }
+
+  handle {
+    reverse_proxy www:4323
+  }
+}
+
+docs.hara.localhost:80 {
+  reverse_proxy docs:4324
+}
+
+learn.hara.localhost:80 {
+  reverse_proxy learn:4325
+}
+
+build.hara.localhost:80 {
+  reverse_proxy build:4326
+}
+
+benchmarks.hara.localhost:80 {
+  reverse_proxy benchmarks:4327
+}
+
+ui.hara.localhost:80 {
+  reverse_proxy visual:4328
+}

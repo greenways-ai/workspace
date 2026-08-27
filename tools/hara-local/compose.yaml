@@ -1,0 +1,152 @@
+name: hara-local
+
+services:
+  gateway:
+    image: caddy:2.9-alpine
+    restart: unless-stopped
+    ports:
+      - "${HARA_LOCAL_PORT:-4322}:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ../..:/workspace:ro
+    depends_on:
+      - www
+      - docs
+      - learn
+      - build
+      - benchmarks
+      - visual
+
+  www:
+    image: node:24-bookworm
+    restart: unless-stopped
+    working_dir: /workspace/website/hara-www
+    environment:
+      ASTRO_TELEMETRY_DISABLED: "1"
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+    volumes:
+      - ../..:/workspace
+      - www_node_modules:/workspace/website/hara-www/node_modules
+    command:
+      - sh
+      - -lc
+      - |
+        set -eu
+        if [ ! -x node_modules/.bin/astro ] || { [ "$(uname -m)" = "aarch64" ] && [ ! -d node_modules/@rollup/rollup-linux-arm64-gnu ]; }; then
+          npm install --include=optional --no-audit --no-fund
+        fi
+        npm run dev -- --host 0.0.0.0 --port 4323
+
+  docs:
+    image: node:24-bookworm
+    restart: unless-stopped
+    working_dir: /workspace/website/hara-docs/astro
+    environment:
+      ASTRO_TELEMETRY_DISABLED: "1"
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+    volumes:
+      - ../..:/workspace
+      - docs_node_modules:/workspace/website/hara-docs/astro/node_modules
+    command:
+      - sh
+      - -lc
+      - |
+        set -eu
+        if [ ! -x node_modules/.bin/astro ] || { [ "$(uname -m)" = "aarch64" ] && [ ! -d node_modules/@rollup/rollup-linux-arm64-gnu ]; }; then
+          npm install --include=optional --no-audit --no-fund
+        fi
+        npm run dev -- --host 0.0.0.0 --port 4324
+
+  learn:
+    image: node:24-bookworm
+    restart: unless-stopped
+    working_dir: /workspace/website/hara-learn
+    environment:
+      ASTRO_TELEMETRY_DISABLED: "1"
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+    volumes:
+      - ../..:/workspace
+      - learn_node_modules:/workspace/website/hara-learn/node_modules
+    command:
+      - sh
+      - -lc
+      - |
+        set -eu
+        if [ ! -x node_modules/.bin/astro ] || { [ "$(uname -m)" = "aarch64" ] && [ ! -d node_modules/@rollup/rollup-linux-arm64-gnu ]; }; then
+          npm install --include=optional --no-audit --no-fund
+        fi
+        npm run dev -- --host 0.0.0.0 --port 4325
+
+  build:
+    image: node:24-bookworm
+    restart: unless-stopped
+    working_dir: /workspace/website/hara-build
+    environment:
+      ASTRO_TELEMETRY_DISABLED: "1"
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+    volumes:
+      - ../..:/workspace
+      - build_node_modules:/workspace/website/hara-build/node_modules
+    command:
+      - sh
+      - -lc
+      - |
+        set -eu
+        if [ ! -x node_modules/.bin/astro ] || { [ "$(uname -m)" = "aarch64" ] && [ ! -d node_modules/@rollup/rollup-linux-arm64-gnu ]; }; then
+          npm install --include=optional --no-audit --no-fund
+        fi
+        npm run dev -- --host 0.0.0.0 --port 4326
+
+  benchmarks:
+    image: node:24-bookworm
+    restart: unless-stopped
+    working_dir: /workspace/website/hara-benchmarks/astro
+    environment:
+      ASTRO_TELEMETRY_DISABLED: "1"
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+    volumes:
+      - ../..:/workspace
+      - benchmarks_node_modules:/workspace/website/hara-benchmarks/astro/node_modules
+    command:
+      - sh
+      - -lc
+      - |
+        set -eu
+        if [ ! -x node_modules/.bin/astro ] || { [ "$(uname -m)" = "aarch64" ] && [ ! -d node_modules/@rollup/rollup-linux-arm64-gnu ]; }; then
+          npm install --include=optional --no-audit --no-fund
+        fi
+        npm exec astro dev -- --host 0.0.0.0 --port 4327
+
+  visual:
+    image: node:24-bookworm
+    restart: unless-stopped
+    working_dir: /workspace/website/hara-visual-language
+    environment:
+      ASTRO_TELEMETRY_DISABLED: "1"
+      CHOKIDAR_USEPOLLING: "true"
+      WATCHPACK_POLLING: "true"
+    volumes:
+      - ../..:/workspace
+      - visual_node_modules:/workspace/website/hara-visual-language/node_modules
+    command:
+      - sh
+      - -lc
+      - |
+        set -eu
+        if [ ! -x node_modules/.bin/astro ] || { [ "$(uname -m)" = "aarch64" ] && [ ! -d node_modules/@rollup/rollup-linux-arm64-gnu ]; }; then
+          npm install --include=optional --no-audit --no-fund
+        fi
+        npm run site:dev -- --host 0.0.0.0 --port 4328
+
+volumes:
+  www_node_modules:
+  docs_node_modules:
+  learn_node_modules:
+  build_node_modules:
+  benchmarks_node_modules:
+  visual_node_modules:
