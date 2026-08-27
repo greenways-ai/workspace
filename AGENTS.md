@@ -170,6 +170,13 @@ Clojure/Hara work in these repos follows the user-level `~/.kimi-code/AGENTS.md`
 `hara-xtalk` skills where they apply). Check for per-repo `AGENTS.md` files
 before editing inside a child.
 
+Before translating Clojure collection/core calls in Hara, consult
+`technology/hara/core/spec/std/variadic-functions.md`. Check the resolved Hara
+owner and source/runtime arity contract; Clojure variadic conventions and
+function names are not sufficient evidence.
+Use intrinsic protocol method symbols such as `IAssoc/assoc` when available
+instead of introducing full `std.protocol.*` paths in new Hara source.
+
 ## Connector-first delivery
 
 GitHub issues, pull requests, native relationships, checks, and repository
