@@ -6,6 +6,7 @@ worked in as ordinary clones on the `main` branch, tracking `origin/main`.
 
 ## Layout
 
+- `agent-flow/` — shared workflow and agent coordination kit
 - `application/` — deployable products (greenways-os and greenways-platform)
 - `assets/` — canonical large 3D and video source media tracked through Git LFS;
   small manifests and notes remain in ordinary Git, while publishing repos own

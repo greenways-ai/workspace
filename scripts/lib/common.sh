@@ -3,6 +3,9 @@
 
 WORKSPACE_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 REPO_GROUPS=(application infra technology website)
+# Registered mutable children that live at the workspace root rather than
+# beneath one of the project groups.
+TOP_LEVEL_REPOS=(agent-flow)
 # Reference repos are read-only migration authorities: included in status,
 # fetch, pull, detection, and test operations, but excluded from push,
 # force-update, and bulk commit-push.
@@ -10,22 +13,32 @@ REFERENCE_GROUPS=(reference)
 
 # discover_repos: print absolute path of every cloned repo (dirs with a .git entry)
 discover_repos() {
-  local group dir
-  for group in "${REPO_GROUPS[@]}"; do
-    for dir in "$WORKSPACE_ROOT/$group"/*/; do
-      [ -e "${dir}.git" ] && echo "${dir%/}"
+  local group dir repo
+  {
+    for group in "${REPO_GROUPS[@]}"; do
+      for dir in "$WORKSPACE_ROOT/$group"/*/; do
+        [ -e "${dir}.git" ] && echo "${dir%/}"
+      done
     done
-  done | sort
+    for repo in "${TOP_LEVEL_REPOS[@]}"; do
+      [ -e "$WORKSPACE_ROOT/$repo/.git" ] && echo "$WORKSPACE_ROOT/$repo"
+    done
+  } | sort
 }
 
 # empty_dirs: print group subdirs that are not cloned repos (placeholders)
 empty_dirs() {
-  local group dir
-  for group in "${REPO_GROUPS[@]}"; do
-    for dir in "$WORKSPACE_ROOT/$group"/*/; do
-      [ -e "${dir}.git" ] || echo "${dir%/}"
+  local group dir repo
+  {
+    for group in "${REPO_GROUPS[@]}"; do
+      for dir in "$WORKSPACE_ROOT/$group"/*/; do
+        [ -e "${dir}.git" ] || echo "${dir%/}"
+      done
     done
-  done | sort
+    for repo in "${TOP_LEVEL_REPOS[@]}"; do
+      [ -e "$WORKSPACE_ROOT/$repo/.git" ] || echo "$WORKSPACE_ROOT/$repo"
+    done
+  } | sort
 }
 
 # discover_reference_repos: print absolute path of every cloned reference repo
