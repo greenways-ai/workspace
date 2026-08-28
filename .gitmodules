@@ -86,3 +86,6 @@
 [submodule "reference/foundation-base"]
 	path = reference/foundation-base
 	url = git@github.com:zcaudate-xyz/foundation-base.git
+[submodule "agent-flow"]
+	path = agent-flow
+	url = https://github.com/greenways-ai/agent-flow.git

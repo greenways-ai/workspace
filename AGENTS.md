@@ -6,6 +6,7 @@ worked in as ordinary clones on the `main` branch, tracking `origin/main`.
 
 ## Layout
 
+- `agent-flow/` — shared workflow and agent coordination kit
 - `application/` — deployable products (greenways-os and greenways-platform)
 - `assets/` — canonical large 3D and video source media tracked through Git LFS;
   small manifests and notes remain in ordinary Git, while publishing repos own
@@ -169,6 +170,13 @@ Clojure/Hara work in these repos follows the user-level `~/.kimi-code/AGENTS.md`
 (REPL-first workflow with `clj-nrepl-eval`, plus the `hara-postgres` and
 `hara-xtalk` skills where they apply). Check for per-repo `AGENTS.md` files
 before editing inside a child.
+
+Before translating Clojure collection/core calls in Hara, consult
+`technology/hara/core/spec/std/variadic-functions.md`. Check the resolved Hara
+owner and source/runtime arity contract; Clojure variadic conventions and
+function names are not sufficient evidence.
+Use intrinsic protocol method symbols such as `IAssoc/assoc` when available
+instead of introducing full `std.protocol.*` paths in new Hara source.
 
 ## Connector-first delivery
 
