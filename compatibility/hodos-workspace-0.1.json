@@ -8,35 +8,35 @@
       "id": "greenways-os",
       "repository": "greenways-ai/greenways-os",
       "path": "application/greenways-os",
-      "sha": "9d39ecb037010b3ca6e4af6f7e7d38c8995fba92",
+      "sha": "b76d751ca718890442f3b9b5323cf61540683b31",
       "role": "installation-consent-keyring-and-capability-authority"
     },
     {
       "id": "hara",
       "repository": "hara-lang/hara",
       "path": "technology/hara",
-      "sha": "60b59ccaa4af5c6cb77d5db6ed83ab5dfa57ded9",
+      "sha": "449c30b9e9c31e6406319d052ade2fd904c7da1f",
       "role": "language-runtime-and-headless-workspace-semantics"
     },
     {
       "id": "hara-ui",
       "repository": "hara-lang/hara-ui",
       "path": "technology/hara-ui",
-      "sha": "71dbf0c0a92d168b1f291fef5f38b71fe14338df",
+      "sha": "31c1b0f9685125f81564e11f26dd920d079ec1ea",
       "role": "product-neutral-browser-services-addons-and-document-compatibility"
     },
     {
-      "id": "hara-playground",
-      "repository": "hara-lang/hara-playground",
-      "path": "application/hara-playground",
-      "sha": "b75887a6f5192c9b104172ff107ddc9b54c1be0c",
+      "id": "hara-play",
+      "repository": "hara-lang/hara-play",
+      "path": "application/hara-play",
+      "sha": "2a79ab5116343daedeafb3d8a85000f80c8f9fc6",
       "role": "reference-workspace-edn-driven-hodos-shell-and-dev-component-consumer"
     },
     {
       "id": "hodos",
       "repository": "greenways-ai/hodos",
       "path": "technology/hodos",
-      "sha": "b5e427061d92e015cd3882b03b1d6438630fa466",
+      "sha": "1653334148356ada254032c89977124984b122a8",
       "role": "recursive-responsive-workspace-dev-and-2d-document-projection-world-abi"
     }
   ],
@@ -63,7 +63,7 @@
       "id": "HW4",
       "description": "Playground is the reference workspace.edn-driven Hodos shell consumer while retaining Hara runtime and application policy authority.",
       "status": "passed",
-      "evidence": "hara-lang/hara-playground#29-#38 progressively mounted Preview, Editor, REPL, Value Inspector, Problems, Explorer and Catalog through Hodos. #39 replaced the active fixed desktop/mobile layout controller with the recursive Hodos shell, evaluated workspace.edn through Hara and preserved Playground product authority. #40 removed the inactive competing layout model/controller, made every featured sample a complete explicit workspace.edn project, and documented the delivered Hara → Playground → Hodos authority chain. The exact #40 revision passed all 203 Node tests, architecture/check scripts, production build, checksum-verified runtime installation, isolated Chromium Audio validation and the complete Supersonic manifest/browser workflow. A first hodos.2d/document consumer remains the next bounded slice."
+      "evidence": "hara-lang/hara-play#29-#38 progressively mounted Preview, Editor, REPL, Value Inspector, Problems, Explorer and Catalog through Hodos. #39 replaced the active fixed desktop/mobile layout controller with the recursive Hodos shell, evaluated workspace.edn through Hara and preserved Playground product authority. #40 removed the inactive competing layout model/controller, made every featured sample a complete explicit workspace.edn project, and documented the delivered Hara → Playground → Hodos authority chain. The exact #40 revision passed all 203 Node tests, architecture/check scripts, production build, checksum-verified runtime installation, isolated Chromium Audio validation and the complete Supersonic manifest/browser workflow. A first hodos.2d/document consumer remains the next bounded slice."
     },
     {
       "id": "HW5",

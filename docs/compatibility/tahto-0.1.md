@@ -17,14 +17,14 @@ Gate B remains blocked on the complete application-neutral two-device scenario. 
 
 | Lane | Repository | Workspace path | Pinned revision | Role |
 |---|---|---|---|---|
-| OS | `greenways-ai/greenways-os` | `application/greenways-os` | `9d39ecb037010b3ca6e4af6f7e7d38c8995fba92` | authority and suite host |
-| Language | `hara-lang/hara` | `technology/hara` | `60b59ccaa4af5c6cb77d5db6ed83ab5dfa57ded9` | language/runtime after the complete name cut and Workspace/runtime repairs |
-| Server | `greenways-ai/hoplite` | `technology/hoplite` | `bd882b7c3a40135a0a780026861ade2e8da43c9b` | request ABI V3, Nginx request-body binding and request-scoped native response ownership |
-| Fabric | `greenways-ai/tahto` | `technology/tahto` | `42eaa6d91566a97f719f54d3300e22161b28d764` | objects, history, backups, devices, replay, sync plans, services, jobs and atomic metadata transaction plans |
-| Golden vertical | `greenways-ai/historia` | `technology/historia` | `3b38cdc36789d3a1c6323ddb78b0b0b399b82cab` | memory application |
-| Canonical execution | `greenways-ai/ignatius` | `technology/ignatius` | `acef9d008e5d3e0d7303d797dbcd55946104f5d6` | canonical chain |
-| Authority application | `greenways-ai/hestia` | `technology/hestia` | `02613e0de93a7b51e5b9fbbcf719aa840b014515` | rooms, mandates and receipts |
-| World and Workspace projection | `greenways-ai/hodos` | `technology/hodos` | `4bf67b097da71947d12b902720296bf2a60be8bb` | storage-neutral world contracts and Hara Workspace projection |
+| OS | `greenways-ai/greenways-os` | `application/greenways-os` | `b76d751ca718890442f3b9b5323cf61540683b31` | authority and suite host |
+| Language | `hara-lang/hara` | `technology/hara` | `449c30b9e9c31e6406319d052ade2fd904c7da1f` | language/runtime after the complete name cut and Workspace/runtime repairs |
+| Server | `greenways-ai/hoplite` | `technology/hoplite` | `d61949684e4e610ba03a05d3a79849c485a07a62` | request ABI V3, Nginx request-body binding and request-scoped native response ownership |
+| Fabric | `greenways-ai/tahto` | `technology/tahto` | `85eff7d5f69d6b80099a159a9f5a68086c7efe2a` | objects, history, backups, devices, replay, sync plans, services, jobs and atomic metadata transaction plans |
+| Golden vertical | `greenways-ai/historia` | `technology/historia` | `45b77e079c4ccf1f0f6e0199103c381dcb538116` | memory application |
+| Canonical execution | `greenways-ai/ignatius` | `technology/ignatius` | `7aacc213234998c55fe32d13342799b4de128469` | canonical chain |
+| Authority application | `greenways-ai/hestia` | `technology/hestia` | `a66b6c9707ca977a4542e2887e349601b80becf7` | rooms, mandates and receipts |
+| World and Workspace projection | `greenways-ai/hodos` | `technology/hodos` | `1653334148356ada254032c89977124984b122a8` | storage-neutral world contracts and Hara Workspace projection |
 
 The matrix records exact reviewed revisions and preserves every independently promoted application and technology pin.
 
