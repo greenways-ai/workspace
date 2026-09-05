@@ -1,0 +1,1032 @@
+(ns gwdb.common.type-system-base
+  (:require [lang.core :as l]
+            [postgres.core :as pg :refer [defsel.pg defret.pg]]
+            [postgres.entity :as et]))
+
+;;
+;; Namespace relationships
+;;
+;; [domain entities] --generic addons--> [Metadata] [Starred] [Activity]
+;;                         |                  |
+;;                         |                  `--> [user ActivityLog]
+;;                         +--> [Audit] --link--> [AuditLog]
+;;                         +--> [Lock]  --link--> [LockLog]
+;;                         `--> [Rev]   --link--> [RevLog]
+;; [Global] stores application configuration; [Op] carries mutation context.
+;;
+;; Ecosystem
+;; [all gwdb domains] -> [shared typed primitives + policies] -> [PostgreSQL]
+;;     -> [RPC metadata / realtime events] -> [substrate] -> [web / Dart UI]
+;;
+
+(l/script :postgres
+  {:require [[postgres.core :as pg]
+             [postgres.core.supabase  :as s]
+             [gwdb.common.type-system-seed :as tss]]
+   :static {:application ["gw"]
+            :all         {:schema   ["gw_type"]}}
+   :emit    {:code {:transforms
+                    {:entry [s/transform-entry]}}}})
+
+(def +run+
+  [(et/init-addons)])
+
+;;
+;; Class Enums
+;;
+
+(deftype.pg ^{:! (postgres.entity/E {:id  :id/v1
+                        :access :access/system})}
+  Op
+  "Op entity"
+  {:added "0.1"}
+  [:time         {:type :time    :required true
+                  :sql {:default (pg/time-us)}}
+   :tag          {:type :citext  :required true}
+   :data         {:type :map
+                  :web {:example {:email "test@test.com"
+                                  :password "password"}}}
+   :user-id      {:type :uuid}])
+
+(defn.pg ^{:%% :sql}
+  op-fn
+  "op-fn"
+  {:added "0.1"}
+  ([:text i-tag
+    :uuid i-user-id
+    :jsonb i-data]
+   (pg/t:insert -/Op
+     {:tag i-tag
+      :data i-data
+      :user-id i-user-id})))
+
+;;
+;; Metadata
+;;
+
+(deftype.pg ^{:! (postgres.entity/E {:id       :id/none
+                        :track    :track/data
+                        :access   :access/auth})}
+  Metadata
+  "Metadata entity"
+  {:added "0.1"}
+  [:id        {:type :jsonb :primary "default" :priority 1}
+   :entry     {:type :jsonb :required true}])
+
+(defn.pg ^{:%% :sql}
+  metadata-entry
+  "gets the metadata entry"
+  {:added "0.1"}
+  [:jsonb i-table-full
+   :text  i-key]
+  (pg/t:get-field -/Metadata
+    {:where {:id (|| i-table-full
+                     (pg/to-jsonb i-key))}
+     :returning :entry}))
+
+(defn.pg ^{:%% :sql}
+  set-metadata
+  "updates the metadata dynamically"
+  {:added "0.1"}
+  [:jsonb i-table-full
+   :text  i-key
+   :jsonb i-entry
+   :jsonb o-op]
+  (pg/t:upsert -/Metadata
+    {:id  (:jsonb (|| i-table-full
+                      (pg/to-jsonb i-key)))
+     :entry i-entry}
+    {:track o-op}))
+
+(defn.pg ^{:%% :sql}
+  metadata-row
+  "gets the metadata from an object"
+  {:added "0.1"}
+  [:jsonb  i-table-full
+   :text  i-key]
+  (pg/t:get -/Metadata
+    {:where {:id  (|| i-table-full
+                      (pg/to-jsonb i-key))}}))
+
+(defn.pg ^{:%% :sql}
+  purge-metadata
+  "Removes metadata associated with a given entity."
+  {:added "0.1"}
+  [:jsonb  i-table-full
+   :text  i-key]
+  (pg/t:delete -/Metadata
+    {:where {:id (|| i-table-full
+                     (pg/to-jsonb i-key))}
+     :single true}))
+
+(deftype.pg ^{:! (postgres.entity/E {:class  :2d/base
+                        :access :access/system
+                        :provides {:priority 99
+                                   :key :rev}})}
+  Rev
+  "Rev entity"
+  {:added "0.1"}
+  [:index     {:type :integer :required true :scope :-/info
+               :sql {:default 0}}
+   :current   {:type :map
+               :sql {:default "{}"}}]
+  {:partition-by {:strategy :list :columns [:class-table]
+                  :default  {:in "gw_type_impl"}}})
+
+(deftype.pg ^{:! (postgres.entity/E {:class  :2d/log
+                        :id     :id/none
+                        :owner  -/Rev
+                        :access :access/system})}
+  RevLog
+  "RevLog entity"
+  {:added "0.1"}
+  [:version  {:type :integer :required true :primary "default"}
+   :deltas   {:type :jsonb  :required true}]
+  {:partition-by {:strategy :list :columns [:class-table]
+                  :default  {:in "gw_type_impl"}}})
+
+(defn.pg  ^{:%% :sql}
+  insert-rev
+  "inserts a revision entry"
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref
+   :jsonb i-current
+   :jsonb o-op]
+  (pg/t:insert -/Rev
+    {:class-table     i-class-table
+     :class-context i-class-context
+     :class-ref i-class-ref
+     :current   i-current}
+    {:track o-op
+     :coalesce true}))
+
+(defn.pg  ^{:%% :sql}
+  update-rev
+  "Updates an existing revision entry with new data."
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref
+   :jsonb i-latest
+   :jsonb o-op]
+  (pg/t:update -/Rev
+    {:where {:class-table     i-class-table
+             :class-context i-class-context
+             :class-ref i-class-ref}
+     :set   {:current i-latest
+             :index (+ #{"index"} 1)}
+     :single true
+     :track o-op}))
+
+(defn.pg ^{:%% :sql}
+  insert-rev-log
+  "inserts a revision log entry"
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-rev-id
+   :integer i-version
+   :jsonb i-deltas
+   :jsonb o-op]
+  (pg/t:insert -/RevLog
+    {:class-table i-class-table
+     :class-context i-class-context
+     :rev i-rev-id
+     :version i-version
+     :deltas i-deltas}
+    {:track o-op}))
+
+(defn.pg commit-rev-init
+  "performs the inital commit"
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref
+   :jsonb i-latest
+   :jsonb o-op]
+  (let [o-rev (-/insert-rev i-class-table
+                            i-class-context
+                            i-class-ref
+                            i-latest
+                            o-op)
+        #{(:uuid v-id)} o-rev
+        (:boolean o-changed) true
+        v-deltas (tss/get-diff-forward {} i-latest)
+        o-log (-/insert-rev-log
+               i-class-table
+               i-class-context
+               v-id
+               0
+               v-deltas
+               o-op)]
+    (return #{o-rev
+              o-log
+              o-changed})))
+
+(defn.pg commit-rev
+  "Commits a new revision for a given entity, tracking changes over time."
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref
+   :jsonb i-latest]
+  (let [v-latest (- i-latest
+                    "op_created"
+                    "op_updated"
+                    "time_updated"
+                    "time_created")
+        o-rev  (pg/t:get -/Rev
+                 {:where {:class-table i-class-table
+                          :class-context i-class-context
+                          :class-ref i-class-ref}})
+        #{(:uuid v-op-created)
+          (:bigint v-time-created)
+          (:uuid v-op-updated)
+          (:bigint v-time-updated)}   i-latest
+
+        _ (when [o-rev :is-null]
+            (return (-/commit-rev-init i-class-table
+                                       i-class-context
+                                       i-class-ref
+                                       v-latest
+                                       {:id   (pg/coalesce v-op-created (pg/uuid-nil))
+                                        :time (pg/coalesce v-time-created 0)})))
+        #{(:uuid v-id)
+          (:integer v-index)
+          v-current}     o-rev
+        (:boolean o-changed) (not= 0
+                                   (pg/jsonb-cmp v-latest
+                                                 v-current))
+        _ (when (not o-changed)
+            (return #{o-rev
+                      o-changed}))
+
+        o-op  {:id   (pg/coalesce v-op-updated (pg/uuid-nil))
+               :time (pg/coalesce v-time-updated 0)}
+        v-deltas (tss/get-diff-forward v-current v-latest)
+        o-rev (-/update-rev i-class-table i-class-context i-class-ref v-latest o-op)
+        o-log (-/insert-rev-log
+               i-class-table
+               i-class-context
+               v-id
+               (+ v-index 1)
+               v-deltas
+               o-op)]
+    (return #{o-changed
+              o-rev
+              o-log})))
+
+(defn.pg ^{:%% :sql
+           :- [:boolean]}
+  has-rev
+  "checks if revision exists"
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref
+   :text  i-key]
+  (pg/t:exists -/Rev
+    {:where {:class-table i-class-table
+             :class-context i-class-context
+             :class-ref i-class-ref}}))
+
+(defn.pg ^{:%% :sql
+           :- [:uuid]}
+  lu-rev-id
+  "Retrieves a specific revision entry for an entity."
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref]
+  (pg/t:id -/Rev
+    {:where {:class-table i-class-table
+             :class-context i-class-context
+             :class-ref i-class-ref}}))
+
+(defn.pg ^{:%% :sql
+           :- [:uuid]}
+  lu-rev-class-ref
+  [:text i-class-table
+   :text i-class-context
+   :uuid i-rev-id]
+  (pg/t:get-field -/Rev
+    {:where {:id i-rev-id
+             :class-table i-class-table
+             :class-context i-class-context}
+     :returning :class-ref}))
+
+(defn.pg ^{:%% :sql}
+  rev-logs
+  "Retrieves the revision history (logs) for a given entity."
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref]
+  (pg/g:select -/RevLog
+    {:where {:rev {:class-table i-class-table
+                   :class-context i-class-context
+                   :class-ref i-class-ref}}
+     :order-by :version}))
+
+(defn.pg rev-version-at
+  "gets various versions of a record"
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref
+   :integer i-version]
+  (let [o-out {}
+        v-d nil
+        v-deltas (pg/g:select -/RevLog
+                   {:where {:rev {:class-table i-class-table
+                                  :class-context i-class-context
+                                  :class-ref i-class-ref}
+                            :class-table i-class-table
+                            :class-context i-class-context
+                            :version [:lte i-version]}
+                    :returning :deltas
+                    :order-by :version})]
+    [:for v-d :in :select (pg/jsonb-array-elements v-deltas)
+     (loop []
+       (:= o-out (tss/patch-diff o-out (:-> v-d "deltas"))))]
+    (return o-out)))
+
+(defn.pg ^{:%% :sql}
+  purge-rev-logs
+  "Removes all revision logs for a specific entity."
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref]
+  (pg/g:delete -/RevLog
+    {:where {:rev {:class-table i-class-table
+                   :class-context i-class-context
+                   :class-ref i-class-ref}}}))
+
+(defn.pg purge-rev
+  "Removes a specific revision entry and its associated logs."
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref]
+  (let [o-logs (-/purge-rev-logs
+                i-class-table
+                i-class-context
+                i-class-ref)
+        o-rev  (pg/t:delete -/Rev
+                 {:where {:class-table i-class-table
+                          :class-context i-class-context
+                          :class-ref i-class-ref}
+                  :single true})]
+    (return (|| o-rev #{o-logs}))))
+
+;;
+;; Global
+;;
+
+(defenum.pg EnumGlobalVisibility
+  [:public :authenticated :superadmin :system])
+
+(defenum.pg EnumGlobalLifecycle
+  [:runtime :restart :deployment])
+
+(defenum.pg EnumGlobalStatus
+  [:active :reserved :retired])
+
+(deftype.pg ^{:! (postgres.entity/E {:class  :0d/entry
+                        :addons [:rev]})}
+  Global
+  "A versioned platform configuration section.
+
+   Registered sections are source-owned contracts. Operators replace the
+   complete value-json document; registration may refresh metadata and the
+   default but never overwrites an existing operator value. The legacy text
+   value remains available for unregistered keys during migration."
+  {:added "0.1"}
+  [:key      {:type :citext   :required true :unique true}
+   :value    {:type :text     :required true
+              :sql {:default ""}}
+   :value-json   {:type :jsonb :required true
+                  :sql {:default "{}"}}
+   :default-json {:type :jsonb :required true
+                  :sql {:default "{}"}}
+   :schema       {:type :jsonb :required true
+                  :sql {:default "{}"}}
+   :schema-version {:type :integer :required true
+                    :sql {:default 1}}
+   :revision     {:type :integer :required true
+                  :sql {:default 0}}
+   :title        {:type :citext}
+   :description  {:type :text}
+   :visibility   {:type :enum :required true
+                  :enum {:ns -/EnumGlobalVisibility}
+                  :sql {:default "system"}}
+   :lifecycle    {:type :enum :required true
+                  :enum {:ns -/EnumGlobalLifecycle}
+                  :sql {:default "runtime"}}
+   :status       {:type :enum :required true
+                  :enum {:ns -/EnumGlobalStatus}
+                  :sql {:default "reserved"}}
+   :is-registered {:type :boolean :required true
+                   :sql {:default false}}])
+
+(defsel.pg ^{:- [Global]}
+  sel-global-public
+  {:is-registered true
+   :visibility "public"
+   :status "active"})
+
+(defsel.pg ^{:- [Global]}
+  sel-global-authenticated
+  {:is-registered true
+   :visibility [:in ["public" "authenticated"]]
+   :status "active"})
+
+(defsel.pg ^{:- [Global]}
+  sel-global-superadmin
+  {:is-registered true
+   :status [:not-in ["retired"]]})
+
+(defret.pg ^{:- [Global]}
+  ret-global-section
+  [:uuid i-global-id]
+  #{:*/standard})
+
+(defn.pg ^{:%% :sql
+           :- [:jsonb]}
+  global-section-value
+  "Returns an active registered section value, never provider credentials."
+  [:citext i-key]
+  (pg/t:get-field -/Global
+    {:where {:key i-key
+             :is-registered true
+             :status "active"}
+     :returning :value-json}))
+
+(defn.pg register-global-section
+  "Registers or refreshes a source-owned section contract without replacing
+   an existing operator value."
+  [:citext i-key
+   :citext i-title
+   :text i-description
+   :text i-visibility
+   :text i-lifecycle
+   :text i-status
+   :integer i-schema-version
+   :jsonb i-schema
+   :jsonb i-default]
+  (let [o-existing (pg/t:get -/Global
+                     {:where {:key i-key}
+                      :single true})
+        (:jsonb o-out) nil
+        _ (when [o-existing :is-not-null]
+            (pg/t:update -/Global
+              {:where {:key i-key}
+               :set {:title i-title
+                     :description i-description
+                     :visibility i-visibility
+                     :lifecycle i-lifecycle
+                     :status i-status
+                     :schema-version i-schema-version
+                     :schema i-schema
+                     :default-json i-default
+                     :is-registered true}
+               :single true
+               :track {}
+               :into o-out})
+            (return o-out))
+        (:uuid v-global-id) (pg/uuid-generate-v4)
+        o-rev (-/insert-rev "Global" "Global" v-global-id {} {})
+        o-global (pg/t:insert -/Global
+                   {:id v-global-id
+                    :key i-key
+                    :value ""
+                    :value-json i-default
+                    :default-json i-default
+                    :schema i-schema
+                    :schema-version i-schema-version
+                    :revision 0
+                    :title i-title
+                    :description i-description
+                    :visibility i-visibility
+                    :lifecycle i-lifecycle
+                    :status i-status
+                    :is-registered true
+                    :rev (pg/id o-rev)}
+                   {:track {}})
+        _ [:perform (-/commit-rev "Global" "Global" v-global-id o-global)]]
+    (return o-global)))
+
+(defn.pg update-global-section
+  "Atomically replaces a registered section using optimistic concurrency."
+  [:citext i-key
+   :integer i-expected-revision
+   :jsonb i-value
+   :jsonb o-op]
+  (let [o-global (pg/t:update -/Global
+                   {:where {:key i-key
+                            :is-registered true
+                            :status [:not-in ["retired"]]
+                            :revision i-expected-revision}
+                    :set {:value-json i-value
+                          :revision (+ i-expected-revision 1)}
+                    :single true
+                    :track o-op})
+        _ (pg/assert [o-global :is-not-null]
+            [:system/global-revision-conflict
+             #{i-key i-expected-revision}])
+        _ [:perform (-/commit-rev "Global" "Global" (pg/id o-global) o-global)]]
+    (return o-global)))
+
+(defn.pg reset-global-section
+  "Resets a registered section to its source-owned default."
+  [:citext i-key
+   :integer i-expected-revision
+   :jsonb o-op]
+  (let [o-global (pg/t:get -/Global
+                   {:where {:key i-key
+                            :is-registered true}
+                    :single true})
+        _ (pg/assert [o-global :is-not-null]
+            [:system/global-section-not-found #{i-key}])
+        v-default (:-> o-global "default_json")
+        o-out (-/update-global-section i-key
+                                       i-expected-revision
+                                       v-default
+                                       o-op)]
+    (return o-out)))
+
+(defn.pg create-global
+  "create a global entry"
+  {:added "0.1"}
+  [:citext i-key
+   :text   i-value
+   :jsonb  o-op]
+  (let [o-existing (pg/t:get -/Global {:where {:key i-key}
+                                       :single true})
+        _ (pg/assert (or [o-existing :is-null]
+                         (not (:boolean (:-> o-existing "is_registered"))))
+            [:system/global-section-is-registered #{i-key}])
+        (:uuid v-global-id) (pg/uuid-generate-v4)
+        v-rev (-/insert-rev "Global"
+                            "Global"
+                            v-global-id
+                            {}
+                            o-op)
+        o-global (pg/t:insert -/Global
+                   {:id v-global-id
+                    :key i-key
+                    :value i-value
+                    :rev (pg/id v-rev)}
+                   {:track o-op})
+        _ [:perform (-/commit-rev "Global"
+                                  "Global"
+                                  v-global-id
+                                  o-global)]]
+    (return o-global)))
+
+(defn.pg ^{:%% :sql
+           :- [:uuid]}
+  lu-global-id
+  [:citext i-key]
+  (pg/t:id -/Global {:where {:key i-key}}))
+
+(defn.pg set-global
+  "set a global entry"
+  {:added "0.1"}
+  [:citext i-key
+   :text   i-value
+   :jsonb  o-op]
+  (let [o-existing (pg/t:get -/Global {:where {:key i-key}
+                                       :single true})
+        _ (pg/assert (or [o-existing :is-null]
+                         (not (:boolean (:-> o-existing "is_registered"))))
+            [:system/global-section-is-registered #{i-key}])
+        o-global (pg/t:update -/Global
+                   {:where {:key i-key}
+                    :set {:value i-value}
+                    :single true
+                    :track o-op})
+        _   (when [o-global :is-not-null]
+              [:perform (-/commit-rev "Global"
+                                      "Global"
+                                      (pg/id o-global)
+                                      o-global)]
+              (return o-global))
+        o-created (-/create-global i-key i-value o-op)]
+    (return o-created)))
+
+(defn.pg purge-global
+  "purge a global entry"
+  {:added "0.1"}
+  [:citext i-key]
+  (let [o-existing (pg/t:get -/Global {:where {:key i-key}
+                                       :single true})
+        _ (pg/assert (or [o-existing :is-null]
+                         (not (:boolean (:-> o-existing "is_registered"))))
+            [:system/global-section-is-registered #{i-key}])
+        o-global (pg/t:delete -/Global
+                   {:where {:key i-key}
+                    :single true})
+        _   (when [o-global :is-null]
+              (return o-global))
+        #{(:uuid v-rev-id)} o-global
+        o-rev    (-/purge-rev "Global"
+                              "Global"
+                              (pg/id o-global))
+        o-out (|| o-global
+                  #{o-rev})]
+    (return o-out)))
+
+;;
+;; Audit
+;;
+;; This is used for tracking actions on a datastructure.
+;;
+
+(deftype.pg ^{:! (postgres.entity/E {:class  :2d/base
+                        :access :access/system
+                        :provides {:priority 67
+                                   :key :audit}})}
+  Audit
+  "Audit entity"
+  {:added "0.1"}
+  []
+  {:partition-by {:strategy :list :columns [:class-table]
+                  :default  {:in "gw_type_impl"}}})
+
+(deftype.pg ^{:! (postgres.entity/E {:class  :2d/log
+                        :id     :id/none
+                        :owner  -/Audit
+                        :access :access/system
+                        :columns {:op-created {:primary "default"
+                                               :sql  {:default `(pg/uuid-generate-v1)}}}
+                        :addons [:entry]})}
+  AuditLog
+  "AuditLog entity"
+  {:added "0.1"}
+  []
+  {:partition-by {:strategy :list :columns [:class-table]
+                  :default  {:in "gw_type_impl"}}})
+
+(defn.pg ^{:%% :sql}
+  insert-audit
+  "Creates a new audit entry to record system events or changes."
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref
+   :jsonb o-op]
+  (pg/t:insert -/Audit
+    {:class-table i-class-table
+     :class-context  i-class-context
+     :class-ref i-class-ref}
+    {:track o-op}))
+
+(defn.pg ^{:%% :sql
+           :- [:uuid]}
+  lu-audit-id
+  [:text i-class-table
+   :text i-class-context
+   :uuid i-class-ref]
+  (pg/t:id -/Audit
+    {:where {:class-table i-class-table
+             :class-context i-class-context
+             :class-ref i-class-ref}}))
+
+(defn.pg ^{:%% :sql
+           :- [:uuid]}
+  lu-audit-class-ref
+  [:text i-class-table
+   :text i-class-context
+   :uuid i-audit-id]
+  (pg/t:get-field -/Audit
+    {:where {:id i-audit-id
+             :class-table i-class-table
+             :class-context i-class-context}
+     :returning :class-ref}))
+
+(defn.pg ^{:%% :sql}
+  insert-audit-log
+  "create a audit log entry"
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-audit-id
+   :jsonb i-entry
+   :jsonb o-op]
+  (pg/t:insert -/AuditLog
+    {:class-table i-class-table
+     :class-context  i-class-context
+     :audit i-audit-id
+     :entry i-entry}
+    {:track o-op
+     :coalesce true}))
+
+(defn.pg ^{:%% :sql}
+  audit-logs
+  "Retrieves the audit logs for a specific audit entry."
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref]
+  (pg/g:select -/AuditLog
+    {:where {:audit  {:class-table  i-class-table
+                      :class-context  i-class-context
+                      :class-ref  i-class-ref}
+             :class-table  i-class-table
+             :class-context  i-class-context}}))
+
+(defn.pg ^{:%% :sql}
+  purge-audit-logs
+  "purges the audit logs"
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref]
+  (pg/g:delete -/AuditLog
+    {:where {:audit  {:class-table  i-class-table
+                      :class-ref  i-class-ref}
+             :class-table  i-class-table}}))
+
+(defn.pg purge-audit
+  "Removes an audit entry and its associated logs."
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref]
+  (let [o-logs (-/purge-audit-logs i-class-table i-class-context i-class-ref)
+        o-audit (pg/t:delete -/Audit
+                  {:where {:class-table  i-class-table
+                           :class-context  i-class-context
+                           :class-ref  i-class-ref}
+                   :single true})]
+    (return (|| o-audit #{o-logs}))))
+
+
+;;
+;; Lock
+;;
+
+(defenum.pg ^{}
+  EnumLockAction
+  [:lock :unlock])
+
+(defenum.pg ^{}
+  EnumLockReason
+  [:none :abuse :unpaid :other])
+
+(deftype.pg ^{:! (postgres.entity/E {:class  :2d/base
+                        :access :access/auth
+                        :provides {:priority 66
+                                   :key :lock}})}
+  Lock
+  "Lock entity"
+  {:added "0.1"}
+  [:value   {:type :boolean :required true
+             :sql {:default false}}]
+  {:partition-by {:strategy :list :columns [:class-table]
+                  :default {:in "gw_type_impl"}}})
+
+(deftype.pg ^{:! (postgres.entity/E {:class  :2d/log
+                        :id     :id/none
+                        :access :access/auth
+                        :owner  -/Lock
+                        :addons [:detail]
+                        :columns {:op-created {:primary "default"
+                                               :sql  {:default `(pg/uuid-generate-v1)}}}})}
+  LockLog
+  "LockLog entity"
+  {:added "0.1"}
+  [:reason   {:type :enum :required true :scope :-/info
+              :enum {:ns -/EnumLockReason}}
+   :action   {:type :enum :required true :scope :-/info
+              :enum {:ns -/EnumLockAction}}]
+  {:partition-by {:strategy :list :columns [:class-table]
+                  :default {:in "gw_type_impl"}}})
+
+(defn.pg ^{:%% :sql}
+  insert-lock
+  "Creates a new lock entry for a given entity."
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref
+   :jsonb o-op]
+  (pg/t:insert -/Lock
+    {:class-table i-class-table
+     :class-context i-class-context
+     :class-ref i-class-ref}
+    {:track o-op}))
+
+(defn.pg ^{:%% :sql
+           :- [:uuid]}
+  lu-lock-id
+  [:text i-class-table
+   :text i-class-context
+   :uuid i-class-ref]
+  (pg/t:id -/Lock
+    {:where {:class-table i-class-table
+             :class-context i-class-context
+             :class-ref i-class-ref}}))
+
+(defn.pg ^{:%% :sql
+           :- [:uuid]}
+  lu-lock-class-ref
+  [:text i-class-table
+   :text i-class-context
+   :uuid i-lock-id]
+  (pg/t:get-field -/Lock
+    {:where {:id i-lock-id
+             :class-table i-class-table
+             :class-context i-class-context}
+     :returning :class-ref}))
+
+(defn.pg ^{:%% :sql}
+  insert-lock-log
+  "Creates a new log entry for a lock, recording the action and reason."
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-lock-id
+   :text  i-reason
+   :text  i-action
+   :jsonb i-detail
+   :jsonb o-op]
+  (pg/t:insert -/LockLog
+    {:lock    i-lock-id
+     :class-context i-class-context
+     :class-table   i-class-table
+     :reason  i-reason
+     :action  i-action
+     :detail  i-detail}
+    {:track o-op}))
+
+(defn.pg perform-lock
+  "Applies a lock to an entity, recording the action and its details."
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref
+   :text  i-reason
+   :text  i-action
+   :jsonb i-log-detail
+   :jsonb o-op]
+  (let [(:boolean v-value) (case i-action
+                             "lock"   true
+                             "unlock" false)
+        o-lock  (pg/t:update -/Lock
+                  {:where {:class-table i-class-table
+                           :class-context i-class-context
+                           :class-ref i-class-ref}
+                   :set {:value v-value}
+                   :single true
+                   :track o-op})
+        o-log   (-/insert-lock-log
+                 i-class-table
+                 i-class-context
+                 (pg/id o-lock)
+                 i-reason
+                 i-action
+                 i-log-detail
+                 o-op)]
+    (return (|| o-lock
+                #{o-log}))))
+
+(defn.pg ^{:%% :sql
+           :- [:boolean]}
+  lock-value
+  "gets the current lock value"
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref]
+  (pg/t:get -/Lock
+    {:where {:class-table i-class-table
+             :class-context i-class-context
+             :class-ref i-class-ref}
+     :returning :value
+     :as :raw}))
+
+(defn.pg ^{:%% :sql}
+  purge-lock-logs
+  "Removes all lock logs associated with a specific lock."
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref]
+  (pg/g:delete -/LockLog
+    {:where {:class-table i-class-table
+             :class-context i-class-context
+             :lock  {:class-table i-class-table
+                     :class-context i-class-context
+                     :class-ref i-class-ref}}}))
+
+(defn.pg purge-lock
+  "Removes a lock entry and its associated logs."
+  {:added "0.1"}
+  [:text  i-class-table
+   :text  i-class-context
+   :uuid  i-class-ref]
+  (let [o-logs (-/purge-lock-logs i-class-table i-class-context i-class-ref)
+        o-lock (pg/t:delete -/Lock
+                 {:where {:class-table i-class-table
+                          :class-context i-class-context
+                          :class-ref i-class-ref}
+                  :single true})]
+    (return (|| o-lock #{o-logs}))))
+
+
+;;
+;; Starred
+;;
+
+(deftype.pg ^{:! (postgres.entity/E {:class :1d/base
+                        :basis #{:table}
+                        :provides {:priority 61
+                                   :key :starred}})}
+  Starred
+  "Starred entity"
+  {:added "0.1"}
+  []
+  {:partition-by {:strategy :list :columns [:class-table] :default  {:in "gw_type_impl"}}})
+
+(defn.pg ^{:%% :sql}
+  insert-starred
+  "creates an starred entry"
+  {:added "0.1"}
+  [:text  i-class-table
+   :uuid  i-class-ref
+   :jsonb o-op]
+  (pg/t:insert -/Starred
+    {:class-table i-class-table
+     :class-ref i-class-ref}
+    {:track o-op}))
+
+(defn.pg  ^{:%% :sql}
+  purge-starred
+  "Removes an starred entry from the database."
+  {:added "0.1"}
+  [:text  i-class-table
+   :uuid  i-class-ref]
+  (pg/t:delete -/Starred
+    {:where {:class-table i-class-table
+             :class-ref i-class-ref}
+     :single true}))
+
+(defn.pg ^{:%% :sql
+           :- [:uuid]}
+  lu-starred-id
+  [:text  i-class-table
+   :uuid  i-class-ref]
+  (pg/t:id -/Starred
+    {:where {:class-table i-class-table
+             :class-ref i-class-ref}}))
+
+;;
+;; Activity
+;;
+
+(deftype.pg ^{:! (postgres.entity/E {:class :1d/base
+                        :basis #{:table}
+                        :provides {:priority 61
+                                   :key :Activity}})}
+  Activity
+  "Activity entity"
+  {:added "0.1"}
+  []
+  {:partition-by {:strategy :list :columns [:class-table] :default  {:in "gw_type_impl"}}})
+
+(defn.pg ^{:%% :sql}
+  insert-activity
+  "creates an Activity entry"
+  {:added "0.1"}
+  [:text  i-class-table
+   :uuid  i-class-ref
+   :jsonb o-op]
+  (pg/t:insert -/Activity
+    {:class-table i-class-table
+     :class-ref i-class-ref}
+    {:track o-op}))
+
+(defn.pg  ^{:%% :sql}
+  purge-activity
+  "Removes an Activity entry from the database."
+  {:added "0.1"}
+  [:text  i-class-table
+   :uuid  i-class-ref]
+  (pg/t:delete -/Activity
+    {:where {:class-table i-class-table
+             :class-ref i-class-ref}
+     :single true}))
+
+(defn.pg ^{:%% :sql
+           :- [:uuid]}
+  lu-activity-id
+  [:text  i-class-table
+   :uuid  i-class-ref]
+  (pg/t:id -/Activity
+    {:where {:class-table i-class-table
+             :class-ref i-class-ref}}))

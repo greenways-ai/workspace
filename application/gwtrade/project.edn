@@ -1,0 +1,14 @@
+{:hara/type :project
+ :hara/version "1.0.0"
+ :project/id greenways/gwtrade
+ :project/version "0.1.0"
+ :project/source-paths ["src-lang"]
+ :project/test-paths ["test-lang"]
+ :project/extension-paths []
+ :project/hara-bin "../../technology/hara/target/hara/bin/hara"
+ :project/main gwdb.common.type-system-base
+ :project/capabilities #{:db/postgres}
+ :project/dependencies {"hara:hara/lang.core" {:version "^0.1.16"}
+                        "hara:hara/postgres.core" {:version "^0.1.16"}
+                        "hara:hara/postgres.entity" {:version "^0.1.16"}
+                        "hara:hara/code.test" {:version "^0.1.16"}}}

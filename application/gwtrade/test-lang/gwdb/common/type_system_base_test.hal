@@ -1,0 +1,517 @@
+(ns gwdb.common.type-system-base-test
+  (:use code.test)
+  (:require [code.test :as test]
+            [gwdb.test.postgres :as gw-dev]
+            [lang.core :as l]
+            [lang.core.script :as script]
+            [postgres.core :as pg]
+            [postgres.core.supabase :as s]))
+
+(l/script- :postgres
+  {:runtime :client
+   :config  (gw-dev/test-gw-config)
+   :require [[gwdb.common.type-system-base :as tsb]
+              [gwdb.common.type-system-seed :as tss]
+             [postgres.core.supabase  :as s]
+             [postgres.core :as pg]]
+   :emit    {:code {:transforms
+                    {:entry [s/transform-entry]}}}})
+
+(fact:global
+ {:setup    [(l/restart)]
+  :teardown [(l/stop)]})
+
+^{:refer gwdb.common.type-system-base}
+(fact "registers the complete PostgreSQL base module"
+  (let [module (get (deref script/+modules+)
+                    'gwdb.common.type-system-base)]
+    [(= (:id module) 'gwdb.common.type-system-base)
+     (= (:lang module) :postgres)
+     (map? (:code module))
+     (= (:op (get-in module [:code 'Op])) 'deftype)
+     (= (:op (get-in module [:code 'commit-rev])) 'defn)])
+  => [true true true true true])
+
+^{:refer gwdb.common.type-system-base/+run+}
+(fact "initializes the base namespace"
+  (map? (get (deref script/+modules+)
+            'gwdb.common.type-system-base)) => true)
+
+^{:refer gwdb.common.type-system-base/Op :added "0.1"}
+(fact "Op entity"
+
+  (!.pg (pg/t:count tsb/Op)) => integer?)
+
+^{:refer gwdb.common.type-system-base/op-fn :added "0.1"}
+(fact "op-fn"
+
+  (tsb/op-fn "test" (uuid "00000000-0000-0000-0000-000000000000") {})
+  => map?)
+
+^{:refer gwdb.common.type-system-base/Metadata :added "0.1"}
+(fact "Metadata entity"
+
+  (!.pg (pg/t:count tsb/Metadata)) => integer?)
+
+^{:refer gwdb.common.type-system-base/metadata-entry :added "0.1"}
+(fact "gets the metadata entry"
+
+  (tsb/set-metadata (pg/to-jsonb {:a 1}) "key" {:val 1} {})
+  (tsb/metadata-entry (pg/to-jsonb {:a 1}) "key")
+  => {:val 1})
+
+^{:refer gwdb.common.type-system-base/set-metadata :added "0.1"}
+(fact "updates the metadata dynamically"
+
+  (tsb/set-metadata (pg/to-jsonb {:a 1}) "key" {:val 2} {})
+  (tsb/metadata-entry (pg/to-jsonb {:a 1}) "key")
+  => {:val 2})
+
+^{:refer gwdb.common.type-system-base/metadata-row :added "0.1"}
+(fact "gets the metadata from an object"
+
+  (tsb/metadata-row (pg/to-jsonb {:a 1}) "key")
+  => (contains {:entry {:val 2}}))
+
+^{:refer gwdb.common.type-system-base/purge-metadata :added "0.1"}
+(fact "Removes metadata associated with a given entity."
+
+  (tsb/purge-metadata (pg/to-jsonb {:a 1}) "key")
+  (tsb/metadata-entry (pg/to-jsonb {:a 1}) "key")
+  => nil)
+
+^{:refer gwdb.common.type-system-base/Rev :added "0.1"}
+(fact "Rev entity"
+
+  (!.pg (pg/t:count tsb/Rev)) => integer?)
+
+^{:refer gwdb.common.type-system-base/RevLog :added "0.1"}
+(fact "RevLog entity"
+
+  (!.pg (pg/t:count tsb/RevLog)) => integer?)
+
+^{:refer gwdb.common.type-system-base/insert-rev :added "0.1"}
+(fact "inserts a revision entry"
+
+  (let [id (uuid)]
+    (tsb/insert-rev "Global" "Global" id {:a 1} {})
+    => (contains {:current {:a 1}})))
+
+^{:refer gwdb.common.type-system-base/update-rev :added "0.1"}
+(fact "Updates an existing revision entry with new data."
+
+  (let [id (uuid)]
+    (tsb/insert-rev "Global" "Global" id {:a 1} {})
+    (tsb/update-rev "Global" "Global" id {:a 2} {})
+    => (contains {:current {:a 2}})))
+
+^{:refer gwdb.common.type-system-base/insert-rev-log :added "0.1"}
+(fact "inserts a revision log entry"
+
+  (let [id (uuid)
+        rev (tsb/insert-rev "Global" "Global" id {} {})]
+    (tsb/insert-rev-log "Global" "Global" (:id rev) 1 {} {})
+    => (contains {:version 1})))
+
+^{:refer gwdb.common.type-system-base/commit-rev-init :added "0.1"}
+(fact "performs the inital commit"
+
+  (let [id (uuid)]
+    (tsb/commit-rev-init "Global" "Global" id {:a 1} {})
+    => map?))
+
+^{:refer gwdb.common.type-system-base/commit-rev :added "0.1"}
+(fact "Commits a new revision for a given entity, tracking changes over time."
+
+  (let [id (uuid)]
+    (tsb/commit-rev "Global" "Global" id {:a 1})
+    => map?))
+
+^{:refer gwdb.common.type-system-base/has-rev :added "0.1"}
+(fact "checks if revision exists"
+
+  (let [id (uuid)]
+    (tsb/insert-rev "Global" "Global" id {} {})
+    (tsb/has-rev "Global" "Global" id "k")
+    => true))
+
+^{:refer gwdb.common.type-system-base/lu-rev-id :added "0.1"}
+(fact "Retrieves a specific revision entry for an entity."
+
+  (let [id (uuid)]
+    (tsb/insert-rev "Global" "Global" id {} {})
+    (tsb/lu-rev-id "Global" "Global" id)
+    => uuid?))
+
+^{:refer gwdb.common.type-system-base/lu-rev-class-ref :added "0.1"}
+(fact "gets the class ref of a rev"
+
+  (let [id (uuid)]
+    (tsb/insert-rev "Global" "Global" id {} {})
+    (let [rev-id (tsb/lu-rev-id "Global" "Global" id)]
+      (tsb/lu-rev-class-ref "Global" "Global" rev-id))
+    => id
+    (tsb/purge-rev "Global" "Global" id)))
+
+^{:refer gwdb.common.type-system-base/rev-logs :added "0.1"}
+(fact "Retrieves the revision history (logs) for a given entity."
+
+  (let [id (uuid)]
+    (tsb/commit-rev "Global" "Global" id {:a 1})
+    (tsb/commit-rev "Global" "Global" id {:a 2})
+    (or (tsb/rev-logs "Global" "Global" id) [])
+    => vector?))
+
+^{:refer gwdb.common.type-system-base/rev-version-at :added "0.1"}
+(fact "gets various versions of a record"
+
+  (let [id (uuid)]
+    (tsb/commit-rev "Global" "Global" id {:a 1})
+    (tsb/commit-rev "Global" "Global" id {:a 2})
+    (tsb/rev-version-at "Global" "Global" id 0)
+    => {:a 1}))
+
+^{:refer gwdb.common.type-system-base/purge-rev-logs :added "0.1"}
+(fact "Removes all revision logs for a specific entity."
+
+  (let [id (uuid)]
+    (tsb/commit-rev "Global" "Global" id {:a 1})
+    (tsb/purge-rev-logs "Global" "Global" id)
+    (or (tsb/rev-logs "Global" "Global" id) [])
+    => []))
+
+^{:refer gwdb.common.type-system-base/purge-rev :added "0.1"}
+(fact "Removes a specific revision entry and its associated logs."
+
+  (let [id (uuid)]
+    (tsb/insert-rev "Global" "Global" id {} {})
+    (tsb/purge-rev "Global" "Global" id)
+    (tsb/lu-rev-id "Global" "Global" id)
+    => nil))
+
+^{:refer gwdb.common.type-system-base/Global :added "0.1"}
+(fact "Global entity"
+
+  (!.pg (pg/t:count tsb/Global)) => integer?)
+
+^{:refer gwdb.common.type-system-base/EnumGlobalVisibility}
+(fact "registers the global visibility enum"
+  (:op (get-in (deref script/+modules+)
+               ['gwdb.common.type-system-base :code 'EnumGlobalVisibility]))
+  => 'defenum)
+
+^{:refer gwdb.common.type-system-base/EnumGlobalLifecycle}
+(fact "registers the global lifecycle enum"
+  (:op (get-in (deref script/+modules+)
+               ['gwdb.common.type-system-base :code 'EnumGlobalLifecycle]))
+  => 'defenum)
+
+^{:refer gwdb.common.type-system-base/EnumGlobalStatus}
+(fact "registers the global status enum"
+  (:op (get-in (deref script/+modules+)
+               ['gwdb.common.type-system-base :code 'EnumGlobalStatus]))
+  => 'defenum)
+
+^{:refer gwdb.common.type-system-base/sel-global-public}
+(fact "registers the public global selector"
+  (:op (get-in (deref script/+modules+)
+               ['gwdb.common.type-system-base :code 'sel-global-public]))
+  => 'defn)
+
+^{:refer gwdb.common.type-system-base/sel-global-authenticated}
+(fact "registers the authenticated global selector"
+  (:op (get-in (deref script/+modules+)
+               ['gwdb.common.type-system-base :code 'sel-global-authenticated]))
+  => 'defn)
+
+^{:refer gwdb.common.type-system-base/sel-global-superadmin}
+(fact "registers the superadmin global selector"
+  (:op (get-in (deref script/+modules+)
+               ['gwdb.common.type-system-base :code 'sel-global-superadmin]))
+  => 'defn)
+
+^{:refer gwdb.common.type-system-base/ret-global-section}
+(fact "registers the global return projection"
+  (:op (get-in (deref script/+modules+)
+               ['gwdb.common.type-system-base :code 'ret-global-section]))
+  => 'defn)
+
+^{:refer gwdb.common.type-system-base/create-global :added "0.1"}
+(fact "create a global entry"
+
+  (tsb/create-global "key1" "val1" {})
+  => (contains {:key "key1" :value "val1"}))
+
+^{:refer gwdb.common.type-system-base/lu-global-id :added "0.1"}
+(fact "get a global entry id"
+
+  (tsb/create-global "key2" "val2" {})
+  (tsb/lu-global-id "key2")
+  => uuid?
+  (tsb/purge-global "key2"))
+
+^{:refer gwdb.common.type-system-base/set-global :added "0.1"}
+(fact "set a global entry"
+
+  (tsb/set-global "key1" "val2" {})
+  => (contains {:key "key1" :value "val2"}))
+
+^{:refer gwdb.common.type-system-base/purge-global :added "0.1"}
+(fact "purge a global entry"
+
+  (tsb/purge-global "key1")
+  => (contains {:key "key1"}))
+
+^{:refer gwdb.common.type-system-base/Audit :added "0.1"}
+(fact "Audit entity"
+
+  (!.pg (pg/t:count tsb/Audit)) => integer?)
+
+^{:refer gwdb.common.type-system-base/AuditLog :added "0.1"}
+(fact "AuditLog entity"
+
+  (!.pg (pg/t:count tsb/AuditLog)) => integer?)
+
+^{:refer gwdb.common.type-system-base/insert-audit :added "0.1"}
+(fact "Creates a new audit entry to record system events or changes."
+
+  (let [id (uuid)]
+    (tsb/insert-audit "Global" "Global" id {})
+    (tsb/purge-audit "Global" "Global" id)
+    => map?))
+
+^{:refer gwdb.common.type-system-base/lu-audit-id :added "0.1"}
+(fact "gets the id of an audit"
+
+  (let [id (uuid)]
+    (tsb/insert-audit "Global" "Global" id {})
+    (tsb/lu-audit-id "Global" "Global" id)
+    => uuid?
+    (tsb/purge-audit "Global" "Global" id)))
+
+^{:refer gwdb.common.type-system-base/lu-audit-class-ref :added "0.1"}
+(fact "gets the class ref of an audit"
+
+  (let [id (uuid)]
+    (tsb/insert-audit "Global" "Global" id {})
+    (let [audit-id (tsb/lu-audit-id "Global" "Global" id)]
+      (tsb/lu-audit-class-ref "Global" "Global" audit-id))
+    => id
+    (tsb/purge-audit "Global" "Global" id)))
+
+^{:refer gwdb.common.type-system-base/insert-audit-log :added "0.1"}
+(fact "create a audit log entry"
+
+  (let [id (uuid)
+        audit (tsb/insert-audit "Global" "Token" id {})]
+    (tsb/insert-audit-log "Global" "Token" (:id audit) {:action "test"} {:id (uuid)})
+    => map?))
+
+^{:refer gwdb.common.type-system-base/audit-logs :added "0.1"}
+(fact "Retrieves the audit logs for a specific audit entry."
+
+  (let [id (uuid)
+        audit (tsb/insert-audit "Global" "Token" id {})]
+    (tsb/insert-audit-log "Global" "Token" (:id audit) {:action "test"} {:id (uuid)})
+    (count (tsb/audit-logs "Global" "Token" id)))
+  => 1)
+
+^{:refer gwdb.common.type-system-base/purge-audit-logs :added "0.1"}
+(fact "purges the audit logs"
+
+  (let [id (uuid)
+        audit (tsb/insert-audit "Global" "Token" id {})]
+    (tsb/insert-audit-log "Global" "Token" (:id audit) {:action "test"} {:id (uuid)})
+    (tsb/purge-audit-logs "Global" "Token" id)
+    (count (tsb/audit-logs "Global" "Token" id)))
+  => 0)
+
+^{:refer gwdb.common.type-system-base/purge-audit :added "0.1"}
+(fact "Removes an audit entry and its associated logs."
+
+  (let [id (uuid)]
+    (tsb/insert-audit "Global" "Global" id {})
+    (tsb/purge-audit "Global" "Global" id)
+    => map?))
+
+^{:refer gwdb.common.type-system-base/Lock :added "0.1"}
+(fact "Lock entity"
+
+  (!.pg (pg/t:count tsb/Lock)) => integer?)
+
+^{:refer gwdb.common.type-system-base/EnumLockAction}
+(fact "registers the lock action enum"
+  (:op (get-in (deref script/+modules+)
+               ['gwdb.common.type-system-base :code 'EnumLockAction]))
+  => 'defenum)
+
+^{:refer gwdb.common.type-system-base/EnumLockReason}
+(fact "registers the lock reason enum"
+  (:op (get-in (deref script/+modules+)
+               ['gwdb.common.type-system-base :code 'EnumLockReason]))
+  => 'defenum)
+
+^{:refer gwdb.common.type-system-base/LockLog :added "0.1"}
+(fact "LockLog entity"
+
+  (!.pg (pg/t:count tsb/LockLog)) => integer?)
+
+^{:refer gwdb.common.type-system-base/insert-lock :added "0.1"}
+(fact "Creates a new lock entry for a given entity."
+
+  (let [id (uuid)]
+    (tsb/insert-lock "Global" "Global" id {})
+    (tsb/purge-lock "Global" "Global" id))
+  => map?)
+
+^{:refer gwdb.common.type-system-base/lu-lock-id :added "0.1"}
+(fact "gets the id of a lock"
+
+  (let [id (uuid)]
+    (tsb/insert-lock "Global" "Global" id {})
+    (tsb/lu-lock-id "Global" "Global" id)
+    => uuid?
+    (tsb/purge-lock "Global" "Global" id)))
+
+^{:refer gwdb.common.type-system-base/lu-lock-class-ref :added "0.1"}
+(fact "gets the class ref of a lock"
+
+  (let [id (uuid)]
+    (tsb/insert-lock "Global" "Global" id {})
+    (let [lock-id (tsb/lu-lock-id "Global" "Global" id)]
+      (tsb/lu-lock-class-ref "Global" "Global" lock-id))
+    => id
+    (tsb/purge-lock "Global" "Global" id)))
+
+^{:refer gwdb.common.type-system-base/insert-lock-log :added "0.1"}
+(fact "Creates a new log entry for a lock, recording the action and reason."
+
+  (let [id (uuid)
+        lock (tsb/insert-lock "Global" "Global" id {})]
+    (tsb/insert-lock-log "Global" "Global" (:id lock) "none" "lock" {} {:id (uuid)})
+    => map?))
+
+^{:refer gwdb.common.type-system-base/perform-lock :added "0.1"}
+(fact "Applies a lock to an entity, recording the action and its details."
+
+  (let [id (uuid)
+        lock (tsb/insert-lock "Global" "Global" id {})]
+    (tsb/perform-lock "Global" "Global" id "none" "lock" {} {:id (uuid)})
+    (tsb/lock-value "Global" "Global" id)
+    => true))
+
+^{:refer gwdb.common.type-system-base/lock-value :added "0.1"}
+(fact "gets the current lock value"
+
+  (let [id (uuid)]
+    (tsb/insert-lock "Global" "Global" id {})
+    (tsb/lock-value "Global" "Global" id)
+    => false))
+
+^{:refer gwdb.common.type-system-base/purge-lock-logs :added "0.1"}
+(fact "Removes all lock logs associated with a specific lock."
+
+  (let [id (uuid)
+        lock (tsb/insert-lock "Global" "Global" id {})]
+    (tsb/perform-lock "Global" "Global" id "none" "lock" {} {:id (uuid)})
+    (tsb/purge-lock-logs "Global" "Global" id)
+    => vector?))
+
+^{:refer gwdb.common.type-system-base/purge-lock :added "0.1"}
+(fact "Removes a lock entry and its associated logs."
+
+  (let [id (uuid)]
+    (tsb/insert-lock "Global" "Global" id {})
+    (tsb/purge-lock "Global" "Global" id)
+    => map?))
+
+^{:refer gwdb.common.type-system-base/Starred :added "0.1"}
+(fact "Starred entity"
+
+  (!.pg (pg/t:count tsb/Starred)) => integer?)
+
+^{:refer gwdb.common.type-system-base/insert-starred :added "0.1"}
+(fact "creates a starred entry"
+
+  (let [id (uuid)]
+    (tsb/insert-starred "Global" id {})
+    => map?
+    (tsb/purge-starred "Global" id)))
+
+^{:refer gwdb.common.type-system-base/purge-starred :added "0.1"}
+(fact "Removes a starred entry from the database."
+
+  (let [id (uuid)]
+    (tsb/insert-starred "Global" id {})
+    (tsb/purge-starred "Global" id)
+    => map?))
+
+^{:refer gwdb.common.type-system-base/lu-starred-id :added "0.1"}
+(fact "gets the starred id"
+
+  (let [id (uuid)]
+    (tsb/insert-starred "Global" id {})
+    (tsb/lu-starred-id "Global" id)
+    => uuid?
+    (tsb/purge-starred "Global" id)))
+
+
+^{:refer gwdb.common.type-system-base/Activity :added "0.1"}
+(fact "Activity entity"
+
+  (!.pg (pg/t:count tsb/Activity)) => integer?)
+
+^{:refer gwdb.common.type-system-base/insert-activity :added "0.1"}
+(fact "creates a activity entry"
+
+  (let [id (uuid)]
+    (tsb/insert-activity "Global" id {})
+    => map?
+    (tsb/purge-activity "Global" id)))
+
+^{:refer gwdb.common.type-system-base/purge-activity :added "0.1"}
+(fact "Removes a activity entry from the database."
+
+  (let [id (uuid)]
+    (tsb/insert-activity "Global" id {})
+    (tsb/purge-activity "Global" id)
+    => map?))
+
+^{:refer gwdb.common.type-system-base/lu-activity-id :added "0.1"}
+(fact "gets the activity id"
+
+  (let [id (uuid)]
+    (tsb/insert-activity "Global" id {})
+    (tsb/lu-activity-id "Global" id)
+    => uuid?
+    (tsb/purge-activity "Global" id)))
+
+
+^{:refer gwdb.common.type-system-base/global-section-value :added "0.1"}
+(fact "has an executable source definition"
+  (some? gwdb.common.type-system-base/global-section-value) => true)
+
+^{:refer gwdb.common.type-system-base/register-global-section :added "0.1"}
+(fact "has an executable source definition"
+  (some? gwdb.common.type-system-base/register-global-section) => true)
+
+^{:refer gwdb.common.type-system-base/update-global-section :added "0.1"}
+(fact "has an executable source definition"
+  (some? gwdb.common.type-system-base/update-global-section) => true)
+
+^{:refer gwdb.common.type-system-base/reset-global-section :added "0.1"}
+(fact "has an executable source definition"
+  (some? gwdb.common.type-system-base/reset-global-section) => true)
+
+(Test/check
+ [{:name "runs the archived database-backed base facts"
+   :test (fn []
+           (let [summary (test/run :all)]
+             [(:status summary)
+              (get-in summary [:counts :passed])
+              (get-in summary [:counts :failed])]))
+   :expected [:passed 67 0]}]
+ {:setup (fn []
+           (l/restart))
+       :teardown (fn []
+                   (l/stop))})

@@ -1,0 +1,20 @@
+(ns gwdb.test.postgres)
+
+(defn env-or
+  [name fallback]
+  (or (OS/getenv name) fallback))
+
+(defn test-gw-config
+  "Returns the native Hara PostgreSQL test runtime configuration.
+
+   The default endpoint is the existing gw-dev Supabase PostgreSQL port.
+   String fields can be overridden without changing migrated test sources."
+  []
+  {:id :test.gw
+   :host (env-or "GW_TEST_PG_HOST" "127.0.0.1")
+   :port 55222
+   :user (env-or "GW_TEST_PG_USER" "postgres")
+   :password (env-or "GW_TEST_PG_PASSWORD" "postgres")
+   :dbname (env-or "GW_TEST_PG_DATABASE" "postgres")
+   :tls "disable"})
+

@@ -1,0 +1,153 @@
+(ns gwdb.common.type-system-seed-test
+  (:use code.test)
+  (:require [code.test :as test]
+            [gwdb.common.type-system-seed :as tss]
+            [lang.core.script :as script]
+            [lang.core.compile :as compile]
+            [postgres.core.supabase :as s]
+            [postgres.entity :as et]))
+
+^{:refer gwdb.common.type-system-seed-test/seed-module}
+(defn seed-module []
+  (get (deref script/+modules+)
+       'gwdb.common.type-system-seed))
+
+^{:refer gwdb.common.type-system-seed/+run+}
+(fact "initializes the seed namespace"
+  (map? (seed-module)) => true)
+
+^{:refer gwdb.common.type-system-seed/+legacy-class-types+}
+(fact "preserves the archived legacy class type order"
+  gwdb.common.type-system-seed/+legacy-class-types+
+  => ["Global" "User" "UserSecret" "Wallet" "Brand" "Token" "Commodity"
+      "Publisher" "Feed" "Chat" "ChatChannel" "Campaign" "Topic" "Prospect" "Task"])
+
+^{:refer gwdb.common.type-system-seed/__init__}
+(fact "registers the seed initialization run"
+  (:op (get-in (seed-module) [:code '__init__])) => 'defrun)
+
+^{:refer gwdb.common.type-system-seed/EnumClassType}
+(fact "registers the class enum"
+  (:op (get-in (seed-module) [:code 'EnumClassType])) => 'defenum)
+
+^{:refer gwdb.common.type-system-seed/as-limit-length}
+(fact "registers the length constraint function"
+  (:op (get-in (seed-module) [:code 'as-limit-length])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/as-jsonb}
+(fact "registers the JSONB coercion function"
+  (:op (get-in (seed-module) [:code 'as-jsonb])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/as-jsonb-array}
+(fact "registers the JSONB array coercion function"
+  (:op (get-in (seed-module) [:code 'as-jsonb-array])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/as-distribution}
+(fact "registers the distribution validator"
+  (:op (get-in (seed-module) [:code 'as-distribution])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/as-upper}
+(fact "registers the uppercase coercion"
+  (:op (get-in (seed-module) [:code 'as-upper])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/as-upper-formatted}
+(fact "registers the formatted uppercase coercion"
+  (:op (get-in (seed-module) [:code 'as-upper-formatted])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/as-upper-limit-length}
+(fact "registers the bounded uppercase coercion"
+  (:op (get-in (seed-module) [:code 'as-upper-limit-length])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/as-lower}
+(fact "registers the lowercase coercion"
+  (:op (get-in (seed-module) [:code 'as-lower])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/as-lower-formatted}
+(fact "registers the formatted lowercase coercion"
+  (:op (get-in (seed-module) [:code 'as-lower-formatted])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/as-lower-limit-length}
+(fact "registers the bounded lowercase coercion"
+  (:op (get-in (seed-module) [:code 'as-lower-limit-length])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/as-slug}
+(fact "registers the slug normalizer"
+  (:op (get-in (seed-module) [:code 'as-slug])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/as-email}
+(fact "registers the email normalizer"
+  (:op (get-in (seed-module) [:code 'as-email])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/as-uuid}
+(fact "registers the UUID coercion"
+  (:op (get-in (seed-module) [:code 'as-uuid])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/as-crypto-address}
+(fact "registers the crypto-address formatter"
+  (:op (get-in (seed-module) [:code 'as-crypto-address])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/as-crypto-dust}
+(fact "registers the crypto-dust conversion"
+  (:op (get-in (seed-module) [:code 'as-crypto-dust])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/safe-div}
+(fact "registers the zero-safe division helper"
+  (:op (get-in (seed-module) [:code 'safe-div])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/time-overlaps?}
+(fact "registers the range-overlap predicate"
+  (:op (get-in (seed-module) [:code 'time-overlaps?])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/color-rand}
+(fact "registers the random color helper"
+  (:op (get-in (seed-module) [:code 'color-rand])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/color-check}
+(fact "registers the color validator"
+  (:op (get-in (seed-module) [:code 'color-check])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/js-keys-common}
+(fact "registers the common JSON key helper"
+  (:op (get-in (seed-module) [:code 'js-keys-common])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/get-diff-forward}
+(fact "registers the forward diff helper"
+  (:op (get-in (seed-module) [:code 'get-diff-forward])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/get-diff}
+(fact "registers the diff helper"
+  (:op (get-in (seed-module) [:code 'get-diff])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/patch-diff}
+(fact "registers the diff patch helper"
+  (:op (get-in (seed-module) [:code 'patch-diff])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed/patch-diff-rev}
+(fact "compiles the archived patch/diff revision helper"
+  (:op (get-in (seed-module) [:code 'patch-diff-rev])) => 'defn)
+
+^{:refer gwdb.common.type-system-seed}
+(fact "compiles the complete seed module without diagnostics"
+  (let [result (compile/compile-module
+                {:lang :postgres
+                 :main 'gwdb.common.type-system-seed
+                 :layout :module
+                 :lang/eval-literal
+                 (fn [_]
+                   (et/class-types "gw" tss/+legacy-class-types+))
+                 :emit {:code {:transforms {:entry [s/transform-entry]}}}})]
+    (let [actual [(count (:code (seed-module)))
+                  (count (:entries result))
+                  (vec (map :code (:diagnostics result)))
+                  (> (count (:output result)) 11000)]]
+      actual))
+  => [26 26 [] true])
+
+(Test/check
+ [{:name "runs the archived seed facts"
+   :test (fn []
+           (let [summary (test/run :all)]
+             [(:status summary)
+              (get-in summary [:counts :passed])
+              (get-in summary [:counts :failed])]))
+   :expected [:passed 29 0]}])

@@ -1,0 +1,21 @@
+(ns gwdb.test.postgres-test
+  (:require [gwdb.test.postgres :as postgres]))
+
+^{:refer gwdb.test.postgres/env-or}
+(Test/check
+ [{:name "uses the fallback when an environment variable is absent"
+   :test (fn [] (postgres/env-or "GWTRADE_MISSING_TEST_VARIABLE" :fallback))
+   :expected :fallback}])
+
+^{:refer gwdb.test.postgres/test-gw-config}
+(Test/check
+ [{:name "uses the archived disposable PostgreSQL defaults"
+   :test (fn []
+           (select-keys (postgres/test-gw-config) [:id :host :port :user :password :dbname :tls]))
+   :expected {:id :test.gw
+              :host "127.0.0.1"
+              :port 55222
+              :user "postgres"
+              :password "postgres"
+              :dbname "postgres"
+              :tls "disable"}}])

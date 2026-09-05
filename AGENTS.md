@@ -123,6 +123,24 @@ Execution is serial by design; leave gaps in numbering for future scripts.
   testable, internal namespaces remain internal, and facades still publish only
   through `intern-all` or `intern-in`.
 
+### Hara prelude gate
+
+- `std.foundation` is preloaded. Do not require it merely to consume its Vars;
+  use the default prelude.
+- Foundation builtin companions (`std.foundation.string`, `.promise`, `.bytes`,
+  `.coroutine`, `.pretty`, and analogous builtin aliases) are also preloaded.
+  Consumers use their builtin aliases (`str/*`, `promise/*`, `bytes/*`, `co/*`,
+  and so on), not `:require`.
+- `:config {:blank true}` is reserved for primitive Foundation boundary
+  namespaces. Ordinary library, language, PostgreSQL, and test namespaces keep
+  the default prelude. Primitive companions declare their own `:override` or
+  `:set-global-alias` when needed; they do not self-require the prelude.
+- Native types and protocols are preloaded too. In Hara source, call their
+  short forms (`File/read`, `Promise/all`, `IReset/reset`, `IAssoc/assoc`),
+  never fully qualified `std.native.*/<>` or `std.protocol.*.*/<>` methods.
+- Construct exceptions with `(ex code data & key-value-pairs)`. `ex-info` is
+  not a Foundation API and is forbidden in Hara source.
+
 ## Reversible systems
 
 - Every component that owns mutable, cached, process, registry, or lifecycle
